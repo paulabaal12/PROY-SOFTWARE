@@ -6,3 +6,6 @@
 
 ## Paula Barillas 
 ![Paula ](https://github.com/paulabaal12/PROY-SOFTWARE/assets/106942151/24d99578-a9e8-42ad-a441-d5b111601631)
+
+## Gustavo Cruz
+![Gustavo Prototipo-min](https://github.com/paulabaal12/PROY-SOFTWARE/assets/106942151/216bb128-a701-45e2-80a5-23482aaab9bb)
