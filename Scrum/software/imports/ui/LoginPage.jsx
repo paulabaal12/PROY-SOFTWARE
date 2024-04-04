@@ -1,15 +1,19 @@
 import React from 'react';
 
 const LoginPage = ({ setShowRegister }) => (
-  <div className="container">
-    <h1>¡Bienvenido!</h1>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Correo Electrónico" />
-      <input type="password" id="password" placeholder="Contraseña" />
-      <button type="submit">Iniciar Sesión</button>
-    </form>
-    <p>¿No tienes una cuenta?</p>
-    <button onClick={() => setShowRegister(true)}>Regístrate</button>
+  <div className="login-container">
+    <div className="form-container">
+      <h1 className="centered">¡Bienvenido!</h1>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Correo Eléctronico" className="input-field" />
+        <input type="password" id="password" placeholder="Contraseña" className="input-field" />
+        <button type="submit" className="btn">Iniciar Sesión</button>
+      </form>
+      <div className="register-prompt">
+        <p>¿No tienes una cuenta?</p>
+        <button onClick={() => setShowRegister(true)} className="btn1 centered">Regístrate</button>
+      </div>
+    </div>
   </div>
 );
 

@@ -1,16 +1,68 @@
-.container {
+body {
+  background: linear-gradient(to right, transparent, rgb(225, 241, 255))
+}
+
+.login-container, .register-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
+}
+
+.form-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-input, button {
+.input-field {
   margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn {
+  background-color: #278da2;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn1 {
+  background-color: #278da2;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn1:hover {
+  background-color: rgb(115, 168, 243);
+}
+.btn:hover {
+  background-color: rgb(115, 168, 243);
+}
+
+.register-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
