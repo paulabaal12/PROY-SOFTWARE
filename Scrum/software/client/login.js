@@ -17,7 +17,7 @@ Template.body.events({
   
     'click #register-button'(event) {
   
-      Router.go('/register.html');
+      Router.go('/register');
     }
   });
   
