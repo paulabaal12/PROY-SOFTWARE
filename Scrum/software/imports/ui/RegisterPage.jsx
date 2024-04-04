@@ -5,6 +5,8 @@ const RegisterPage = () => (
     <h1>Registro</h1>
     <form id="register-form">
       <input type="text" id="name" placeholder="Nombre" />
+      <input type="text" id="Last Name" placeholder="Apellido" />
+      <input type="email" id="email" placeholder="Correo Electrónico" />
       <input type="password" id="Password" placeholder="Password" />
       <input type="text" id="dpi" placeholder="DPI" />
       <input type="text" id="location" placeholder="Ubicación" />
