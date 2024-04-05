@@ -84,3 +84,47 @@ form {
 .form-container.blurred {
   opacity: 0.5;
 }
+
+
+.miClase {
+  color: red;
+  font-size: 20px;
+}
+
+.uul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.text-menu {
+  color: white;
+  font-size: 20px;
+}
+.active {
+  background-color: #04AA6D;
+}
+
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
