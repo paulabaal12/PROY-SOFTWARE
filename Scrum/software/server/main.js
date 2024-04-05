@@ -3,11 +3,11 @@ import { Pool } from 'pg';
 
 Meteor.startup(() => {
   const pgConfig = Meteor.settings?.postgres || {
-	host: 'localhost',
-	port: '5432',
-	database: 'users_database',
-	username: 'postgres',
-	password: ''
+    host: 'localhost',
+    port: '5432',
+    database: 'users_database',
+    username: 'postgres',
+    password: ''
   };
 
   const pool = new Pool({
@@ -41,6 +41,24 @@ Meteor.startup(() => {
           }
         }
       );
+    },
+    'usuarios.authenticate'(email, password) {
+      return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM usuarios WHERE email = $1 AND contraseña = $2', [email, password], (err, result) => {
+          if (err) {
+            console.error('Error al autenticar:', err);
+            reject(new Meteor.Error('database-error', 'Error al autenticar en la base de datos'));
+          } else {
+            const authenticated = result.rows.length > 0;
+            resolve({ authenticated });
+            if (authenticated) {
+              console.log('Usuario existe en la base de datos, inicia sesión');
+            } else {
+              console.log('Usuario no existe en la base de datos');
+            }
+          }
+        });
+      });
     }
   });
 });
