@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Setup2FA from "./Setup2FA";
+import { useNavigate } from 'react-router-dom';
+
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -42,7 +46,7 @@ const RegisterPage = () => {
       if (error) {
         console.error('Error al insertar usuario:', error);
       } else {
-        onRegisterSuccess(); 
+        navigate('/'); // Suponiendo que '/' es la ruta para LoginPage
       }
     });
   };

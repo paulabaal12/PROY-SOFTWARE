@@ -1,95 +1,34 @@
 import React, { useState } from 'react';
-import LoginPage from '../ui/Components/Auth/LoginPage';
-import RegisterPage from '../ui/Components/Auth/RegisterPage';
-import { HomePage } from './HomePage';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './Components/Auth/LoginPage';
+import RegisterPage from './Components/Auth/RegisterPage';
+import HomePage from './HomePage';
 
-/*
-import PaymentMethodPage from './ui/Components/Screens/PaymentMethodPage';
-import PaymentSummaryPage from './ui/Components/Screens/PaymentSummaryPage';
-import ShoppingCartPage from './ui/Components/Screens/ShoppingCartPage';
-*/
 export const App = () => {
-  const [showRegister, setShowRegister] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showingRegister, setShowingRegister] = useState(false);
 
+  // Esta función se llamará después de un inicio de sesión exitoso
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
   };
 
+  // Esta función se llamará para cerrar sesión
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
 
-  if (isLoggedIn) {
-    return <HomePage onLogout={handleLogout} />;
-  } else {
-    return (
-      <div>
-        {showRegister ? (
-          <RegisterPage onRegisterSuccess={handleLoginSuccess} />
-        ) : (
-          <LoginPage onLoginSuccess={handleLoginSuccess} setShowRegister={setShowRegister} />
-        )}
-      </div>
-    );
-  }
-};
-
-/* 
-import React, { useState } from 'react';
-import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
-import HomePage from './HomePage'; // Lo que le toca crear a Brandon
-import PaymentMethodPage from './PaymentMethodPage';
-import PaymentSummaryPage from './PaymentSummaryPage';
-import ShoppingCartPage from './ShoppingCartPage';
-
-export const App = () => {
-  const [currentPage, setCurrentPage] = useState('login');
-  const [transactionId, setTransactionId] = useState(null);
-
-  const goToRegister = () => setCurrentPage('register');
-  const goToLogin = () => setCurrentPage('login');
-  const goToHome = () => setCurrentPage('home');
-  const goToShoppingCart = () => setCurrentPage('shoppingCart');
-  const goToPaymentMethod = () => setCurrentPage('paymentMethod');
-  const goToPaymentSummary = (id) => {
-    setTransactionId(id); // Aquí se debe cambiar por el verdadero ID de transacción obtenido tras el proceso de pago
-    setCurrentPage('paymentSummary');
-  };
-
-  const confirmPaymentAndGoHome = () => {
-    // Lógica para manejar la confirmación de pago
-    console.log('Pago confirmado con ID:', transactionId);
-    setCurrentPage('home'); // Después de confirmar el pago, redirige al usuario al inicio
-  };
-
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'login':
-        return <LoginPage setShowRegister={goToRegister} />;
-      case 'register':
-        return <RegisterPage goBack={goToLogin} />;
-      case 'home':
-        return <HomePage goToShoppingCart={goToShoppingCart} />;
-      case 'shoppingCart':
-        return <ShoppingCartPage onCheckout={goToPaymentMethod} />;
-      case 'paymentMethod':
-        return <PaymentMethodPage onPayment={goToPaymentSummary} />;
-      case 'paymentSummary':
-        return <PaymentSummaryPage transactionId={transactionId} onConfirmPayment={confirmPaymentAndGoHome} />;
-      default:
-        return <LoginPage setShowRegister={goToRegister} />;
-    }
-  };
-
   return (
-    <div>
-      {renderCurrentPage()}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={!isLoggedIn ? <LoginPage onLoginSuccess={handleLoginSuccess} /> : <Navigate replace to="/homepage" />} />
+        <Route path="/register" element={<RegisterPage onRegisterSuccess={handleLoginSuccess} />} />
+        <Route path="/homepage" element={isLoggedIn ? <HomePage onLogout={handleLogout} /> : <Navigate replace to="/" />} />
+        <Route path="/" element={!isLoggedIn ? (showingRegister ? <RegisterPage onRegisterSuccess={handleLoginSuccess} /> : <LoginPage onLoginSuccess={handleLoginSuccess} setShowRegister={setShowingRegister} />) : <Navigate replace to="/homepage" />} />
+
+      </Routes>
+    </Router>
   );
 };
 
-export default App;
-*/
+
