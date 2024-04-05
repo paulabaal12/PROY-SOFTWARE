@@ -36,9 +36,17 @@ const RegisterPage = () => {
       return;
     }
 
-    console.log("Form data submitted:", formData);
+    //console.log("Form data submitted:", formData);
+      Meteor.call('usuarios.insert', formData, (error, result) => {
+      if (error) {
+        console.error('Error al insertar usuario:', error);
+      } else {
+        console.log('Usuario insertado correctamente:', result);
+      }
+    });
   };
-  const handlePrivacyPolicyClick = (event) => {
+  
+    const handlePrivacyPolicyClick = (event) => {
     event.preventDefault();
     setShowPrivacyPolicyModal(true);
   };

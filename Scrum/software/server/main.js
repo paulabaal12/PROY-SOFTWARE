@@ -1,37 +1,47 @@
 import { Meteor } from 'meteor/meteor';
-import { LinksCollection } from '/imports/api/links';
+import { Pool } from 'pg';
 
-async function insertLink({ title, url }) {
-  await LinksCollection.insertAsync({ title, url, createdAt: new Date() });
-}
+Meteor.startup(() => {
+  const pgConfig = Meteor.settings?.postgres || {
+	host: 'localhost',
+	port: '5432',
+	database: 'users_database',
+	username: 'postgres',
+	password: ''
+  };
 
-Meteor.startup(async () => {
-  // If the Links collection is empty, add some data.
-  if (await LinksCollection.find().countAsync() === 0) {
-    await insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://react-tutorial.meteor.com/simple-todos/01-creating-app.html',
-    });
+  const pool = new Pool({
+    host: pgConfig.host,
+    port: pgConfig.port,
+    database: pgConfig.database,
+    user: pgConfig.username,
+    password: pgConfig.password
+  });
 
-    await insertLink({
-      title: 'Follow the Guide',
-      url: 'https://guide.meteor.com',
-    });
+  pool.connect((err, client, release) => {
+    if (err) {
+      console.error('Error de conexión a PostgreSQL:', err);
+    } else {
+      console.log('Conexión exitosa a PostgreSQL');
+      release();
+    }
+  });
 
-    await insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com',
-    });
-
-    await insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com',
-    });
-  }
-
-  // We publish the entire Links collection to all clients.
-  // In order to be fetched in real-time to the clients
-  Meteor.publish("links", function () {
-    return LinksCollection.find();
+  Meteor.methods({
+    'usuarios.insert'(data) {
+      pool.query(
+        'INSERT INTO usuarios (nombre, email, contraseña, dpi, ubicacion) VALUES ($1, $2, $3, $4, $5)',
+        [data.name, data.email, data.password, data.dpi, data.location],
+        (err, result) => {
+          if (err) {
+            console.error('Error al insertar usuario en PostgreSQL:', err);
+            throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
+          } else {
+            console.log('Usuario insertado correctamente en PostgreSQL');
+          }
+        }
+      );
+    }
   });
 });
+
