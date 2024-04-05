@@ -60,28 +60,28 @@ export const HomePage = () => (
       <a target="_blank" href="img_5terre.jpg">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMa78OTINoVIBOTtH6TCWAWNLZD6njFcrwmz9PMxCeog&s" alt="Cinque Terre" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Gorra brillos</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_forest.jpg">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8Ic45loKTN-RitrdL1xpNVYEIL7Ky2Otv7moYLOA6tA&sjpg" alt="Forest" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Pantalon para hombre negro</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_lights.jpg">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrtmVmbH1SQkHn07QHyiX8cYAbRPYb49kMyjs6BYWkOA&s" alt="Northern Lights" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Pantalon para hombre verde</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_mountains.jpg">
         <img src="https://ae01.alicdn.com/kf/Sd51383ed625d4ec38e1c51e8ceab8e854.jpg_640x640Q90.jpg_.webp" alt="Mountains" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Gorra futurista</div>
     </div>
     </table>
     {/*Fin imagenes*/}
@@ -93,28 +93,28 @@ export const HomePage = () => (
       <a target="_blank" href="img_5terre.jpg">
         <img src="https://cdn.pacifiko.com/image/cache/catalog/p/ZDRkMDQ4MT-484x484.jpg" alt="Cinque Terre" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Camisa formal celeste para hombre</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_forest.jpg">
         <img src="https://caterpillargt.com/cdn/shop/products/2610628_12815_Standard-Stone.jpg?v=1658848948" alt="Forest" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Camisa casual azul para hombre</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_lights.jpg">
         <img src="https://www.progresivajeans.com/cdn/shop/files/11.4.23_CAM120_ML_CC_BLANCO_A.jpg?v=1697497995&width=1080" alt="Northern Lights" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Camisa formal blanca para hombre</div>
     </div>
 
     <div className="gallery">
       <a target="_blank" href="img_mountains.jpg">
         <img src="https://www.progresivajeans.com/cdn/shop/files/11.3.29_CAM120_ML_CN_CORINTO_A.jpg?v=1697479966" alt="Mountains" width="600" height="400" />
       </a>
-      <div className="desc">Add a description of the image here</div>
+      <div className="desc">Camisa formal roja para hombre</div>
     </div>
     </table>
     {/*Fin imagenes*/}
