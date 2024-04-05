@@ -1,38 +1,33 @@
 import { Meteor } from 'meteor/meteor';
 import { Pool } from 'pg';
+import bcrypt from 'bcrypt';
 
 Meteor.startup(() => {
-  const pgConfig = Meteor.settings?.postgres || {
+  const pgConfig = Meteor.settings.postgres || {
     host: 'localhost',
-    port: '5432',
+    port: 5432,
     database: 'users_database',
-    username: 'postgres',
+    user: 'postgres',
     password: ''
   };
 
-  const pool = new Pool({
-    host: pgConfig.host,
-    port: pgConfig.port,
-    database: pgConfig.database,
-    user: pgConfig.username,
-    password: pgConfig.password
-  });
+  const pool = new Pool(pgConfig);
 
-  pool.connect((err, client, release) => {
+  pool.connect((err) => {
     if (err) {
       console.error('Error de conexión a PostgreSQL:', err);
     } else {
       console.log('Conexión exitosa a PostgreSQL');
-      release();
     }
   });
 
   Meteor.methods({
     'usuarios.insert'(data) {
+      const hashedPassword = bcrypt.hashSync(data.password, 10);
       pool.query(
         'INSERT INTO usuarios (nombre, email, contraseña, dpi, ubicacion) VALUES ($1, $2, $3, $4, $5)',
-        [data.name, data.email, data.password, data.dpi, data.location],
-        (err, result) => {
+        [data.name, data.email, hashedPassword, data.dpi, data.location],
+        (err) => {
           if (err) {
             console.error('Error al insertar usuario en PostgreSQL:', err);
             throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
@@ -44,22 +39,26 @@ Meteor.startup(() => {
     },
     'usuarios.authenticate'(email, password) {
       return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM usuarios WHERE email = $1 AND contraseña = $2', [email, password], (err, result) => {
+        pool.query('SELECT * FROM usuarios WHERE email = $1', [email], (err, result) => {
           if (err) {
             console.error('Error al autenticar:', err);
             reject(new Meteor.Error('database-error', 'Error al autenticar en la base de datos'));
-          } else {
-            const authenticated = result.rows.length > 0;
-            resolve({ authenticated });
+          } else if (result.rows.length > 0) {
+            const user = result.rows[0];
+            const authenticated = bcrypt.compareSync(password, user.contraseña);
             if (authenticated) {
-              console.log('Usuario existe en la base de datos, inicia sesión');
+              console.log('Usuario autenticado exitosamente');
+              resolve({ authenticated });
             } else {
-              console.log('Usuario no existe en la base de datos');
+              console.log('Contraseña incorrecta');
+              resolve({ authenticated: false });
             }
+          } else {
+            console.log('Usuario no encontrado');
+            resolve({ authenticated: false });
           }
         });
       });
     }
   });
 });
-

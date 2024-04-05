@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import LoginPage from '../ui/Components/Auth/LoginPage';
 import RegisterPage from '../ui/Components/Auth/RegisterPage';
+import { HomePage } from './HomePage';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+
 /*
 import PaymentMethodPage from './ui/Components/Screens/PaymentMethodPage';
 import PaymentSummaryPage from './ui/Components/Screens/PaymentSummaryPage';
@@ -8,16 +11,29 @@ import ShoppingCartPage from './ui/Components/Screens/ShoppingCartPage';
 */
 export const App = () => {
   const [showRegister, setShowRegister] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  return (
-    <div>
-      {showRegister ? (
-        <RegisterPage />
-      ) : (
-        <LoginPage setShowRegister={setShowRegister} />
-      )}
-    </div>
-  );
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  if (isLoggedIn) {
+    return <HomePage onLogout={handleLogout} />;
+  } else {
+    return (
+      <div>
+        {showRegister ? (
+          <RegisterPage onRegisterSuccess={handleLoginSuccess} />
+        ) : (
+          <LoginPage onLoginSuccess={handleLoginSuccess} setShowRegister={setShowRegister} />
+        )}
+      </div>
+    );
+  }
 };
 
 /* 

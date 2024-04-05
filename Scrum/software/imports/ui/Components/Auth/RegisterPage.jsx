@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Setup2FA from "./Setup2FA";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +13,8 @@ const RegisterPage = () => {
   });
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
   const [showPrivacyPolicyModal, setShowPrivacyPolicyModal] = useState(false);
+  const [enable2FA, setEnable2FA] = useState(false);
+
   const handleChange = (event) => {
     const { id, value } = event.target;
     setFormData({
@@ -36,17 +38,16 @@ const RegisterPage = () => {
       return;
     }
 
-    //console.log("Form data submitted:", formData);
-      Meteor.call('usuarios.insert', formData, (error, result) => {
+    Meteor.call('usuarios.insert', formData, (error, result) => {
       if (error) {
         console.error('Error al insertar usuario:', error);
       } else {
-        console.log('Usuario insertado correctamente:', result);
+        onRegisterSuccess(); 
       }
     });
   };
-  
-    const handlePrivacyPolicyClick = (event) => {
+
+  const handlePrivacyPolicyClick = (event) => {
     event.preventDefault();
     setShowPrivacyPolicyModal(true);
   };
@@ -117,6 +118,15 @@ const RegisterPage = () => {
             Crear Cuenta
           </button>
         </form>
+        {/* Checkbox for opting into 2FA */}
+        <label className="privacy-policy-checkbox">
+          <input
+            type="checkbox"
+            checked={enable2FA} // you should define this state somewhere above in your component
+            onChange={(e) => setEnable2FA(e.target.checked)}
+          />
+          Habilitar Autenticación de Dos Factores (2FA)
+        </label>
       </div>
       {showPrivacyPolicyModal && (
         <div
@@ -128,7 +138,7 @@ const RegisterPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h2>Política de Privacidad</h2>
-            <p>Bienpolíticas de privacidad</p>
+            <p>políticas de privacidad</p>
             <button onClick={() => setShowPrivacyPolicyModal(false)}>
               Cerrar
             </button>
