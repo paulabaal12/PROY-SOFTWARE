@@ -9,15 +9,7 @@ body {
   height: 100vh;
 }
 
-.form-container {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
+
 
 form {
   display: flex;
@@ -65,4 +57,30 @@ form {
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.privacy-policy-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  z-index: 11;
+}
+
+.form-container.blurred {
+  opacity: 0.5;
 }

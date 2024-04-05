@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
-import PaymentMethodPage from './PaymentMethodPage';
-import PaymentSummaryPage from './PaymentSummaryPage';
-import ShoppingCartPage from './ShoppingCartPage';
-
+import LoginPage from '../ui/Components/Auth/LoginPage';
+import RegisterPage from '../ui/Components/Auth/RegisterPage';
+/*
+import PaymentMethodPage from './ui/Components/Screens/PaymentMethodPage';
+import PaymentSummaryPage from './ui/Components/Screens/PaymentSummaryPage';
+import ShoppingCartPage from './ui/Components/Screens/ShoppingCartPage';
+*/
 export const App = () => {
   const [showRegister, setShowRegister] = useState(false);
 
