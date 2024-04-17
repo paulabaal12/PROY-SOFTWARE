@@ -2,7 +2,9 @@
   "name": "software",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "meteor --settings settings.json",
+    "build-image":"docker build -t postgres .",
+    "run-container":"docker run --name meteor_postgresdb -p 5433:5432 -e POSTGRES_HOST_AUTH_METHOD=trust postgres",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
