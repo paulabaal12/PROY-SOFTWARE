@@ -19,14 +19,14 @@ export const HomePage = () => (
         </li>
         <li style={{ float: 'left' }}>
           <a href="#news" style={{ display: 'block', color: 'white', textAlign: 'center', padding: '14px 16px', textDecoration: 'none' }}>
-            <img src="/imgs/cateogrias.png" 
+            <img src="" 
             alt="Categorias" style={{ width: '50px', height: 'auto' }} />
           </a>
           Categorias
         </li>
         <li style={{ float: 'left' }}>
           <a href="#contact" style={{ display: 'block', color: 'white', textAlign: 'center', padding: '14px 16px', textDecoration: 'none' }}>
-            <img src="/imgs/ordenes.png" alt="Pedidos" style={{ width: '50px', height: 'auto' }} />
+            <img src="" alt="Pedidos" style={{ width: '50px', height: 'auto' }} />
           </a>
           Ordenes
         </li>

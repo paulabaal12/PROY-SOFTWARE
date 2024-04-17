@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import Setup2FA from "./Setup2FA";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { Meteor } from 'meteor/meteor';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -14,16 +13,17 @@ const RegisterPage = () => {
     location: "",
     profilePicture: null,
     hasAgreedToPrivacyPolicy: false,
+    enable2FA: false,  // State to manage 2FA enabling
   });
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
   const [showPrivacyPolicyModal, setShowPrivacyPolicyModal] = useState(false);
-  const [enable2FA, setEnable2FA] = useState(false);
+  const [qrCodeSvg, setQrCodeSvg] = useState(''); // Store QR code SVG
 
   const handleChange = (event) => {
-    const { id, value } = event.target;
+    const { id, value, checked, type } = event.target;
     setFormData({
       ...formData,
-      [id]: value,
+      [id]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -46,7 +46,19 @@ const RegisterPage = () => {
       if (error) {
         console.error('Error al insertar usuario:', error);
       } else {
-        navigate('/'); // Suponiendo que '/' es la ruta para LoginPage
+        if (formData.enable2FA) {
+          Meteor.call('generate2faActivationQrCode', 'YourAppName', (err, result) => {
+            if (err) {
+              console.error('Error generating QR code:', err);
+            } else {
+              // Assuming result.svg contains your QR code SVG
+              setQrCodeSvg(result.svg);
+              navigate('/complete-2fa-setup'); // Redirect to a page to complete 2FA setup
+            }
+          });
+        } else {
+          navigate('/'); // Navigate to home or login page
+        }
       }
     });
   };
@@ -61,7 +73,7 @@ const RegisterPage = () => {
       <div className="form-container">
         <h1 className="centered">Registro</h1>
         <form id="register-form" onSubmit={handleSubmit}>
-          <input
+        <input
             type="text"
             id="name"
             placeholder="Nombre"
@@ -105,6 +117,7 @@ const RegisterPage = () => {
           <label className="privacy-policy-checkbox">
             <input
               type="checkbox"
+              id="hasAgreedToPrivacyPolicy"
               checked={formData.hasAgreedToPrivacyPolicy}
               onChange={handlePrivacyPolicyCheckbox}
             />
@@ -118,41 +131,39 @@ const RegisterPage = () => {
               Debes aceptar la política de privacidad para registrarte.
             </div>
           )}
-          <button type="submit" className="btn">
-            Crear Cuenta
-          </button>
+          <label className="privacy-policy-checkbox">
+            <input
+              type="checkbox"
+              id="enable2FA"
+              checked={formData.enable2FA}
+              onChange={handleChange}
+            />
+            Habilitar Autenticación de Dos Factores (2FA)
+          </label>
+          <button type="submit" className="btn">Crear Cuenta</button>
         </form>
-        {/* Checkbox for opting into 2FA */}
-        <label className="privacy-policy-checkbox">
-          <input
-            type="checkbox"
-            checked={enable2FA} // you should define this state somewhere above in your component
-            onChange={(e) => setEnable2FA(e.target.checked)}
-          />
-          Habilitar Autenticación de Dos Factores (2FA)
-        </label>
-      </div>
-      {showPrivacyPolicyModal && (
-        <div
-          className="overlay"
-          onClick={() => setShowPrivacyPolicyModal(false)}
-        >
-          <div
-            className="privacy-policy-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Política de Privacidad</h2>
-            <p>políticas de privacidad</p>
-            <button onClick={() => setShowPrivacyPolicyModal(false)}>
-              Cerrar
-            </button>
+        {showPrivacyAlert && (
+          <div className="alert alert-warning">
+            Debes aceptar la política de privacidad para registrarte.
           </div>
-        </div>
-      )}
-      <div
-        className={`form-container ${showPrivacyPolicyModal ? "blurred" : ""}`}
-      >
-        {/* El resto de tu formulario aquí */}
+        )}
+        {showPrivacyPolicyModal && (
+          <div className="overlay" onClick={() => setShowPrivacyPolicyModal(false)}>
+            <div className="privacy-policy-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>Política de Privacidad</h2>
+              <p>Políticas de privacidad</p>
+              <button onClick={() => setShowPrivacyPolicyModal(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        )}
+        {qrCodeSvg && (
+          <div>
+            <img src={`data:image/svg+xml;base64,${btoa(qrCodeSvg)}`} alt="QR Code" />
+            <p>Scan this QR code with your authenticator app</p>
+          </div>
+        )}
       </div>
     </div>
   );
