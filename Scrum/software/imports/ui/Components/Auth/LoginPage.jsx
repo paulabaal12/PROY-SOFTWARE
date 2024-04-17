@@ -1,26 +1,49 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = ({ onLoginSuccess, setShowRegister }) => {
+const LoginPage = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Hook para la navegación
+  const [verificationCode, setVerificationCode] = useState('');
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    // Authenticate user
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
         console.error('Error al autenticar:', error);
       } else if (result.authenticated) {
-        onLoginSuccess(); // Actualiza el estado de autenticación en App.jsx
-        navigate('/homepage'); // Redirige a HomePage después de un inicio de sesión exitoso
+        // Call the server method to send a verification code
+        Meteor.call('sendVerificationCode', email, (err, res) => {
+          if (err) {
+            console.error('Error sending verification code:', err);
+          } else {
+            // Assuming verification code is sent successfully
+            setShow2FAModal(true);
+          }
+        });
       } else {
         console.log('¡Usuario no autenticado! Revise sus credenciales.');
       }
     });
   };
   
+  const handle2FAVerification = () => {
+    Meteor.call('user.verifyTotp', { email, token: verificationCode }, (error, verified) => {
+      setShow2FAModal(false);
+      if (error) {
+        console.error('Error verificando 2FA:', error);
+      } else if (verified) {
+        onLoginSuccess();
+        navigate('/homepage');
+      } else {
+        console.log('Código 2FA incorrecto o expirado.');
+      }
+    });
+  };
 
   return (
     <div className="login-container">
@@ -45,6 +68,20 @@ const LoginPage = ({ onLoginSuccess, setShowRegister }) => {
           />
           <button type="submit" className="btn">Iniciar Sesión</button>
         </form>
+        {show2FAModal && (
+          <div className="overlay">
+            <div className="modal">
+              <h2>Ingrese el Código de Verificación</h2>
+              <input 
+                type="text" 
+                placeholder="Verification Code" 
+                value={verificationCode} 
+                onChange={(e) => setVerificationCode(e.target.value)} 
+              />
+              <button onClick={handle2FAVerification}>Verify Code</button>
+            </div>
+          </div>
+        )}
         <div className="register-prompt">
           <p>¿No tienes una cuenta?</p>
           <button onClick={() => navigate('/register')} className="btn1 centered">Regístrate</button>
@@ -55,4 +92,3 @@ const LoginPage = ({ onLoginSuccess, setShowRegister }) => {
 };
 
 export default LoginPage;
-

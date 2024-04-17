@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import Setup2FA from "./Setup2FA";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { Meteor } from 'meteor/meteor';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -17,7 +16,6 @@ const RegisterPage = () => {
   });
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
   const [showPrivacyPolicyModal, setShowPrivacyPolicyModal] = useState(false);
-  const [enable2FA, setEnable2FA] = useState(false);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
@@ -124,12 +122,7 @@ const RegisterPage = () => {
         </form>
         {/* Checkbox for opting into 2FA */}
         <label className="privacy-policy-checkbox">
-          <input
-            type="checkbox"
-            checked={enable2FA} // you should define this state somewhere above in your component
-            onChange={(e) => setEnable2FA(e.target.checked)}
-          />
-          Habilitar Autenticación de Dos Factores (2FA)
+         
         </label>
       </div>
       {showPrivacyPolicyModal && (
