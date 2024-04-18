@@ -7,7 +7,7 @@ import { Accounts } from 'meteor/accounts-base';
 Meteor.startup(() => {
   const pgConfig = Meteor.settings.postgres || {
     host: 'localhost',
-    port: 5432,
+    port: 5433,
     database: 'users_database',
     user: 'postgres',
     password: ''
