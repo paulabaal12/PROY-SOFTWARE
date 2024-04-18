@@ -1,5 +1,5 @@
 
-CREATE DATABASE IF NOT EXISTS users_database;
+CREATE DATABASE users_database;
 
 \c users_database;
 
