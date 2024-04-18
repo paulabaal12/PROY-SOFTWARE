@@ -10,16 +10,7 @@ const HomePage = () => {
       <Header/>
       {/* Contenido de la página */}
       <main>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1><h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1>
-        <h1>HOLA NENA</h1><h1>HOLA NENA</h1><h1>HOLA NENA</h1>
+   
       </main>
     </div>
   );
