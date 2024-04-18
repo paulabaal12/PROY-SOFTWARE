@@ -40,7 +40,7 @@ const LoginPage = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container body1">
       <div className="form-container">
         <h1 className="centered">¡Bienvenido!</h1>
         <form id="login-form" onSubmit={handleSubmit}>
