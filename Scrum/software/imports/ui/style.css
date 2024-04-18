@@ -1,31 +1,38 @@
+.header-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+  }
   
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     background-color: rgb(252, 252, 252);
+    padding: 5px;
   }
-
-.search-bar {
+ 
+  
+  .search-bar {
     display: flex;
     align-items: center;
     background-color: #f0f0f0;
     border-radius: 20px;
     padding: 5px;
-    width: 100%; 
-    justify-content: space-around;
+    width: 30%; /* Ajusta el ancho según tus necesidades */
   }
   
   .search-bar input {
     border: none;
-    align-items: center;
     background-color: #f0f0f0;
     outline: none;
-    padding: 5px;
-    font-size: 20px; 
-    flex-grow: 1; 
+    padding: 4px;
+    font-size: 20px;
+    flex-grow: 1;
     width: 100%;
   }
   
@@ -33,19 +40,18 @@
     border: none;
     border-radius: 20px;
     padding: 5px 10px;
-    cursor: pointer;
   }
   
   .user-cart {
     display: flex;
     align-items: center;
     margin-left: auto;
-    margin-right: 30px; 
+    margin-right: 30px;
   }
-
-    .navbar {
-        padding: 1rem;
-    }
+  
+  .navbar {
+    padding: 1rem;
+  }
   
   .navbar ul {
     list-style: none;
@@ -60,9 +66,16 @@
   .navbar a {
     text-decoration: none;
     color: #000000;
-    font-size: 15px; 
+    font-size: 20px;
     line-height: 100%;
     font-weight: 700;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
   
+
+
+  .user-name {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    margin-right: 20px; 
+  }
