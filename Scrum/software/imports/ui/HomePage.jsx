@@ -7,7 +7,6 @@ import Header from './Header';
 const products = [
   { name: 'Producto 1', price: '$10.00', imageUrl: 'https://images-na.ssl-images-amazon.com/images/I/51bm38JKdKL._SX600_.jpg' },
   { name: 'Producto 2', price: '$15.00', imageUrl: 'https://m.media-amazon.com/images/I/81vaif8cb6L.__AC_SX300_SY300_QL70_FMwebp_.jpg' },
-  // Agrega más productos aquí
 ];
 
 const HomePage = () => {
