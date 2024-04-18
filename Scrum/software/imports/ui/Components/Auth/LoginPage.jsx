@@ -11,36 +11,30 @@ const LoginPage = ({ onLoginSuccess }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Authenticate user
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
-        console.error('Error al autenticar:', error);
+        console.error('Login error:', error.reason);
       } else if (result.authenticated) {
-        // Call the server method to send a verification code
-        Meteor.call('sendVerificationCode', email, (err, res) => {
-          if (err) {
-            console.error('Error sending verification code:', err);
-          } else {
-            // Assuming verification code is sent successfully
-            setShow2FAModal(true);
-          }
-        });
+        if (result.twoFactorRequired) {
+          setShow2FAModal(true);
+        } else {
+          onLoginSuccess();
+        }
       } else {
-        console.log('¡Usuario no autenticado! Revise sus credenciales.');
+        console.log('Authentication failed, please check your credentials.');
       }
     });
   };
-  
+
   const handle2FAVerification = () => {
-    Meteor.call('user.verifyTotp', { email, token: verificationCode }, (error, verified) => {
+    Meteor.call('verifyTwoFactor', { email, twoFactorCode: verificationCode }, (error, result) => {
       setShow2FAModal(false);
       if (error) {
-        console.error('Error verificando 2FA:', error);
-      } else if (verified) {
-        onLoginSuccess();
-        navigate('/homepage');
+        console.error('2FA Verification error:', error.reason);
+      } else if (result.success) {
+        onLoginSuccess(); // User is fully logged in
       } else {
-        console.log('Código 2FA incorrecto o expirado.');
+        console.log('2FA code incorrect, please try again.');
       }
     });
   };
