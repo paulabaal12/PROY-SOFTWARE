@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -69,101 +69,13 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-container">
+    <div className="register-container body1">
       <div className="form-container">
         <h1 className="centered">Registro</h1>
         <form id="register-form" onSubmit={handleSubmit}>
-        <input
-            type="text"
-            id="name"
-            placeholder="Nombre"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            id="email"
-            placeholder="Correo Electrónico"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            id="password"
-            placeholder="Contraseña"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="dpi"
-            placeholder="DPI"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="location"
-            placeholder="Ubicación"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="file"
-            id="profilePicture"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <label className="privacy-policy-checkbox">
-            <input
-              type="checkbox"
-              id="hasAgreedToPrivacyPolicy"
-              checked={formData.hasAgreedToPrivacyPolicy}
-              onChange={handlePrivacyPolicyCheckbox}
-            />
-            Acepto la{" "}
-            <a href="#" onClick={handlePrivacyPolicyClick}>
-              política de privacidad
-            </a>
-          </label>
-          {showPrivacyAlert && (
-            <div className="alert alert-warning" role="alert">
-              Debes aceptar la política de privacidad para registrarte.
-            </div>
-          )}
-          <label className="privacy-policy-checkbox">
-            <input
-              type="checkbox"
-              id="enable2FA"
-              checked={formData.enable2FA}
-              onChange={handleChange}
-            />
-            Habilitar Autenticación de Dos Factores (2FA)
-          </label>
-          <button type="submit" className="btn">Crear Cuenta</button>
+          {/* Resto de tu formulario */}
         </form>
-        {showPrivacyAlert && (
-          <div className="alert alert-warning">
-            Debes aceptar la política de privacidad para registrarte.
-          </div>
-        )}
-        {showPrivacyPolicyModal && (
-          <div className="overlay" onClick={() => setShowPrivacyPolicyModal(false)}>
-            <div className="privacy-policy-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Política de Privacidad</h2>
-              <p>Políticas de privacidad</p>
-              <button onClick={() => setShowPrivacyPolicyModal(false)}>
-                Cerrar
-              </button>
-            </div>
-          </div>
-        )}
-        {qrCodeSvg && (
-          <div>
-            <img src={`data:image/svg+xml;base64,${btoa(qrCodeSvg)}`} alt="QR Code" />
-            <p>Scan this QR code with your authenticator app</p>
-          </div>
-        )}
+        {/* Resto de tu código para la alerta, modal y QR code */}
       </div>
     </div>
   );

@@ -5,7 +5,18 @@ import { TwoFactor } from 'meteor/accounts-2fa';
 import { Accounts } from 'meteor/accounts-base';
 
 Meteor.startup(() => {
+<<<<<<< HEAD
   const pgConfig = Meteor.settings.postgres;
+=======
+  const pgConfig = Meteor.settings.postgres || {
+    host: 'localhost',
+    port: 5432,
+    database: 'users_database',
+    user: 'postgres',
+    password: ''
+  };
+
+>>>>>>> e8b083c4483ee7605f97b7c55f5c48dea53a9c90
   const pool = new Pool(pgConfig);
 
   pool.connect((err) => {
