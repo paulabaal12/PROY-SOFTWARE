@@ -37,17 +37,25 @@ Meteor.startup(() => {
   Meteor.methods({
     'usuarios.insert'(data) {
       const hashedPassword = bcrypt.hashSync(data.password, 10);
-      pool.query(
-        'INSERT INTO usuarios (nombre, email, contraseña, dpi, ubicacion) VALUES ($1, $2, $3, $4, $5)',
-        [data.name, data.email, hashedPassword, data.dpi, data.location],
-        (err) => {
-          if (err) {
-            console.error('Error al insertar usuario:', err);
-            throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
+      try {
+        console.log('Preparando para generar el secreto 2FA para:', data.email);
+        //const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
+        //console.log('2FA Secret generated:', secret);
+
+        pool.query(
+          'INSERT INTO usuarios (name, email, password, dpi, location,has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
+          [data.name, data.email, hashedPassword, data.dpi, data.location, false], // Assume 2FA is not enabled by default
+          (err) => {
+            if (err) {
+              console.error('Error al insertar usuario:', err);
+              throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
+            }
+            console.log('Usuario insertado correctamente en PostgreSQL');
           }
-          console.log('Usuario insertado correctamente en PostgreSQL');
-        }
-      );
+        );
+      } catch (error) {
+        throw new Meteor.Error('2fa-error', 'Failed to generate 2FA secret');
+      }
     },
 
     'usuarios.authenticate'(email, password) {
@@ -66,7 +74,7 @@ Meteor.startup(() => {
           }
 
           const user = result.rows[0];
-          const passwordCorrect = bcrypt.compareSync(password, user.contraseña);
+          const passwordCorrect = bcrypt.compareSync(password, user.password);
 
           if (!passwordCorrect) {
             console.log('Contraseña incorrecta');
