@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Header from './Header';
 import './style.css';
+import Footer from './Footer';
 
 const products = [
   { name: 'Producto 1', price: '$10.00', imageUrl: 'https://images-na.ssl-images-amazon.com/images/I/51bm38JKdKL._SX600_.jpg' },
@@ -97,6 +98,8 @@ const HomePage = () => {
     ))}
         </Carousel>
       </main>
+
+      <Footer />
     </div>
   );
 };
