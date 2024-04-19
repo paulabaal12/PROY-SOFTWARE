@@ -96,7 +96,47 @@ const Dashboard = () => {
 
 
         {/* Gráficas de Pie */}
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          {/* Gráfica de Pie por Estados */}
+          <PieChart width={400} height={400}>
+            <Pie
+              data={dataGroupedByState}
+              cx={200}
+              cy={200}
+              labelLine={false}
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {dataGroupedByState.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={paymentStatusColors[entry.name]} />
+              ))}
+            </Pie>
+            <Legend />
+            <Tooltip />
+          </PieChart>
 
+          {/* Gráfica de Pie por Métodos de Pago */}
+          <PieChart width={400} height={400}>
+            <Pie
+              data={dataGroupedByPaymentMethod}
+              cx={200}
+              cy={200}
+              labelLine={false}
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {dataGroupedByPaymentMethod.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={paymentStatusColors[entry.name] || "#8884d8"} />
+              ))}
+            </Pie>
+            <Legend />
+            <Tooltip />
+          </PieChart>
+        </div>
       </Paper>
     </div>
   );
