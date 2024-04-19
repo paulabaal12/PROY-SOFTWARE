@@ -29,7 +29,7 @@ const HomePage = () => {
               <img src={product.imageUrl} alt={product.name} style={{ width: '100px', height: '100px' }} />
               <h2>{product.name}</h2>
               <p>Precio: {product.price}</p>
-              <button>Agregar al carrito</button>
+              <button className="button-agregar">Agregar al carrito</button>
             </div>
           ))}
         </div>
