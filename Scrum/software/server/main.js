@@ -1,8 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
-import { TwoFactor } from 'meteor/accounts-2fa';
-import { Accounts } from 'meteor/accounts-base';
+import { Random } from 'meteor/random';
+import nodemailer from 'nodemailer';
+import speakeasy from 'speakeasy';
+import QRCode from 'qrcode';  // Asegúrate de que QRCode también esté instalado
+
+// Configuración para el servicio de email
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // Puedes cambiarlo por tu servicio de correo electrónico preferido
+  auth: {
+    user: 'tu_usuario@gmail.com',
+    pass: 'tu_contraseña'
+  }
+});
 
 Meteor.startup(() => {
   const pgConfig = Meteor.settings.postgres || {
@@ -29,11 +40,11 @@ Meteor.startup(() => {
       try {
         console.log('Preparando para generar el secreto 2FA para:', data.email);
         //const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
-       // console.log('2FA Secret generated:', secret);
+        //console.log('2FA Secret generated:', secret);
 
         pool.query(
-          'INSERT INTO usuarios (name, email, password, dpi, location, has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
-          [data.name, data.email, hashedPassword, data.dpi, data.location, data.hasAgreedToPrivacyPolicy],
+          'INSERT INTO usuarios (name, email, password, dpi, location,has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
+          [data.name, data.email, hashedPassword, data.dpi, data.location, false], // Assume 2FA is not enabled by default
           (err) => {
             if (err) {
               console.error('Error al insertar usuario:', err);
@@ -47,7 +58,7 @@ Meteor.startup(() => {
       }
     },
 
-    'usuarios.authenticate'(email, password, twoFactorCode) {
+    'usuarios.authenticate'(email, password) {
       return new Promise((resolve, reject) => {
         pool.query('SELECT * FROM usuarios WHERE email = $1', [email], (err, result) => {
           if (err) {
@@ -71,27 +82,101 @@ Meteor.startup(() => {
             return;
           }
 
-          if (!user.two_factor_enabled) {
-            console.log('Usuario autenticado exitosamente sin 2FA');
-            resolve({ authenticated: true });
-            return;
-          }
+          // Generar y enviar código 2FA si está habilitado
+          if (user.two_factor_enabled) {
+            const twoFactorCode = Random.secret(6);
+            const expiresAt = new Date();
+            expiresAt.setMinutes(expiresAt.getMinutes() + 10); // El código expira después de 10 minutos
 
-          const verified = TwoFactor.verifyCode({
-            secret: user.two_factor_secret,
-            encoding: 'base32',
-            token: twoFactorCode
-          });
+            pool.query(
+              'UPDATE usuarios SET two_factor_code = $1, two_factor_expires_at = $2 WHERE email = $3',
+              [twoFactorCode, expiresAt, email],
+              (error) => {
+                if (error) {
+                  console.error('Error al actualizar usuario con código 2FA:', error);
+                  reject(new Meteor.Error('database-error', 'Error al actualizar usuario con código 2FA'));
+                  return;
+                }
 
-          if (verified) {
-            console.log('Autenticación de 2FA exitosa');
-            resolve({ authenticated: true });
+                // Enviar el código por correo electrónico
+                const mailOptions = {
+                  from: 'tu_usuario@gmail.com',
+                  to: email,
+                  subject: 'Tu código de verificación 2FA',
+                  text: `Tu código de verificación es: ${twoFactorCode}`
+                };
+
+                transporter.sendMail(mailOptions, (error) => {
+                  if (error) {
+                    console.error('Error al enviar correo electrónico con código 2FA:', error);
+                    reject(new Meteor.Error('email-error', 'Error al enviar correo electrónico con código 2FA'));
+                    return;
+                  }
+                  resolve({ authenticated: true, twoFactorRequired: true });
+                });
+              }
+            );
           } else {
-            console.log('Código 2FA incorrecto');
-            resolve({ authenticated: false });
+            resolve({ authenticated: true, twoFactorRequired: false });
           }
         });
       });
+    },
+    'usuarios.generateTwoFactorAuth': async function (email) {
+      const secret = speakeasy.generateSecret({ length: 20 });
+      const otpauthUrl = speakeasy.otpauthURL({
+        secret: secret.base32,
+        label: encodeURIComponent(email),
+        issuer: 'software'
+      });
+  
+      // Usa async/await para asegurar que las operaciones asincrónicas se completen adecuadamente
+      try {
+        const result = await pool.query('UPDATE usuarios SET two_factor_secret = $1, two_factor_enabled = true WHERE email = $2', [secret.base32, email]);
+        if (result.rowCount === 0) {
+          throw new Meteor.Error('user-not-found', 'No user found with that email address.');
+        }
+        // Solo envía otpauthUrl al cliente
+        return { otpauthUrl };
+      } catch (error) {
+        throw new Meteor.Error('error-generating-secret', 'Failed to generate 2FA secret.');
+      }
+    },
+    'usuarios.verifyTwoFactorCode': async function (email, token) {
+      check(email, String);
+      check(token, String);
+  
+      // Asegúrate de que el correo electrónico y el token se proporcionen
+      if (!email || !token) {
+        throw new Meteor.Error('invalid-arguments', 'Email and token are required.');
+      }
+  
+      try {
+        // Busca el usuario en la base de datos por correo electrónico y recupera el secreto 2FA
+        const result = await pool.query('SELECT two_factor_secret FROM usuarios WHERE email = $1', [email]);
+        if (result.rows.length === 0) {
+          throw new Meteor.Error('user-not-found', 'No user found with that email address.');
+        }
+  
+        const user = result.rows[0];
+  
+        // Verificar el token usando el secreto almacenado
+        const verified = speakeasy.totp.verify({
+          secret: user.two_factor_secret,
+          encoding: 'base32',
+          token: token,
+          window: 5 // Ajusta este valor según sea necesario para permitir más o menos desviación de tiempo
+        });
+  
+        if (verified) {
+          return true; // El token es correcto
+        } else {
+          throw new Meteor.Error('invalid-token', 'The provided token is invalid or expired.');
+        }
+      } catch (error) {
+        console.error('Error verifying 2FA code:', error);
+        throw new Meteor.Error('database-error', 'Error al verificar código 2FA');
+      }
     }
+    });
   });
-});

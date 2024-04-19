@@ -18,6 +18,11 @@ CREATE TABLE IF NOT EXISTS usuarios(
 	enable_2fa BOOLEAN DEFAULT FALSE
 );
 
-GRANT ALL PRIVILEGES ON TABLE usuarios TO gustavo;
-GRANT ALL PRIVILEGES ON SEQUENCE usuarios_id_seq TO gustavo;
+
+ALTER TABLE usuarios ADD COLUMN two_factor_code VARCHAR(6);
+ALTER TABLE usuarios ADD COLUMN two_factor_expires_at TIMESTAMP;
+
+
+GRANT ALL PRIVILEGES ON TABLE usuarios TO rodri;
+GRANT ALL PRIVILEGES ON SEQUENCE usuarios_id_seq TO rodri;
 
