@@ -28,12 +28,12 @@ Meteor.startup(() => {
       const hashedPassword = bcrypt.hashSync(data.password, 10);
       try {
         console.log('Preparando para generar el secreto 2FA para:', data.email);
-        //const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
-        //console.log('2FA Secret generated:', secret);
+        const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
+        console.log('2FA Secret generated:', secret);
 
         pool.query(
           'INSERT INTO usuarios (name, email, password, dpi, location, has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
-          [data.name, data.email, hashedPassword, data.dpi, data.location, data.hasAgreedToPrivacyPolicy], // Assume 2FA is not enabled by default
+          [data.name, data.email, hashedPassword, data.dpi, data.location, data.hasAgreedToPrivacyPolicy],
           (err) => {
             if (err) {
               console.error('Error al insertar usuario:', err);
@@ -63,7 +63,7 @@ Meteor.startup(() => {
           }
 
           const user = result.rows[0];
-          const passwordCorrect = bcrypt.compareSync(password, user.contraseña);
+          const passwordCorrect = bcrypt.compareSync(password, user.password);
 
           if (!passwordCorrect) {
             console.log('Contraseña incorrecta');
