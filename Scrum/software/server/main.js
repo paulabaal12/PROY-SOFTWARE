@@ -28,8 +28,8 @@ Meteor.startup(() => {
       const hashedPassword = bcrypt.hashSync(data.password, 10);
       try {
         console.log('Preparando para generar el secreto 2FA para:', data.email);
-        const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
-        console.log('2FA Secret generated:', secret);
+        //const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
+       // console.log('2FA Secret generated:', secret);
 
         pool.query(
           'INSERT INTO usuarios (name, email, password, dpi, location, has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
