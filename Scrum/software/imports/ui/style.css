@@ -19,8 +19,38 @@
   .main-content {
     margin-top: 110px; 
   }
+
+  .main-content1 {
+    margin: 0 auto;
+    max-width: 1400px;
+    margin-top: 130px; 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; 
+    background-color: rgb(147, 219, 212);
+    padding: 10px;
+    overflow-x: auto; 
+}
+
+
+  .product-scroll-container {
+    display: flex;
+    overflow-x: scroll;
+    padding: 10px;
+  }
   
- 
+  .product-container {
+    margin: 10px;
+    text-align: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    min-width: 150px; 
+    border-radius: 15px;
+    max-height: 290px;
+}
+
+  
   
   .search-bar {
     display: flex;
@@ -28,7 +58,7 @@
     background-color: #f0f0f0;
     border-radius: 20px;
     padding: 5px;
-    width: 30%; /* Ajusta el ancho según tus necesidades */
+    width: 30%; 
   }
   
   .search-bar input {
