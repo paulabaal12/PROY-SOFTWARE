@@ -1,7 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './css/PaymentSummaryPage.css'
 
 const PaymentSummaryPage = () => {
+  const navigate = useNavigate();
+
+  const handleConfirmPurchase = () => {
+    navigate('/payment-method');
+  };
   const cartItems = [
     { id: 1, name: "Producto 1", quantity: 2, price: 15.99 },
     { id: 2, name: "Producto 2", quantity: 1, price: 45.99 },
@@ -38,7 +44,7 @@ const PaymentSummaryPage = () => {
       <div className="actions">
         <button onClick={() => console.log("Editar Carrito")}>Editar Carrito</button>
         <button onClick={() => console.log("Editar Método de Pago")}>Editar Método de Pago</button>
-        <button onClick={() => console.log("Confirmar Compra")}>Confirmar Compra</button>
+        <button onClick={handleConfirmPurchase}>Confirmar Compra</button>
       </div>
     </div>
   );

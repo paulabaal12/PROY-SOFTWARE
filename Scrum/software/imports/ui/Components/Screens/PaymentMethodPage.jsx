@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './css/PaymentMethodPage.css'
 
 const PaymentMethodPage = () => {
+  const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState('creditCard'); // Puede ser 'creditCard', 'paypal', etc.
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
@@ -10,6 +12,7 @@ const PaymentMethodPage = () => {
     expiryYear: '',
     cvv: ''
   });
+  
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -25,6 +28,8 @@ const PaymentMethodPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Aquí se implementaría la lógica para procesar el pago
+    event.preventDefault();
+    navigate('/payment-history');
     console.log('Procesando pago con:', paymentType, cardDetails);
   };
 

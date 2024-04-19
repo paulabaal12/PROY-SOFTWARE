@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './css/ShoppingCartPage.css'
 
 const ShoppingCartPage = () => {
+  
+  const navigate = useNavigate();
   // Los datos del carrito se podrían pasar mediante props o obtener desde un contexto o redux store
   const cartItems = [
     { id: 1, name: "Producto 1", quantity: 2, price: 15.99 },
@@ -16,6 +19,7 @@ const ShoppingCartPage = () => {
 
   const handleCheckout = () => {
     // Implementar lógica para el proceso de pago/checkout
+    navigate('/payment-summary'); 
     console.log("Proceder al pago");
   };
 
