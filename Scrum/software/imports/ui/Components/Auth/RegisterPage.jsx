@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import Modal from 'react-modal';
 import QRCode from 'qrcode';
 
-Modal.setAppElement('#root'); // Asegúrate de configurar el elemento raíz correctamente.
+Modal.setAppElement('#root');
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -49,21 +49,18 @@ const RegisterPage = () => {
     }
     setLoading(true);
     Meteor.call('usuarios.insert', formData, (error) => {
+      setLoading(false);
       if (error) {
         console.error('Error al registrar usuario:', error);
-        setLoading(false);
       } else if (formData.enable2FA) {
         Meteor.call('usuarios.generateTwoFactorAuth', formData.email, (err, result) => {
-          setLoading(false);
           if (err) {
             console.error('Error al generar la autenticación 2FA:', err);
           } else {
-            // Ahora result contiene otpauthUrl, lo usamos para generar el código QR en el cliente
             QRCode.toDataURL(result.otpauthUrl, (err, dataURL) => {
               if (err) {
                 console.error('Error al generar QR:', err);
               } else {
-                // Usamos el dataURL como source para el QR code en la interfaz de usuario
                 setQrCodeSvg(dataURL);
                 setIs2FAModalOpen(true);
               }
@@ -75,72 +72,41 @@ const RegisterPage = () => {
       }
     });
   };
-  const TwoFactorAuthForm = () => {
-    const [twoFactorCode, setTwoFactorCode] = useState('');
-  
-    const handleCodeChange = (event) => {
-      setTwoFactorCode(event.target.value);
-    };
-  
 
   const handleVerify2FACode = () => {
-    Meteor.call('usuarios.verifyTwoFactorCode', email, twoFactorCode, (error, verified) => {
+    Meteor.call('usuarios.verifyTwoFactorCode', formData.email, twoFactorCode, (error, verified) => {
       if (error) {
         console.error('Verification error:', error);
       } else if (verified) {
         console.log('2FA Verified successfully!');
-        setIsModalOpen(false); // Cierra el modal si la verificación es exitosa
+        setIs2FAModalOpen(false);
+        navigate('/homepage'); // Navigate to homepage or dashboard as needed
       } else {
         console.log('Failed to verify 2FA.');
       }
     });
   };
+
   const close2FAModal = () => {
     setIs2FAModalOpen(false);
     navigate('/'); // Close and navigate home or another appropriate route
   };
-
 
   return (
     <div className="register-container body1">
       <div className="form-container">
         <h1 className="centered">Registro</h1>
         <form id="register-form" onSubmit={handleSubmit}>
-        <input
-            type="text"
-            id="name"
-            placeholder="Nombre"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            id="email"
-            placeholder="Correo Electrónico"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            id="password"
-            placeholder="Contraseña"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="dpi"
-            placeholder="DPI"
-            className="input-field"
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="location"
-            placeholder="Ubicación"
-            className="input-field"
-            onChange={handleChange}
-          />
+          {['name', 'email', 'password', 'dpi', 'location'].map((field) => (
+            <input
+              type={field === 'email' ? 'email' : 'text'}
+              id={field}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              className="input-field"
+              value={formData[field]}
+              onChange={handleChange}
+            />
+          ))}
           <label className="privacy-policy-checkbox">
             <input
               type="checkbox"
@@ -148,10 +114,7 @@ const RegisterPage = () => {
               checked={formData.hasAgreedToPrivacyPolicy}
               onChange={handlePrivacyPolicyCheckbox}
             />
-            Acepto la{" "}
-            <a href="#" onClick={handlePrivacyPolicyClick}>
-              política de privacidad
-            </a>
+            Acepto la <a href="#" onClick={handlePrivacyPolicyClick}>política de privacidad</a>
           </label>
           {showPrivacyAlert && (
             <div className="alert alert-warning" role="alert">
@@ -159,7 +122,12 @@ const RegisterPage = () => {
             </div>
           )}
           <label className="privacy-policy-checkbox">
-            <input type="checkbox" id="enable2FA" checked={formData.enable2FA} onChange={handleChange} />
+            <input
+              type="checkbox"
+              id="enable2FA"
+              checked={formData.enable2FA}
+              onChange={handleChange}
+            />
             Habilitar Autenticación de Dos Factores (2FA)
           </label>
           <button type="submit" className="btn">Crear Cuenta</button>
@@ -168,13 +136,18 @@ const RegisterPage = () => {
         <Modal isOpen={is2FAModalOpen} onRequestClose={close2FAModal} contentLabel="2FA QR Code">
           <h2>Configura tu Autenticación de Dos Factores</h2>
           <img src={qrCodeSvg} alt="QR Code" />
-          <input type="text" value={twoFactorCode} onChange={handleCodeChange} placeholder="Enter your 2FA code" />
-        <button onClick={handleVerify2FACode}>Verify Code</button>
+          <input
+            type="text"
+            value={twoFactorCode}
+            onChange={(e) => setTwoFactorCode(e.target.value)}
+            placeholder="Enter your 2FA code"
+          />
+          <button onClick={handleVerify2FACode}>Verify Code</button>
           <button onClick={close2FAModal}>Close</button>
         </Modal>
       </div>
     </div>
   );
-}
-}
+};
+
 export default RegisterPage;
