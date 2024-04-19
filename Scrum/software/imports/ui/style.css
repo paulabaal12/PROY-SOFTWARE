@@ -50,7 +50,13 @@
     max-height: 290px;
 }
 
-  
+.button-agregar {
+  background-color: rgb(110, 160, 155);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  max-height: 1000px;
+}
   
   .search-bar {
     display: flex;
