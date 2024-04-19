@@ -5,6 +5,9 @@ import { TwoFactor } from 'meteor/accounts-2fa';
 import { Accounts } from 'meteor/accounts-base';
 
 Meteor.startup(() => {
+<<<<<<< HEAD
+  const pgConfig = Meteor.settings.postgres;
+=======
   const pgConfig = Meteor.settings.postgres || {
     host: 'localhost',
     port: 5432,
@@ -13,6 +16,7 @@ Meteor.startup(() => {
     password: ''
   };
 
+>>>>>>> e8b083c4483ee7605f97b7c55f5c48dea53a9c90
   const pool = new Pool(pgConfig);
 
   pool.connect((err) => {
@@ -28,12 +32,12 @@ Meteor.startup(() => {
       const hashedPassword = bcrypt.hashSync(data.password, 10);
       try {
         console.log('Preparando para generar el secreto 2FA para:', data.email);
-        const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
-        console.log('2FA Secret generated:', secret);
+        //const { secret, otpauth_url } = TwoFactor.generateSecret({ name: 'software', account: data.email });
+        //console.log('2FA Secret generated:', secret);
 
         pool.query(
-          'INSERT INTO usuarios (nombre, email, contraseña, dpi, ubicacion, two_factor_secret, two_factor_enabled) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-          [data.name, data.email, hashedPassword, data.dpi, data.location, secret, false], // Assume 2FA is not enabled by default
+          'INSERT INTO usuarios (name, email, password, dpi, location,has_agreed_to_privacy_policy) VALUES ($1, $2, $3, $4, $5, $6)',
+          [data.name, data.email, hashedPassword, data.dpi, data.location, false], // Assume 2FA is not enabled by default
           (err) => {
             if (err) {
               console.error('Error al insertar usuario:', err);
