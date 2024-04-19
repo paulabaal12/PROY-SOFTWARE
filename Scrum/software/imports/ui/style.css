@@ -190,3 +190,11 @@
     right: 15px;
 }
 
+.cart-icon-link {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+.cart-icon-link:hover, .cart-icon-link:focus {
+  text-decoration: none;
+}

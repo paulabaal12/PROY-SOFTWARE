@@ -52,14 +52,16 @@ const Header = () => {
             )}
           </div>
           <span className="user-name">{name || 'Usuario'}</span>
-          <div className="cart-icon">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
-              alt="Carrito de compras"
-              width="45"
-              height="45"
-            />
-          </div>
+          <Link to="/cart" className="cart-icon-link">  {/* Añade un Link envolviendo el icono del carrito */}
+            <div className="cart-icon">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
+                alt="Carrito de compras"
+                width="45"
+                height="45"
+              />
+            </div>
+          </Link>
         </div>
       </header>
     </div>
