@@ -23,14 +23,13 @@ const HomePage = () => {
       <Header/>
       {/* Contenido de la página */}
       <main className="main-content1">
-        <h2 className="titulo1">Lo más vendido</h2>
         <div className="product-scroll-container">
           {products.map((product, index) => (
             <div key={index} className="product-container">
               <img src={product.imageUrl} alt={product.name} style={{ width: '100px', height: '100px' }} />
               <h2>{product.name}</h2>
               <p>Precio: {product.price}</p>
-              <button className="button-agregar">Agregar al carrito</button>
+              <button>Agregar al carrito</button>
             </div>
           ))}
         </div>

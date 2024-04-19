@@ -6,23 +6,6 @@
 
   }
   
-
-  .titulo1 {
-    text-align: center;
-    font-size: 32px; 
-    margin-top: 10px; 
-}
-
-
-.button-agregar {
-    background-color: rgb(110, 160, 155);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    max-height: 1000px;
-}
-
-
   .header {
     display: flex;
     justify-content: space-between;
@@ -39,21 +22,22 @@
 
   .main-content1 {
     margin: 0 auto;
-    max-width: 1450px;
+    max-width: 1400px;
     margin-top: 130px; 
     display: flex;
-    flex-direction: column; 
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap; 
     background-color: rgb(147, 219, 212);
     padding: 10px;
-}
-
-.product-scroll-container {
-    display: flex;
-    flex-direction: row; 
     overflow-x: auto; 
 }
 
+
+  .product-scroll-container {
+    display: flex;
+    overflow-x: scroll;
+    padding: 10px;
+  }
   
   .product-container {
     margin: 10px;
