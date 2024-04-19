@@ -10,4 +10,7 @@ const ShoppingCartPage = ({ onCheckout }) => (
   </div>
 );
 
+
+
+
 export default ShoppingCartPage;

@@ -11,30 +11,31 @@ const LoginPage = ({ onLoginSuccess }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    // Llamada al servidor para autenticar al usuario
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
-        console.error('Login error:', error.reason);
-      } else if (result.authenticated) {
-        if (result.twoFactorRequired) {
-          setShow2FAModal(true);
-        } else {
-          onLoginSuccess();
-        }
+        console.error('Error en el inicio de sesión:', error.reason);
+      } else if (result.authenticated && !result.twoFactorRequired) {
+        onLoginSuccess();
+      } else if (result.authenticated && result.twoFactorRequired) {
+        // Si se requiere 2FA, mostrar modal para ingresar el código
+        setShow2FAModal(true);
       } else {
-        console.log('Authentication failed, please check your credentials.');
+        console.log('Fallo en la autenticación, verifica tus credenciales.');
       }
     });
   };
 
   const handle2FAVerification = () => {
+    // Llamada al servidor para verificar el código 2FA
     Meteor.call('verifyTwoFactor', { email, twoFactorCode: verificationCode }, (error, result) => {
       setShow2FAModal(false);
       if (error) {
-        console.error('2FA Verification error:', error.reason);
-      } else if (result.success) {
-        onLoginSuccess(); // User is fully logged in
+        console.error('Error en la verificación 2FA:', error.reason);
+      } else if (result) {
+        onLoginSuccess(); // El usuario ha iniciado sesión completamente
       } else {
-        console.log('2FA code incorrect, please try again.');
+        console.log('Código 2FA incorrecto, por favor intenta nuevamente.');
       }
     });
   };
