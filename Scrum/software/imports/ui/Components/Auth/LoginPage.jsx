@@ -1,51 +1,41 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
-import Modal from 'react-modal';
-import QRCode from 'qrcode';
 
-Modal.setAppElement('#root');
-
-const LoginPage = () => {
-  const navigate = useNavigate();
+const LoginPage = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [show2FAModal, setShow2FAModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [verificationCodeQR, setVerificationCodeQR] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = async (event) => {
-    event.preventDefault(); // Previene la recarga de la página
-    if (!email || !password) {
-      setErrorMessage('Por favor, ingresa tu correo electrónico y contraseña.');
-      return;
-    }
-
-    Meteor.call('usuarios.authenticate', { email, password }, (error, response) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Llamada al servidor para autenticar al usuario
+    Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
-        console.error('Error durante el inicio de sesión:', error);
-        setErrorMessage(error.reason || 'Error desconocido durante el inicio de sesión.');
-      } else if (response && !response.authenticated) {
-        setErrorMessage('Correo electrónico o contraseña incorrectos.');
-      } else if (response.twoFactorRequired) {
-        setVerificationCodeQR(response.qrCode); // Suponiendo que 'qrCode' es la URL del código QR devuelta por el servidor
+        console.error('Error en el inicio de sesión:', error.reason);
+      } else if (result.authenticated && !result.twoFactorRequired) {
+        onLoginSuccess();
+      } else if (result.authenticated && result.twoFactorRequired) {
+        // Si se requiere 2FA, mostrar modal para ingresar el código
         setShow2FAModal(true);
       } else {
-        navigate('/homepage'); // O la ruta que proceda tras un inicio de sesión exitoso
+        console.log('Fallo en la autenticación, verifica tus credenciales.');
       }
     });
   };
 
-  const verify2FACode = () => {
-    Meteor.call('usuarios.verifyTwoFactorCode', email, verificationCode, (error, verified) => {
+  const handle2FAVerification = () => {
+    // Llamada al servidor para verificar el código 2FA
+    Meteor.call('verifyTwoFactor', { email, twoFactorCode: verificationCode }, (error, result) => {
+      setShow2FAModal(false);
       if (error) {
-        console.error('Verification failed:', error);
-        setErrorMessage('Fallo de verificación: ' + error.reason);
-      } else if (verified) {
-        navigate('/homepage');
+        console.error('Error en la verificación 2FA:', error.reason);
+      } else if (result) {
+        onLoginSuccess(); // El usuario ha iniciado sesión completamente
       } else {
-        setErrorMessage('Código 2FA inválido.');
+        console.log('Código 2FA incorrecto, por favor intenta nuevamente.');
       }
     });
   };
@@ -54,7 +44,7 @@ const LoginPage = () => {
     <div className="login-container body1">
       <div className="form-container">
         <h1 className="centered">¡Bienvenido!</h1>
-        <form id="login-form" onSubmit={handleLogin}>
+        <form id="login-form" onSubmit={handleSubmit}>
           <input 
             type="email" 
             id="email" 
@@ -74,26 +64,19 @@ const LoginPage = () => {
           <button type="submit" className="btn">Iniciar Sesión</button>
         </form>
         {show2FAModal && (
-          <Modal
-            isOpen={show2FAModal}
-            onRequestClose={() => setShow2FAModal(false)}
-            contentLabel="Verificación 2FA"
-            className="modal"
-            overlayClassName="overlay"
-          >
-            <h2>Ingrese el Código de Verificación</h2>
-            <img src={verificationCodeQR} alt="Código QR" />
-            <input 
-              type="text" 
-              placeholder="Código de Verificación" 
-              value={verificationCode}  // Vincula este valor al estado
-              onChange={(e) => setVerificationCode(e.target.value)}  // Actualiza el estado cuando el usuario escribe
-            />
-            <button onClick={verify2FACode}>Verificar Código</button>
-            <button onClick={() => setShow2FAModal(false)}>Cerrar</button>
-          </Modal>
+          <div className="overlay">
+            <div className="modal">
+              <h2>Ingrese el Código de Verificación</h2>
+              <input 
+                type="text" 
+                placeholder="Verification Code" 
+                value={verificationCode} 
+                onChange={(e) => setVerificationCode(e.target.value)} 
+              />
+              <button onClick={handle2FAVerification}>Verify Code</button>
+            </div>
+          </div>
         )}
-        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
         <div className="register-prompt">
           <p>¿No tienes una cuenta?</p>
           <button onClick={() => navigate('/register')} className="btn1 centered">Regístrate</button>
@@ -101,7 +84,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default LoginPage;
-
