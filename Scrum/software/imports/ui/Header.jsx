@@ -52,7 +52,6 @@ const Header = () => {
             )}
           </div>
           <span className="user-name">{name || 'Usuario'}</span>
-          <Link to="/cart" className="cart-icon-link">
             <div className="cart-icon">
               <img
                 src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
@@ -61,7 +60,6 @@ const Header = () => {
                 height="45"
               />
             </div>
-          </Link>
         </div>
       </header>
     </div>
