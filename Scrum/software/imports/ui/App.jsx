@@ -20,7 +20,7 @@ export const App = () => {
   };
 
   // Toggle the display of the registration page
-  const toggleRegister = () => {   
+  const toggleRegister = () => {
     setShowingRegister(!showingRegister);
   };
 
