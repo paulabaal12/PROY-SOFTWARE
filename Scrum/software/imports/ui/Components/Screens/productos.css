@@ -9,7 +9,7 @@
   
   .form-title {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 35px;
   }
   
   .form-group {
@@ -69,4 +69,20 @@
     max-width: 200px;
     margin-right: 10px;
     margin-bottom: 10px;
+  }
+
+  .producto-agregado-mensaje {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    color: #1e3a8a;
+    text-align: center;
+    font-size: x-large;
+  }
+
+
+  .VenderProductoPage{
+    background: linear-gradient(to right, transparent, rgb(225, 241, 255))
   }

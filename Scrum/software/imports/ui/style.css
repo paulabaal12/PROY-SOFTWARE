@@ -247,3 +247,17 @@
     margin-right: 18px;
   }
 }
+
+.titulo-producto{
+ text-decoration: none;
+}
+
+.titulo-precio{
+  text-decoration: none;
+}
+
+.product-image {
+  width: 100px;
+  height: 100px; 
+  object-fit: cover;
+}

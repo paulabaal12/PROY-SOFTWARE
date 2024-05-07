@@ -6,7 +6,6 @@ import Header from './Header';
 import './style.css';
 import { callPromise } from 'meteor/promise';
 import Footer from './Footer';
-import VenderProductoForm from './Components/Screens/VenderProductoForm';
 
 const carouselImages = [
   { imageUrl: 'https://i5.walmartimages.com/seo/Mainstays-Alessandra-Matte-Black-12-Piece-Stoneware-Dinnerware-Set_a06eabea-1ba7-4a41-abbc-63151bf7c1b0.9fb529e6c752dbc2ef2efa717418a28f.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF', link: '/categoria1', categoryName: 'Categoría 1' },
@@ -43,7 +42,7 @@ const HomePage = () => {
     alert('Producto agregado correctamente');
     setTimeout(() => {
       window.location.reload();
-    }, 2000);
+    }, 4000);
   };
 
   return (
@@ -57,14 +56,12 @@ const HomePage = () => {
       <main className="main-content1">
         <div className="product-scroll-container">
           {products.map((product, index) => (
-            <Link key={index} to={`/producto/${product.id}`}>
               <div className="product-container">
-                <img src={product.imagen_principal} alt={product.nombre} style={{ width: '100px', height: '100px' }} />
-                <h2>{product.nombre}</h2>
-                <p>Precio: {product.precio}</p>
+               <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
+               <h3 className='titulo-producto'>{product.nombre}</h3>
+               <p className='titulo-precio'>Precio: {product.precio}</p>
                 <button className="button-agregar">Agregar al carrito</button>
               </div>
-            </Link>
           ))}
         </div>
       </main>
@@ -119,10 +116,6 @@ const HomePage = () => {
           ))}
         </Carousel>
       </main>
-
-      {/* Formulario para vender producto */}
-      {mostrarFormulario && <VenderProductoForm onProductoAgregado={handleProductoAgregado} />}
-
       <Footer />
     </div>
   );

@@ -68,7 +68,7 @@ const Header = ({ children }) => {
             />
           </div>
           <Link to="/vender-producto" className="button2">
-            Vender Producto
+            Vender
           </Link>
         </div>
       </header>

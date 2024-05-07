@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import './productos.css';
 import { useNavigate } from 'react-router-dom';
+import ProductoAgregadoMensaje from './ProductoAgregadoMensaje ';
 
 const VenderProductoForm = () => {
   const [nombre, setNombre] = useState('');
@@ -62,14 +63,16 @@ const VenderProductoForm = () => {
     setImagenesAdicionales([]);
   };
 
-  return (
+return (
     <div className="form-container">
-      <h2 className="form-title">Vender Producto</h2>
+      {!productoAgregado && (
+        <>
+        <h1 className='form-title'>Vender Producto</h1>
+
+        </>
+      )}
       {productoAgregado ? (
-        <div>
-          <p>Tu producto se agregó correctamente.</p>
-          <p>Serás redirigido a la página principal en unos segundos...</p>
-        </div>
+        <ProductoAgregadoMensaje />
       ) : (
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
@@ -161,7 +164,7 @@ const VenderProductoForm = () => {
             <button type="submit" className="form-button">Vender Producto</button>
             <button type="button" className="form-button form-button-cancel" onClick={handleCancelar}>Cancelar</button>
           </div>
-        </form>
+       </form>
       )}
       <div className="image-preview">
         <h3 className="image-preview-title">Vista Previa de Imágenes Adicionales:</h3>
