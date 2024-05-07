@@ -61,6 +61,7 @@ const VenderProductoForm = () => {
     setEstado('');
     setImagenPrincipal('');
     setImagenesAdicionales([]);
+    navigate('/homepage');
   };
 
 return (
