@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import './style.css'
 
-const Header = () => {
+const Header = ({ children }) => {
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const handleMostrarFormulario = () => {
+    setMostrarFormulario(!mostrarFormulario);
+  };
+
+  
   const userData = JSON.parse(localStorage.getItem('user')) || {};
   const { name, profilePicture } = userData;
 
@@ -39,7 +46,7 @@ const Header = () => {
             />
           </button>
         </div>
-        {/* Perfil de usuario y carrito de compras */}
+        {/* Perfil de usuario, carrito de compras y botón para vender producto */}
         <div className="user-cart">
           <div className="user-profile">
             {profilePicture && (
@@ -52,14 +59,17 @@ const Header = () => {
             )}
           </div>
           <span className="user-name">{name || 'Usuario'}</span>
-            <div className="cart-icon">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
-                alt="Carrito de compras"
-                width="45"
-                height="45"
-              />
-            </div>
+          <div className="cart-icon">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
+              alt="Carrito de compras"
+              width="45"
+              height="45"
+            />
+          </div>
+          <Link to="/vender-producto" className="button2">
+            Vender Producto
+          </Link>
         </div>
       </header>
     </div>

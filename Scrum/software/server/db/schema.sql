@@ -19,6 +19,16 @@ CREATE TABLE IF NOT EXISTS usuarios(
 );
 
 
+CREATE TABLE IF NOT EXISTS productos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    categoria VARCHAR(255) NOT NULL,
+    estado VARCHAR(255) NOT NULL,
+    imagen_principal VARCHAR(255),
+    imagenes_adicionales TEXT[]
+);
 ALTER TABLE usuarios ADD COLUMN two_factor_code VARCHAR(6);
 ALTER TABLE usuarios ADD COLUMN two_factor_expires_at TIMESTAMP;
 

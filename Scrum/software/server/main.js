@@ -5,6 +5,7 @@ import { Random } from 'meteor/random';
 import nodemailer from 'nodemailer';
 import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';  // Asegúrate de que QRCode también esté instalado
+import { check } from 'meteor/check';
 
 // Configuración para el servicio de email
 const transporter = nodemailer.createTransport({
@@ -142,6 +143,48 @@ Meteor.startup(() => {
         throw new Meteor.Error('error-generating-secret', 'Failed to generate 2FA secret.');
       }
     },
+    'productos.insert'(productoData) {
+      check(productoData, Object);
+      const { nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales } = productoData;
+    
+      // Manejar campos vacíos o nulos
+      const nombreSanitizado = nombre || '';
+      const descripcionSanitizada = descripcion || '';
+      const precioSanitizado = precio || 0;
+      const categoriaSanitizada = categoria || '';
+      const estadoSanitizado = estado || '';
+      const imagenPrincipalSanitizada = imagen_principal || '';
+      const imagenesAdicionalesSanitizadas = imagenes_adicionales || [];
+    
+      console.log('Datos del producto:', productoData); // Agrega este registro de depuración
+    
+      pool.query(
+        'INSERT INTO productos (nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [nombreSanitizado, descripcionSanitizada, precioSanitizado, categoriaSanitizada, estadoSanitizado, imagenPrincipalSanitizada, imagenesAdicionalesSanitizadas],
+        (err) => {
+          if (err) {
+            console.error('Error al insertar producto:', err); // Agrega este registro de depuración
+            throw new Meteor.Error('database-error', 'Error al insertar producto en la base de datos');
+          }
+          console.log('Producto insertado correctamente en PostgreSQL');
+          return { success: true, message: 'Producto agregado correctamente' };
+        }
+      );
+    },
+
+    'productos.getAll'() {
+      return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM productos', (err, result) => {
+          if (err) {
+            console.error('Error al obtener productos:', err);
+            reject(new Meteor.Error('database-error', 'Error al obtener productos de la base de datos'));
+          } else {
+            resolve(result.rows);
+          }
+        });
+      });
+    },
+
     'usuarios.verifyTwoFactorCode': async function (email, token) {
       check(email, String);
       check(token, String);
@@ -180,3 +223,5 @@ Meteor.startup(() => {
     }
     });
   });
+
+
