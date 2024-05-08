@@ -10,7 +10,7 @@ const PaymentSummaryPage = () => {
   const { cartItems } = location.state || { cartItems: [] }; // Obtener cartItems del estado, con un valor por defecto si es nulo.
 
   const handleConfirmPurchase = () => {
-    navigate('/payment-method');
+    navigate('/payment-method', { state: { total, cartItems } });
   };
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
