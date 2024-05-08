@@ -8,7 +8,7 @@ import VenderProductoPage from './Components/Screens/VenderProductoPage';
 import ShoppingCartPage from './Components/Screens/ShoppingCartPage';
 import PaymentMethodPage from './Components/Screens/PaymentMethodPage';
 import PaymentSummaryPage from './Components/Screens/PaymentSummaryPage';
-
+import Categorias from './Components/Screens/categoriasPage';
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showingRegister, setShowingRegister] = useState(false);
@@ -48,6 +48,7 @@ export const App = () => {
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/payment-summary" element={<PaymentSummaryPage />} />
         <Route path="/payment-method" element={<PaymentMethodPage />} />
+        <Route path="/categorias" element={<Categorias />} />
       </Routes>
     </Router>
   );

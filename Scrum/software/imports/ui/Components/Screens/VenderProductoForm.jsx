@@ -124,6 +124,7 @@ return (
               <option value="Accesorio">Accesorio</option>
               <option value="Cocina">Cocina</option>
               <option value="Electronica">Electrónica</option>
+              <option value="Comida">Comida</option>
             </select>
           </div>
           <div className="form-group">
