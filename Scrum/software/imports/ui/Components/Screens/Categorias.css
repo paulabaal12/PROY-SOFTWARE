@@ -3,6 +3,7 @@
     padding: 2rem;
     text-align: center;
     margin-top: 80px;
+    background: linear-gradient(to right, transparent, rgb(225, 241, 255))
   }
   
   .categorias-grid {
