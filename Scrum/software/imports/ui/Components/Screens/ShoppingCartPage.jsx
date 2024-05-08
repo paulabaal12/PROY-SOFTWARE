@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/ShoppingCartPage.css';
 import Header from '../../Header';
@@ -6,11 +6,22 @@ import Footer from '../../Footer';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Producto 1", quantity: 2, price: 15.99 },
-    { id: 2, name: "Producto 2", quantity: 1, price: 45.99 },
-    { id: 3, name: "Producto 3", quantity: 3, price: 9.99 }
-  ]);
+
+  // Lista temporal de productos
+  const initialProducts = [
+    { id: 1, name: "Producto Temporal 1", quantity: 2, price: 12.99 },
+    { id: 2, name: "Producto Temporal 2", quantity: 1, price: 39.99 },
+    { id: 3, name: "Producto Temporal 3", quantity: 5, price: 7.49 },
+    { id: 4, name: "Producto Temporal 4", quantity: 3, price: 24.99 }
+  ];
+
+  // Inicializar estado del carrito directamente con productos temporales
+  const [cartItems, setCartItems] = useState(initialProducts);
+
+  // Guardar el carrito en almacenamiento local cuando se actualiza
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const handleRemove = (itemId) => {
     const newCartItems = cartItems.filter(item => item.id !== itemId);
@@ -20,7 +31,8 @@ const ShoppingCartPage = () => {
   const handleChangeQuantity = (itemId, delta) => {
     const newCartItems = cartItems.map(item => {
       if (item.id === itemId) {
-        return { ...item, quantity: item.quantity + delta };
+        const newQuantity = item.quantity + delta;
+        return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
       }
       return item;
     });
@@ -35,7 +47,7 @@ const ShoppingCartPage = () => {
 
   return (
     <div className="shopping-cart">
-    <Header />
+      <Header />
       <h1>Carrito de Compras</h1>
       <table>
         <thead>
@@ -56,7 +68,7 @@ const ShoppingCartPage = () => {
                 {item.quantity}
                 <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
               </td>
-              <td>${item.price}</td>
+              <td>${item.price.toFixed(2)}</td>
               <td>${(item.quantity * item.price).toFixed(2)}</td>
               <td>
                 <button onClick={() => handleRemove(item.id)}>Eliminar</button>
@@ -68,9 +80,9 @@ const ShoppingCartPage = () => {
       <div className="checkout">
         <p>Total: ${total.toFixed(2)}</p>
         <button onClick={handleCheckout}>Proceder al Pago</button>
-    </div>
-    <Footer />
       </div>
+      <Footer />
+    </div>
   );
 };
 
