@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './css/PaymentMethodPage.css'
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './css/PaymentMethodPage.css';
+import Header from '../../Header';
+import Footer from '../../Footer';
 
 const PaymentMethodPage = () => {
   const navigate = useNavigate();
-  const [paymentType, setPaymentType] = useState('creditCard'); // Puede ser 'creditCard', 'paypal', etc.
+  const location = useLocation();
+  const { total, cartItems } = location.state || { total: 0, cartItems: [] };
+
+  const [paymentType, setPaymentType] = useState('creditCard');
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     cardHolder: '',
@@ -12,7 +17,32 @@ const PaymentMethodPage = () => {
     expiryYear: '',
     cvv: ''
   });
-  
+
+  // Renderizar el botón de PayPal al seleccionar ese método
+  useEffect(() => {
+    if (paymentType === 'paypal' && window.paypal) {
+      window.paypal.Buttons({
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: total.toString()
+              }
+            }]
+          });
+        },
+        onApprove: (data, actions) => {
+          return actions.order.capture().then((details) => {
+            console.log('Pago exitoso:', details);
+            navigate('/thanks-for-shopping', { state: { details, cartItems } });
+          });
+        },
+        onError: (err) => {
+          console.error('Error en el pago:', err);
+        }
+      }).render('#paypal-button-container');
+    }
+  }, [paymentType, total, navigate]);
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -27,14 +57,16 @@ const PaymentMethodPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí se implementaría la lógica para procesar el pago
-    event.preventDefault();
-    navigate('/payment-history');
-    console.log('Procesando pago con:', paymentType, cardDetails);
+    if (paymentType === 'creditCard') {
+      // Procesar el pago con tarjeta de crédito
+      navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
+      console.log('Procesando pago con tarjeta de crédito:', cardDetails);
+    }
   };
 
   return (
     <div className="payment-method-page">
+      <Header />
       <h1>Seleccione su Método de Pago</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -59,7 +91,7 @@ const PaymentMethodPage = () => {
             PayPal
           </label>
         </div>
-        
+
         {paymentType === 'creditCard' && (
           <div>
             <label>
@@ -109,9 +141,18 @@ const PaymentMethodPage = () => {
             </label>
           </div>
         )}
-        
+
+        {paymentType === 'paypal' && (
+          <div id="paypal-button-container"></div>
+        )}
+
+        <div className="total-payment">
+          <p>Total a Pagar: ${total.toFixed(2)}</p>
+        </div>
+
         <button type="submit">Confirmar Pago</button>
       </form>
+      <Footer />
     </div>
   );
 };

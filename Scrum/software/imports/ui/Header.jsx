@@ -48,12 +48,14 @@ const Header = ({ children }) => {
         <div className="user-cart">
           <span className="user-name">{userName}</span>
           <div className="cart-icon">
+          <Link to="/cart" className="cart-icon">
             <img
               src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
               alt="Carrito de compras"
               width="45"
               height="45"
             />
+          </Link>
           </div>
           <Link to="/vender-producto" className="button2">
             Vender

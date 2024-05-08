@@ -8,6 +8,7 @@ import VenderProductoPage from './Components/Screens/VenderProductoPage';
 import ShoppingCartPage from './Components/Screens/ShoppingCartPage';
 import PaymentMethodPage from './Components/Screens/PaymentMethodPage';
 import PaymentSummaryPage from './Components/Screens/PaymentSummaryPage';
+import ThanksForShopping from './Components/Screens/ThanksForShopping';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,6 +49,7 @@ export const App = () => {
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/payment-summary" element={<PaymentSummaryPage />} />
         <Route path="/payment-method" element={<PaymentMethodPage />} />
+        <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
       </Routes>
     </Router>
   );
