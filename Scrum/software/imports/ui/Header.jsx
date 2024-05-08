@@ -8,9 +8,7 @@ const Header = ({ children }) => {
     setMostrarFormulario(!mostrarFormulario);
   };
 
-  
-  const userData = JSON.parse(localStorage.getItem('user')) || {};
-  const { name, profilePicture } = userData;
+  const userName = localStorage.getItem('userName') || 'Usuario';
 
   return (
     <div className="header-container">
@@ -46,19 +44,9 @@ const Header = ({ children }) => {
             />
           </button>
         </div>
-        {/* Perfil de usuario, carrito de compras y botón para vender producto */}
+        {/* Nombre de usuario, carrito de compras y botón para vender producto */}
         <div className="user-cart">
-          <div className="user-profile">
-            {profilePicture && (
-              <img
-                src={URL.createObjectURL(profilePicture)}
-                alt="Foto de perfil"
-                width="60"
-                height="40"
-              />
-            )}
-          </div>
-          <span className="user-name">{name || 'Usuario'}</span>
+          <span className="user-name">{userName}</span>
           <div className="cart-icon">
             <img
               src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
