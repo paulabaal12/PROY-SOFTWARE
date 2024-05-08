@@ -26,13 +26,16 @@ const HomePage = () => {
         if (error) {
           console.error('Error al obtener los productos:', error);
         } else {
-          setProducts(productosData.slice(0, 15));
+          // Ordena los productos por ID de mayor a menor
+          const productosOrdenados = productosData.sort((a, b) => b.id - a.id);
+          setProducts(productosOrdenados.slice(0, 19));
         }
       });
     };
   
     fetchProducts();
   }, []);
+  
 
   const handleMostrarFormulario = () => {
     setMostrarFormulario(!mostrarFormulario);

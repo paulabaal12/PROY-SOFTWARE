@@ -165,9 +165,8 @@ return (
             <button type="submit" className="form-button">Vender Producto</button>
             <button type="button" className="form-button form-button-cancel" onClick={handleCancelar}>Cancelar</button>
           </div>
-       </form>
-      )}
-      <div className="image-preview">
+
+          <div className="image-preview">
         <h3 className="image-preview-title">Vista Previa de Imágenes Adicionales:</h3>
         <div className="image-preview-container">
           {imagenesAdicionales.map((imagen, index) => (
@@ -175,6 +174,11 @@ return (
           ))}
         </div>
       </div>
+      
+       </form>
+       
+      )}
+    
     </div>
   );
 };
