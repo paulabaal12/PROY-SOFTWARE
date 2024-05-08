@@ -46,7 +46,7 @@ const Header = ({ children }) => {
         </div>
         {/* Nombre de usuario, carrito de compras y botón para vender producto */}
         <div className="user-cart">
-          <span className="user-name">{userName}</span>
+          <Link to='/user' className="user-name">{userName}</Link>
           <div className="cart-icon">
           <Link to="/cart" className="cart-icon">
             <img

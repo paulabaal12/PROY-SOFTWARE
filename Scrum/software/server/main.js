@@ -75,7 +75,7 @@ Meteor.startup(() => {
           }
 
           const user = result.rows[0];
-          const passwordCorrect = bcrypt.compareSync(password, user.contraseña);
+          const passwordCorrect = bcrypt.compareSync(password, user.password);
 
           if (!passwordCorrect) {
             console.log('Contraseña incorrecta');
