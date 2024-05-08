@@ -5,6 +5,9 @@ import RegisterPage from './Components/Auth/RegisterPage';
 import HomePage from './HomePage';
 import ProductoDetalles from './Components/Screens/ProductoDetalles';
 import VenderProductoPage from './Components/Screens/VenderProductoPage';
+import ShoppingCartPage from './Components/Screens/ShoppingCartPage';
+import PaymentMethodPage from './Components/Screens/PaymentMethodPage';
+import PaymentSummaryPage from './Components/Screens/PaymentSummaryPage';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +45,9 @@ export const App = () => {
         />
         <Route path="/producto/:id" element={<ProductoDetalles />} />
         <Route path="/vender-producto" element={<VenderProductoPage />} /> 
+        <Route path="/cart" element={<ShoppingCartPage />} />
+        <Route path="/payment-summary" element={<PaymentSummaryPage />} />
+        <Route path="/payment-method" element={<PaymentMethodPage />} />
       </Routes>
     </Router>
   );
