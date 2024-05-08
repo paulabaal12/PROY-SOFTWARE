@@ -1,30 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/ShoppingCartPage.css'
+import './css/ShoppingCartPage.css';
+import Header from '../../Header';
+import Footer from '../../Footer';
 
 const ShoppingCartPage = () => {
-  
   const navigate = useNavigate();
-  // Los datos del carrito se podrían pasar mediante props o obtener desde un contexto o redux store
-  const cartItems = [
-    { id: 1, name: "Producto 1", quantity: 2, price: 15.99 },
-    { id: 2, name: "Producto 2", quantity: 1, price: 45.99 },
-    { id: 3, name: "Producto 3", quantity: 3, price: 9.99 }
+
+  // Lista temporal de productos
+  const initialProducts = [
+    { id: 1, name: "Producto Temporal 1", quantity: 2, price: 12.99 },
+    { id: 2, name: "Producto Temporal 2", quantity: 1, price: 39.99 },
+    { id: 3, name: "Producto Temporal 3", quantity: 5, price: 7.49 },
+    { id: 4, name: "Producto Temporal 4", quantity: 3, price: 24.99 }
   ];
 
+  // Inicializar estado del carrito directamente con productos temporales
+  const [cartItems, setCartItems] = useState(initialProducts);
+
+  // Guardar el carrito en almacenamiento local cuando se actualiza
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
   const handleRemove = (itemId) => {
-    // Implementar lógica para manejar la eliminación de un producto del carrito
-    console.log("Eliminar producto", itemId);
+    const newCartItems = cartItems.filter(item => item.id !== itemId);
+    setCartItems(newCartItems);
+  };
+
+  const handleChangeQuantity = (itemId, delta) => {
+    const newCartItems = cartItems.map(item => {
+      if (item.id === itemId) {
+        const newQuantity = item.quantity + delta;
+        return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
+      }
+      return item;
+    });
+    setCartItems(newCartItems);
   };
 
   const handleCheckout = () => {
-    // Implementar lógica para el proceso de pago/checkout
-    navigate('/payment-summary'); 
-    console.log("Proceder al pago");
+    navigate('/payment-summary', { state: { cartItems } });
   };
+
+  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="shopping-cart">
+      <Header />
       <h1>Carrito de Compras</h1>
       <table>
         <thead>
@@ -40,8 +63,12 @@ const ShoppingCartPage = () => {
           {cartItems.map(item => (
             <tr key={item.id}>
               <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>${item.price}</td>
+              <td>
+                <button onClick={() => handleChangeQuantity(item.id, -1)} disabled={item.quantity <= 1}>-</button>
+                {item.quantity}
+                <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
+              </td>
+              <td>${item.price.toFixed(2)}</td>
               <td>${(item.quantity * item.price).toFixed(2)}</td>
               <td>
                 <button onClick={() => handleRemove(item.id)}>Eliminar</button>
@@ -51,8 +78,10 @@ const ShoppingCartPage = () => {
         </tbody>
       </table>
       <div className="checkout">
+        <p>Total: ${total.toFixed(2)}</p>
         <button onClick={handleCheckout}>Proceder al Pago</button>
       </div>
+      <Footer />
     </div>
   );
 };
