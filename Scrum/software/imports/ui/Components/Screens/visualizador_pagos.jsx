@@ -54,41 +54,6 @@ const ShoppingCartPage = () => {
   // Datos agrupados para las gráficas
   const dataGroupedByState = Object.values(groupBy('estado', transactionsData));
   const dataGroupedByPaymentMethod = Object.values(groupBy('medioPago', transactionsData));
-  // Lista temporal de productos
-
-
-
- 
-  // Inicializar estado del carrito directamente con productos temporales
-  //const [cartItems, setCartItems] = useState(initialProducts);
-
-  // Guardar el carrito en almacenamiento local cuando se actualiza
-  //useEffect(() => {
-  //  localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  //}, [cartItems]);
-
-  //const handleRemove = (itemId) => {
-  //  const newCartItems = cartItems.filter(item => item.id !== itemId);
-  //  setCartItems(newCartItems);
-  //};
-/*  
-  const handleChangeQuantity = (itemId, delta) => {
-    const newCartItems = cartItems.map(item => {
-      if (item.id === itemId) {
-        const newQuantity = item.quantity + delta;
-        return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
-      }
-      return item;
-    });
-    setCartItems(newCartItems);
-  };
-
-  const handleCheckout = () => {
-    navigate('/payment-summary', { state: { cartItems } });
-  };
-
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-*/
 
 return (
   /*
@@ -116,6 +81,10 @@ return (
 
 
 <div>
+<Header />
+
+<h1>Carrito de Compras</h1>
+
 <Paper style={{ margin: 16, padding: 16 }}>
   {/* Filtros y Tabla de Transacciones */}
   <Select
