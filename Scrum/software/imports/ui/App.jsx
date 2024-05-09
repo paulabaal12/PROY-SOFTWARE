@@ -11,6 +11,8 @@ import PaymentSummaryPage from './Components/Screens/PaymentSummaryPage';
 import Categorias from './Components/Screens/categoriasPage';
 import ThanksForShopping from './Components/Screens/ThanksForShopping';
 import User from './Components/Screens/User';
+import Visualizador_pagos from './Components/Screens/visualizador_pagos';
+
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,6 +56,8 @@ export const App = () => {
         <Route path="/categorias" element={<Categorias />} />
         <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
         <Route path="/user" element={<User/>} />
+        <Route path="/pagos" element={<Visualizador_pagos />} />
+
 
       </Routes>
     </Router>
