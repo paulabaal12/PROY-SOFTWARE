@@ -15,30 +15,18 @@ const RegisterPage = () => {
     password: "",
     dpi: "",
     location: "",
-    profilePicture: null,
     hasAgreedToPrivacyPolicy: false,
     enable2FA: false,
   });
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
-  const [showPrivacyPolicyModal, setShowPrivacyPolicyModal] = useState(false);
-  const [qrCodeSvg, setQrCodeSvg] = useState('');
   const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
+  const [qrCodeSvg, setQrCodeSvg] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     const { id, value, checked, type } = event.target;
-    setFormData({...formData, [id]: type === 'checkbox' ? checked : value});
-  };
-
-  const handlePrivacyPolicyClick = (event) => {
-    event.preventDefault();
-    setShowPrivacyPolicyModal(!showPrivacyPolicyModal);
-  };
-
-  const handlePrivacyPolicyCheckbox = (event) => {
-    setFormData({...formData, hasAgreedToPrivacyPolicy: event.target.checked});
-    setShowPrivacyAlert(!event.target.checked);
+    setFormData({ ...formData, [id]: type === 'checkbox' ? checked : value });
   };
 
   const handleSubmit = (event) => {
@@ -48,27 +36,27 @@ const RegisterPage = () => {
       return;
     }
     setLoading(true);
-    Meteor.call('usuarios.insert', formData, (error) => {
+    Meteor.call('usuarios.insert', formData, (error, response) => {
       setLoading(false);
       if (error) {
         console.error('Error al registrar usuario:', error);
-      } else if (formData.enable2FA) {
-        Meteor.call('usuarios.generateTwoFactorAuth', formData.email, (err, result) => {
-          if (err) {
-            console.error('Error al generar la autenticación 2FA:', err);
-          } else {
-            QRCode.toDataURL(result.otpauthUrl, (err, dataURL) => {
-              if (err) {
-                console.error('Error al generar QR:', err);
-              } else {
-                setQrCodeSvg(dataURL);
-                setIs2FAModalOpen(true);
-              }
-            });
-          }
-        });
       } else {
-        navigate('/');
+        if (formData.enable2FA) {
+          activate2FA(response.userId);
+        } else {
+          navigate('/homepage');
+        }
+      }
+    });
+  };
+
+  const activate2FA = (userId) => {
+    Meteor.call('usuarios.enableTwoFactorAuth', userId, (err, result) => {
+      if (err) {
+        console.error('Error al generar la autenticación 2FA:', err);
+      } else {
+        setQrCodeSvg(result);
+        setIs2FAModalOpen(true);
       }
     });
   };
@@ -99,6 +87,7 @@ const RegisterPage = () => {
         <form id="register-form" onSubmit={handleSubmit}>
           {['name', 'email', 'password', 'dpi', 'location'].map((field) => (
             <input
+              key={field}
               type={field === 'email' ? 'email' : 'text'}
               id={field}
               placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
@@ -107,21 +96,21 @@ const RegisterPage = () => {
               onChange={handleChange}
             />
           ))}
-          <label className="privacy-policy-checkbox">
+          <div className="privacy-policy-checkbox">
             <input
               type="checkbox"
               id="hasAgreedToPrivacyPolicy"
               checked={formData.hasAgreedToPrivacyPolicy}
-              onChange={handlePrivacyPolicyCheckbox}
+              onChange={handleChange}
             />
-            Acepto la <a href="#" onClick={handlePrivacyPolicyClick}>política de privacidad</a>
-          </label>
+            Acepto la <button onClick={(e) => e.preventDefault()}>política de privacidad</button>
+          </div>
           {showPrivacyAlert && (
             <div className="alert alert-warning" role="alert">
               Debes aceptar la política de privacidad para registrarte.
             </div>
           )}
-          <label className="privacy-policy-checkbox">
+          <div className="privacy-policy-checkbox">
             <input
               type="checkbox"
               id="enable2FA"
@@ -129,10 +118,9 @@ const RegisterPage = () => {
               onChange={handleChange}
             />
             Habilitar Autenticación de Dos Factores (2FA)
-          </label>
-          <button type="submit" className="btn">Crear Cuenta</button>
+          </div>
+          <button type="submit" className="btn" disabled={loading}>{loading ? 'Cargando...' : 'Crear Cuenta'}</button>
         </form>
-        {showPrivacyAlert && <div className="alert alert-warning">Debes aceptar la política de privacidad para registrarte.</div>}
         <Modal isOpen={is2FAModalOpen} onRequestClose={close2FAModal} contentLabel="2FA QR Code">
           <h2>Configura tu Autenticación de Dos Factores</h2>
           <img src={qrCodeSvg} alt="QR Code" />

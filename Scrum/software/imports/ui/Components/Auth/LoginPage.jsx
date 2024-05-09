@@ -7,35 +7,40 @@ const LoginPage = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [show2FAModal, setShow2FAModal] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError(''); // Clear any previous errors
     // Llamada al servidor para autenticar al usuario
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
         console.error('Error en el inicio de sesión:', error.reason);
+        setError('Error en el inicio de sesión. Por favor intenta de nuevo.');
       } else if (result.authenticated && !result.twoFactorRequired) {
         onLoginSuccess();
       } else if (result.authenticated && result.twoFactorRequired) {
         // Si se requiere 2FA, mostrar modal para ingresar el código
         setShow2FAModal(true);
       } else {
-        console.log('Fallo en la autenticación, verifica tus credenciales.');
+        setError('Fallo en la autenticación, verifica tus credenciales.');
       }
     });
   };
 
   const handle2FAVerification = () => {
     // Llamada al servidor para verificar el código 2FA
-    Meteor.call('verifyTwoFactor', { email, twoFactorCode: verificationCode }, (error, result) => {
-      setShow2FAModal(false);
+    Meteor.call('usuarios.verifyTwoFactorCode', email, verificationCode, (error, result) => {
       if (error) {
         console.error('Error en la verificación 2FA:', error.reason);
+        setError('Error en la verificación 2FA. Por favor intenta de nuevo.');
+        setShow2FAModal(false);
       } else if (result) {
         onLoginSuccess(); // El usuario ha iniciado sesión completamente
       } else {
-        console.log('Código 2FA incorrecto, por favor intenta nuevamente.');
+        setError('Código 2FA incorrecto, por favor intenta nuevamente.');
+        setVerificationCode(''); // Clear the input for another try
       }
     });
   };
@@ -61,6 +66,7 @@ const LoginPage = ({ onLoginSuccess }) => {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
           />
+          {error && <div className="alert alert-danger">{error}</div>}
           <button type="submit" className="btn">Iniciar Sesión</button>
         </form>
         {show2FAModal && (
