@@ -9,7 +9,10 @@ CREATE TABLE IF NOT EXISTS usuarios(
 	location VARCHAR(255) NOT NULL,
 	profile_picture BYTEA,
 	has_agreed_to_privacy_policy BOOLEAN NOT NULL,
-	enable_2fa BOOLEAN DEFAULT FALSE
+	enable_2fa BOOLEAN DEFAULT FALSE,
+	two_factor_code VARCHAR(6),
+	two_factor_expires_at TIMESTAMP,
+
 );
 
 
@@ -23,7 +26,6 @@ CREATE TABLE IF NOT EXISTS productos (
     imagen_principal VARCHAR(255),
     imagenes_adicionales TEXT[]
 );
-ALTER TABLE usuarios ADD COLUMN two_factor_code VARCHAR(6);
-ALTER TABLE usuarios ADD COLUMN two_factor_expires_at TIMESTAMP;
+
 
 
