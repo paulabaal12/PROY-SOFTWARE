@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './css/PaymentManagement.css';
-wsñ
+
 const PaymentManagement = () => {
   return (
     <div className="payment-management-page">

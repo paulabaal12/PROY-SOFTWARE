@@ -37,28 +37,31 @@ Meteor.startup(() => {
 
   Meteor.methods({
     'usuarios.insert'(data) {
+      console.log("Datos recibidos para inserción:", data); // Para depuración
+  
       check(data, {
-        name: String,
-        email: String,
-        password: String,
-        dpi: String,
-        location: String,
-        has_agreed_to_privacy_policy: Boolean
+          name: String,
+          email: String,
+          password: String,
+          dpi: String,
+          location: String,
+          has_agreed_to_privacy_policy: Boolean, // Cambia esto para que coincida con el frontend
+          enable_2fa: Boolean
       });
-
+  
       const hashedPassword = bcrypt.hashSync(data.password, 10);
       pool.query(
-        'INSERT INTO usuarios (name, email, password, dpi, location, has_agreed_to_privacy_policy, enable_2fa) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [data.name, data.email, hashedPassword, data.dpi, data.location, data.has_agreed_to_privacy_policy, false],
-        err => {
-          if (err) {
-            console.error('Error al insertar usuario:', err);
-            throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
+          'INSERT INTO usuarios (name, email, password, dpi, location, has_agreed_to_privacy_policy, enable_2fa) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+          [data.name, data.email, hashedPassword, data.dpi, data.location, data.has_agreed_to_privacy_policy, data.enable_2fa],
+          err => {
+              if (err) {
+                  console.error('Error al insertar usuario:', err);
+                  throw new Meteor.Error('database-error', 'Error al insertar usuario en la base de datos');
+              }
+              console.log('Usuario insertado correctamente en PostgreSQL');
           }
-          console.log('Usuario insertado correctamente en PostgreSQL');
-        }
       );
-    },
+  },
 
     'usuarios.authenticate'(email, password) {
       return new Promise((resolve, reject) => {
