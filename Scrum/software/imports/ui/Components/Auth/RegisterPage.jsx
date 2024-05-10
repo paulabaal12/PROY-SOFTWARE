@@ -46,7 +46,7 @@ export const RegisterPage = () => {
       } else if (response && response.userId && formData.enable_2fa) {
         activate2FA(response.userId);
       } else {
-        navigate('/login');
+        navigate('/');
       }
     });
   };
