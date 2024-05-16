@@ -17,13 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 Meteor.startup(() => {
-  const pgConfig = Meteor.settings.postgres || {
-    host: 'localhost',
-    port: 5432,
-    database: 'users_database',
-    user: 'postgres',
-    password: ''
-  };
+  const pgConfig = Meteor.settings.postgres;
 
   const pool = new Pool(pgConfig);
 
