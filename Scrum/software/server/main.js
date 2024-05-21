@@ -219,7 +219,24 @@ Meteor.startup(() => {
         console.error('Error verifying 2FA code:', error);
         throw new Meteor.Error('database-error', 'Error al verificar código 2FA');
       }
-    }
+    },
+
+
+    'ventas.getAll'() {
+      return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM ventas', (err, result) => {
+          if (err) {
+            console.error('Error al obtener ventas:', err);
+            reject(new Meteor.Error('database-error', 'Error al obtener ventas de la base de datos'));
+          } else {
+            resolve(result.rows);
+          }
+        });
+      });
+    },
+
+
+    
     });
   });
 
