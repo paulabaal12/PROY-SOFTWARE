@@ -27,5 +27,19 @@ CREATE TABLE IF NOT EXISTS productos (
     imagenes_adicionales TEXT[]
 );
 
+CREATE TABLE vendedores (
+    vendedor_id SERIAL PRIMARY KEY,
+    nombre_vendedor VARCHAR(255) NOT NULL
+);
 
+CREATE TABLE ventas (
+    id_venta SERIAL PRIMARY KEY,
+    vendedor_id INT NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE,
+    medio_pago VARCHAR(50),
+    estado VARCHAR(50),
+    FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id)
+);
 
