@@ -13,6 +13,10 @@ const User = () => {
 		navigate('/user/inventorymanagement');	
 	};
 
+	const handleDeliveryManagement = () => {
+		navigate('/user/deliverymanagement');
+	};
+
   	return (
     	<div className='user-page'>
       	  <div className='user-interface'>
@@ -27,6 +31,7 @@ const User = () => {
             	  <div className='payment-button'>
             	    <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
             	    <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
+            	    <button onClick={handleDeliveryManagement}>Gestión de Repartidor</button>
             	  </div>
 	      </div>
 	      <div className='delivery-container'>

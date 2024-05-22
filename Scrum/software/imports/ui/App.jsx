@@ -12,7 +12,9 @@ import Categorias from './Components/Screens/categoriasPage';
 import ThanksForShopping from './Components/Screens/ThanksForShopping';
 import User from './Components/Screens/User';
 import Visualizador_pagos from './Components/Screens/visualizador_pagos';
-import PaymentManagement from './Components/Screens/PaymentManagement'
+import PaymentManagement from './Components/Screens/PaymentManagement';
+import InventoryManagement from './Components/Screens/InventoryManagement';
+import DeliveryManagement from './Components/Screens/DeliveryManagement';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,6 +60,9 @@ export const App = () => {
         <Route path="/user" element={<User/>} />
         /*Lo agregare a paymentmanagement luego ;)*/<Route path="/pagos" element={<Visualizador_pagos />} />
 	<Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
+	<Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
+	<Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
+	
 
 
       </Routes>
