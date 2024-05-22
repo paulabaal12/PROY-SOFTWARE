@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Modal from 'react-modal';
-import './style.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 
 Modal.setAppElement('#root');
 

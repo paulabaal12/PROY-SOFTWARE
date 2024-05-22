@@ -1,6 +1,19 @@
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from 'react';
 import './css/DeliveryManagement.css';
 import { Meteor } from 'meteor/meteor';
+=======
+<<<<<<< HEAD
+import React, {useState, useEffect} from 'react';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
+=======
+import React, { useState, useEffect } from 'react';
+import './css/DeliveryManagement.css';
+import { Meteor } from 'meteor/meteor';
+>>>>>>> caa3522bcbf3663927fe21169fa53334b51ddfc3
+>>>>>>> Stashed changes
 
 const DeliveryManagement = () => {
     const [deliveries, setDeliveries] = useState([]);

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../Header';
+import Footer from '../Footer';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem } from '@material-ui/core';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import '../../../ui/style.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 
 const paymentStatusColors = {
   Completado: "#0088FE",

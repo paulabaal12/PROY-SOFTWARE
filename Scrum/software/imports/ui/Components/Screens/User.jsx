@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-import './style.css';
+import Header from '../Header';
+import Footer from '../Footer';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
 
 const User = () => {
   const navigate = useNavigate();

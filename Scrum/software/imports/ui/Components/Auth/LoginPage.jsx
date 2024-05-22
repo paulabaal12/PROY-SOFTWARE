@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
-import './style.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 
 const LoginPage = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');

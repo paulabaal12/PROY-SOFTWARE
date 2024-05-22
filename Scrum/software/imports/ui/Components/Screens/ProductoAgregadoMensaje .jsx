@@ -1,5 +1,6 @@
 import React from 'react';
-import '../../../ui/style.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
 
 const ProductoAgregadoMensaje = () => {
   return (

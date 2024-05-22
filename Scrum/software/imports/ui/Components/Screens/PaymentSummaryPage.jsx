@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-import '../../../ui/style.css';
+import Header from '../Header';
+import Footer from '../Footer';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 
 const PaymentSummaryPage = () => {
   const navigate = useNavigate();

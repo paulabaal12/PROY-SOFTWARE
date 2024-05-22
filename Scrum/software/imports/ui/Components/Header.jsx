@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './style.css';
-
+import '../style.css'; // Asegúrate de que la ruta sea correcta
+import '../variables.css'; // Asegúrate de que la ruta sea correcta
 const Header = () => {
   const userName = localStorage.getItem('userName') || 'Usuario';
 

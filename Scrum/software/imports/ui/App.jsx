@@ -15,7 +15,8 @@ import Visualizador_pagos from './Components/Screens/visualizador_pagos';
 import PaymentManagement from './Components/Screens/PaymentManagement';
 import InventoryManagement from './Components/Screens/InventoryManagement';
 import DeliveryManagement from './Components/Screens/DeliveryManagement';
-
+import './style.css';
+import './variables.css';
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showingRegister, setShowingRegister] = useState(false);
@@ -58,11 +59,11 @@ export const App = () => {
         <Route path="/categorias" element={<Categorias />} />
         <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
         <Route path="/user" element={<User/>} />
-        /*Lo agregare a paymentmanagement luego ;)*/<Route path="/pagos" element={<Visualizador_pagos />} />
-	<Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
-	<Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
-	<Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
-	
+        <Route path="/pagos" element={<Visualizador_pagos />} />
+        <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
+        <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
+        <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
+        
 
 
       </Routes>

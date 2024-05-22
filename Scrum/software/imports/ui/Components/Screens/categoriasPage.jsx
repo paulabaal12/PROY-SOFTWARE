@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-import '../../../ui/style.css';
+import Header from '../Header';
+import Footer from '../Footer';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 
 const categorias = [
   { nombre: 'Electrónicos', imagen: 'https://ishop.gt/cdn/shop/products/iphone-15-color-rosa-de-128-gb_1200x.jpg?v=1694661924' },

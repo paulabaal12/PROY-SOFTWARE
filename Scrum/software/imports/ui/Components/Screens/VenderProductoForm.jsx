@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import '../../../ui/style.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
+
 import { useNavigate } from 'react-router-dom';
-import ProductoAgregadoMensaje from './ProductoAgregadoMensaje';
+import ProductoAgregadoMensaje from './ProductoAgregadoMensaje ';
 
 const VenderProductoForm = () => {
   const [nombre, setNombre] = useState('');
