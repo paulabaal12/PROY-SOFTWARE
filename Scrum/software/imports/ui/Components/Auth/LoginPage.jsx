@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
+import './style.css';
 
 const LoginPage = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
@@ -12,16 +13,13 @@ const LoginPage = ({ onLoginSuccess }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setError(''); // Clear any previous errors
-    // Llamada al servidor para autenticar al usuario
+    setError('');
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
-        console.error('Error en el inicio de sesión:', error.reason);
         setError('Error en el inicio de sesión. Por favor intenta de nuevo.');
       } else if (result.authenticated && !result.twoFactorRequired) {
         onLoginSuccess();
       } else if (result.authenticated && result.twoFactorRequired) {
-        // Si se requiere 2FA, mostrar modal para ingresar el código
         setShow2FAModal(true);
       } else {
         setError('Fallo en la autenticación, verifica tus credenciales.');
@@ -30,17 +28,15 @@ const LoginPage = ({ onLoginSuccess }) => {
   };
 
   const handle2FAVerification = () => {
-    // Llamada al servidor para verificar el código 2FA
     Meteor.call('usuarios.verifyTwoFactorCode', email, verificationCode, (error, result) => {
       if (error) {
-        console.error('Error en la verificación 2FA:', error.reason);
         setError('Error en la verificación 2FA. Por favor intenta de nuevo.');
         setShow2FAModal(false);
       } else if (result) {
-        onLoginSuccess(); // El usuario ha iniciado sesión completamente
+        onLoginSuccess();
       } else {
         setError('Código 2FA incorrecto, por favor intenta nuevamente.');
-        setVerificationCode(''); // Clear the input for another try
+        setVerificationCode('');
       }
     });
   };
@@ -75,11 +71,11 @@ const LoginPage = ({ onLoginSuccess }) => {
               <h2>Ingrese el Código de Verificación</h2>
               <input 
                 type="text" 
-                placeholder="Verification Code" 
+                placeholder="Código de Verificación" 
                 value={verificationCode} 
                 onChange={(e) => setVerificationCode(e.target.value)} 
               />
-              <button onClick={handle2FAVerification}>Verify Code</button>
+              <button onClick={handle2FAVerification}>Verificar Código</button>
             </div>
           </div>
         )}

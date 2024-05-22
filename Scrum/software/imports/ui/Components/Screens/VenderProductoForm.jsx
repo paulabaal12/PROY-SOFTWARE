@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import './productos.css';
+import '../../../ui/style.css';
 import { useNavigate } from 'react-router-dom';
-import ProductoAgregadoMensaje from './ProductoAgregadoMensaje ';
+import ProductoAgregadoMensaje from './ProductoAgregadoMensaje';
 
 const VenderProductoForm = () => {
   const [nombre, setNombre] = useState('');
@@ -14,7 +14,7 @@ const VenderProductoForm = () => {
   const [imagenesAdicionales, setImagenesAdicionales] = useState([]);
   const [productoAgregado, setProductoAgregado] = useState(false);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,12 +64,11 @@ const VenderProductoForm = () => {
     navigate('/homepage');
   };
 
-return (
+  return (
     <div className="form-container">
       {!productoAgregado && (
         <>
-        <h1 className='form-title'>Vender Producto</h1>
-
+          <h1 className='form-title'>Vender Producto</h1>
         </>
       )}
       {productoAgregado ? (
@@ -166,20 +165,16 @@ return (
             <button type="submit" className="form-button">Vender Producto</button>
             <button type="button" className="form-button form-button-cancel" onClick={handleCancelar}>Cancelar</button>
           </div>
-
           <div className="image-preview">
-        <h3 className="image-preview-title">Vista Previa de Imágenes Adicionales:</h3>
-        <div className="image-preview-container">
-          {imagenesAdicionales.map((imagen, index) => (
-            <img key={index} src={imagen} alt={`Imagen ${index + 1}`} className="image-preview-item" />
-          ))}
-        </div>
-      </div>
-      
-       </form>
-       
+            <h3 className="image-preview-title">Vista Previa de Imágenes Adicionales:</h3>
+            <div className="image-preview-container">
+              {imagenesAdicionales.map((imagen, index) => (
+                <img key={index} src={imagen} alt={`Imagen ${index + 1}`} className="image-preview-item" />
+              ))}
+            </div>
+          </div>
+        </form>
       )}
-    
     </div>
   );
 };

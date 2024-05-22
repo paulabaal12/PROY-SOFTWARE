@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './css/PaymentMethodPage.css';
-import Header from '../../Header';
-import Footer from '../../Footer';
+import Header from './Header';
+import Footer from './Footer';
+import '../../../ui/style.css';
 
 const PaymentMethodPage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,6 @@ const PaymentMethodPage = () => {
     cvv: ''
   });
 
-  // Renderizar el botón de PayPal al seleccionar ese método
   useEffect(() => {
     if (paymentType === 'paypal' && window.paypal) {
       window.paypal.Buttons({
@@ -33,9 +32,6 @@ const PaymentMethodPage = () => {
         },
         onApprove: (data, actions) => {
           return actions.order.capture().then((details) => {
-            console.log('Pago exitoso:', details);
-  
-            // Datos del pedido para enviar al servidor
             const pedidoDetails = {
               usuario_id: 1, 
               total: total,
@@ -45,13 +41,10 @@ const PaymentMethodPage = () => {
                 precio_unitario: item.price
               })))
             };
-  
-            // Enviar los detalles del pedido al servidor usando Meteor.call
             Meteor.call('pedidos.insert', pedidoDetails, (error, result) => {
               if (error) {
                 console.error('Error al realizar el pedido:', error);
               } else {
-                console.log('Pedido realizado con éxito:', result);
                 navigate('/thanks-for-shopping', { state: { details, cartItems } });
               }
             });
@@ -62,7 +55,7 @@ const PaymentMethodPage = () => {
         }
       }).render('#paypal-button-container');
     }
-  }, [paymentType, total, navigate, cartItems]);  
+  }, [paymentType, total, navigate, cartItems]);
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -87,22 +80,18 @@ const PaymentMethodPage = () => {
           precio_unitario: item.price
         })))
       };
-  
-      // Enviar los detalles del pedido al servidor usando Meteor.call
       Meteor.call('pedidos.insert', pedidoDetails, (error, result) => {
         if (error) {
           console.error('Error al realizar el pedido:', error);
         } else {
-          console.log('Pedido realizado con éxito:', result);
           navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
         }
       });
     }
   };
-  
 
   return (
-    <div className="payment-method-page">
+    <div className="container payment-method-page">
       <Header />
       <h1>Seleccione su Método de Pago</h1>
       <form onSubmit={handleSubmit}>
@@ -128,7 +117,6 @@ const PaymentMethodPage = () => {
             PayPal
           </label>
         </div>
-
         {paymentType === 'creditCard' && (
           <div>
             <label>
@@ -178,15 +166,12 @@ const PaymentMethodPage = () => {
             </label>
           </div>
         )}
-
         {paymentType === 'paypal' && (
           <div id="paypal-button-container"></div>
         )}
-
         <div className="total-payment">
           <p>Total a Pagar: ${total.toFixed(2)}</p>
         </div>
-
         <button type="submit">Confirmar Pago</button>
       </form>
       <Footer />

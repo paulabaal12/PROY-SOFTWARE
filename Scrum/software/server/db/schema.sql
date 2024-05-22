@@ -14,8 +14,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     two_factor_expires_at TIMESTAMP
 );
 
-
-
 CREATE TABLE IF NOT EXISTS productos (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
@@ -27,12 +25,12 @@ CREATE TABLE IF NOT EXISTS productos (
     imagenes_adicionales TEXT[]
 );
 
-CREATE TABLE vendedores (
+CREATE TABLE IF NOT EXISTS vendedores (
     vendedor_id SERIAL PRIMARY KEY,
     nombre_vendedor VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE ventas (
+CREATE TABLE IF NOT EXISTS ventas (
     id_venta SERIAL PRIMARY KEY,
     vendedor_id INT,
     monto DECIMAL(10, 2) NOT NULL,
@@ -40,6 +38,7 @@ CREATE TABLE ventas (
     fecha_fin DATE,
     medio_pago VARCHAR(50),
     estado VARCHAR(50)
+    -- FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id)
 );
 
 CREATE TABLE IF NOT EXISTS pedidos (
@@ -50,6 +49,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     total DECIMAL(10, 2) NOT NULL,
     detalles JSONB,
     direccion_id INT
+    -- FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
 );
 
 CREATE TABLE IF NOT EXISTS direcciones (
@@ -57,5 +57,6 @@ CREATE TABLE IF NOT EXISTS direcciones (
     usuario_id INT,
     direccion_inicio TEXT,
     direccion_entrega TEXT
-); 
+    -- FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+);
 

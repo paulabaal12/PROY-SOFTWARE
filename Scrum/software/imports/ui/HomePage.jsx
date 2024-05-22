@@ -3,9 +3,8 @@ import { Carousel } from 'react-responsive-carousel';
 import { Link } from 'react-router-dom';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Header from './Header';
-import './style.css';
-import { callPromise } from 'meteor/promise';
 import Footer from './Footer';
+import './style.css';
 
 const carouselImages = [
   { imageUrl: 'https://i5.walmartimages.com/seo/Mainstays-Alessandra-Matte-Black-12-Piece-Stoneware-Dinnerware-Set_a06eabea-1ba7-4a41-abbc-63151bf7c1b0.9fb529e6c752dbc2ef2efa717418a28f.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF', link: '/categoria1', categoryName: 'Categoría 1' },
@@ -18,7 +17,6 @@ const carouselImages = [
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -26,49 +24,33 @@ const HomePage = () => {
         if (error) {
           console.error('Error al obtener los productos:', error);
         } else {
-          // Ordena los productos por ID de mayor a menor
           const productosOrdenados = productosData.sort((a, b) => b.id - a.id);
           setProducts(productosOrdenados.slice(0, 19));
         }
       });
     };
-  
+
     fetchProducts();
   }, []);
-  
-
-  const handleMostrarFormulario = () => {
-    setMostrarFormulario(!mostrarFormulario);
-  };
-
-  const handleProductoAgregado = () => {
-    alert('Producto agregado correctamente');
-    setTimeout(() => {
-      window.location.reload();
-    }, 4000);
-  };
 
   return (
     <div className="container">
-      {/* Encabezado */}
-      <Header></Header>
-      {/* Contenido de la página */}
+      <Header />
       <center>
         <h1 className="titulo1">Nuevos Productos</h1>
       </center>
       <main className="main-content1">
         <div className="product-scroll-container">
           {products.map((product, index) => (
-              <div className="product-container">
-               <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
-               <h3 className='titulo-producto'>{product.nombre}</h3>
-               <p className='titulo-precio'>Precio: {product.precio}</p>
-                <button className="button-agregar">Agregar al carrito</button>
-              </div>
+            <div className="product-container" key={index}>
+              <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
+              <h3 className='titulo-producto'>{product.nombre}</h3>
+              <p className='titulo-precio'>Precio: {product.precio}</p>
+              <button className="button-agregar">Agregar al carrito</button>
+            </div>
           ))}
         </div>
       </main>
-      {/* Contenedor 2 */}
       <main className="main-content2">
         <center>
           <h1>Categorias</h1>
@@ -84,24 +66,14 @@ const HomePage = () => {
           showStatus={false}
           renderArrowPrev={(onClickHandler, hasPrev, label) =>
             hasPrev && (
-              <button
-                type="button"
-                onClick={onClickHandler}
-                title={label}
-                className="carousel-arrow carousel-arrow-prev"
-              >
+              <button type="button" onClick={onClickHandler} title={label} className="carousel-arrow carousel-arrow-prev">
                 ‹
               </button>
             )
           }
           renderArrowNext={(onClickHandler, hasNext, label) =>
             hasNext && (
-              <button
-                type="button"
-                onClick={onClickHandler}
-                title={label}
-                className="carousel-arrow carousel-arrow-next"
-              >
+              <button type="button" onClick={onClickHandler} title={label} className="carousel-arrow carousel-arrow-next">
                 ›
               </button>
             )
