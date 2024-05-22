@@ -43,3 +43,13 @@ CREATE TABLE ventas (
     FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id)
 );
 
+CREATE TABLE IF NOT EXISTS pedidos (
+    id_pedido SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(50) DEFAULT 'pendiente',
+    total DECIMAL(10, 2) NOT NULL,
+    detalles JSONB,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+);
+

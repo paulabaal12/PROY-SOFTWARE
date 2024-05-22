@@ -236,7 +236,25 @@ Meteor.startup(() => {
     },
 
 
-    
+    'pedidos.insert'(pedidoData) {
+      check(pedidoData, {
+        usuario_id: Number,
+        total: Number,
+        detalles: String // Asegúrate de enviar esto como un string JSON desde el cliente
+      });
+  
+      pool.query(
+        'INSERT INTO pedidos (usuario_id, total, detalles) VALUES ($1, $2, $3)',
+        [pedidoData.usuario_id, pedidoData.total, pedidoData.detalles],
+        (err) => {
+          if (err) {
+            console.error('Error al insertar pedido:', err);
+            throw new Meteor.Error('database-error', 'Error al insertar pedido en la base de datos');
+          }
+          console.log('Pedido insertado correctamente en PostgreSQL');
+        }
+      );
+      },
     });
   });
 

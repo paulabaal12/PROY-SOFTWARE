@@ -58,11 +58,29 @@ const PaymentMethodPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (paymentType === 'creditCard') {
-      // Procesar el pago con tarjeta de crédito
-      navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
-      console.log('Procesando pago con tarjeta de crédito:', cardDetails);
+      // Asumiendo que ya has validado los datos de la tarjeta y que el pago ha sido procesado exitosamente
+      const pedidoDetails = {
+        usuario_id: 1, // Asegúrate de obtener el ID del usuario autenticado adecuadamente
+        total: total,
+        detalles: JSON.stringify(cartItems.map(item => ({
+          producto_id: item.id,
+          cantidad: item.quantity,
+          precio_unitario: item.price
+        })))
+      };
+  
+      // Enviar los detalles del pedido al servidor usando Meteor.call
+      Meteor.call('pedidos.insert', pedidoDetails, (error, result) => {
+        if (error) {
+          console.error('Error al realizar el pedido:', error);
+        } else {
+          console.log('Pedido realizado con éxito:', result);
+          navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
+        }
+      });
     }
   };
+  
 
   return (
     <div className="payment-method-page">
