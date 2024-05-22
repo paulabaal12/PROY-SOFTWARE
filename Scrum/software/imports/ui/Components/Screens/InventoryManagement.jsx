@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import '../../style.css'; // Importando estilo desde el directorio raíz
 import '../../variables.css'; // Importando variables desde el directorio raíz
-
-=======
 import './css/InventoryManagement.css';
 import { Meteor } from 'meteor/meteor';
-<<<<<<< Updated upstream
-=======
->>>>>>> caa3522bcbf3663927fe21169fa53334b51ddfc3
->>>>>>> Stashed changes
 
 const InventoryManagement = () => {
     const [products, setProducts] = useState([]);
