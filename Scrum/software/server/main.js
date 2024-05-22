@@ -255,6 +255,22 @@ Meteor.startup(() => {
         }
       );
       },
+      'pedidos.getAllWithAddresses'() {
+        return new Promise((resolve, reject) => {
+            pool.query(`
+                SELECT p.id_pedido, p.usuario_id, p.total, p.estado, d.direccion_inicio, d.direccion_entrega 
+                FROM pedidos p
+                JOIN direcciones d ON p.direccion_id = d.id
+            `, (err, result) => {
+                if (err) {
+                    console.error('Error fetching deliveries:', err);
+                    reject(new Meteor.Error('database-error', 'Error fetching deliveries from the database'));
+                } else {
+                    resolve(result.rows);
+                }
+            });
+        });
+       },
     });
   });
 

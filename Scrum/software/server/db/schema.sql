@@ -34,13 +34,12 @@ CREATE TABLE vendedores (
 
 CREATE TABLE ventas (
     id_venta SERIAL PRIMARY KEY,
-    vendedor_id INT NOT NULL,
+    vendedor_id INT,
     monto DECIMAL(10, 2) NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE,
     medio_pago VARCHAR(50),
-    estado VARCHAR(50),
-    --FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id)
+    estado VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS pedidos (
@@ -50,6 +49,13 @@ CREATE TABLE IF NOT EXISTS pedidos (
     estado VARCHAR(50) DEFAULT 'pendiente',
     total DECIMAL(10, 2) NOT NULL,
     detalles JSONB,
-    --FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+    direccion_id INT
 );
+
+CREATE TABLE IF NOT EXISTS direcciones (
+    id SERIAL,
+    usuario_id INT,
+    direccion_inicio TEXT,
+    direccion_entrega TEXT
+); 
 
