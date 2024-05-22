@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Modal from 'react-modal';
-import QRCode from 'qrcode';
+import './style.css';
 
 Modal.setAppElement('#root');
 
-export const RegisterPage = () => {
+const RegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -15,7 +15,7 @@ export const RegisterPage = () => {
     dpi: "",
     location: "",
     hasAgreedToPrivacyPolicy: false,
-    enable_2fa: false,  // Cambiado a enable_2fa para coincidir con el backend
+    enable_2fa: false,
   });
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
   const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
@@ -37,11 +37,9 @@ export const RegisterPage = () => {
       return;
     }
     setLoading(true);
-    console.log("Enviando datos al servidor para registro:", formData);
     Meteor.call('usuarios.insert', formData, (error, response) => {
       setLoading(false);
       if (error) {
-        console.error('Error al registrar usuario:', error);
         setError(`Error al registrar: ${error.error} - ${error.reason}`);
       } else if (response && response.userId && formData.enable_2fa) {
         activate2FA(response.userId);
@@ -54,7 +52,7 @@ export const RegisterPage = () => {
   const activate2FA = (userId) => {
     Meteor.call('usuarios.enableTwoFactorAuth', userId, (err, result) => {
       if (err) {
-        console.error('Error al generar la autenticación 2FA:', err);
+        setError('Error al generar la autenticación 2FA.');
       } else {
         setQrCodeSvg(result);
         setIs2FAModalOpen(true);

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/ShoppingCartPage.css';
-import Header from '../../Header';
-import Footer from '../../Footer';
+import Header from './Header';
+import Footer from './Footer';
+import '../../../ui/style.css';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
 
-  // Lista temporal de productos
   const initialProducts = [
     { id: 1, name: "Producto Temporal 1", quantity: 2, price: 12.99 },
     { id: 2, name: "Producto Temporal 2", quantity: 1, price: 39.99 },
@@ -15,10 +14,8 @@ const ShoppingCartPage = () => {
     { id: 4, name: "Producto Temporal 4", quantity: 3, price: 24.99 }
   ];
 
-  // Inicializar estado del carrito directamente con productos temporales
   const [cartItems, setCartItems] = useState(initialProducts);
 
-  // Guardar el carrito en almacenamiento local cuando se actualiza
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -46,7 +43,7 @@ const ShoppingCartPage = () => {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div className="shopping-cart">
+    <div className="container shopping-cart">
       <Header />
       <h1>Carrito de Compras</h1>
       <table>

@@ -1,5 +1,5 @@
 import React from 'react';
-import './productos.css';
+import '../../../ui/style.css';
 
 const ProductoAgregadoMensaje = () => {
   return (

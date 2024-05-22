@@ -1,25 +1,25 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './css/PaymentSummaryPage.css';
-import Header from '../../Header';
-import Footer from '../../Footer';
+import Header from './Header';
+import Footer from './Footer';
+import '../../../ui/style.css';
 
 const PaymentSummaryPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { cartItems } = location.state || { cartItems: [] }; // Obtener cartItems del estado, con un valor por defecto si es nulo.
+  const { cartItems } = location.state || { cartItems: [] };
 
   const handleConfirmPurchase = () => {
     navigate('/payment-method', { state: { total, cartItems } });
   };
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const tax = subtotal * 0.16; // Suponiendo un impuesto del 16%
+  const tax = subtotal * 0.16;
   const total = subtotal;
 
   return (
-    <div className="payment-summary-page">
-    <Header />
+    <div className="container payment-summary-page">
+      <Header />
       <h1>Resumen de Pago</h1>
       <div className="cart-items">
         {cartItems.map(item => (
