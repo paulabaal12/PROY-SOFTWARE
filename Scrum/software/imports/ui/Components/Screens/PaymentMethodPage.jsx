@@ -34,7 +34,27 @@ const PaymentMethodPage = () => {
         onApprove: (data, actions) => {
           return actions.order.capture().then((details) => {
             console.log('Pago exitoso:', details);
-            navigate('/thanks-for-shopping', { state: { details, cartItems } });
+  
+            // Datos del pedido para enviar al servidor
+            const pedidoDetails = {
+              usuario_id: 1, 
+              total: total,
+              detalles: JSON.stringify(cartItems.map(item => ({
+                producto_id: item.id,
+                cantidad: item.quantity,
+                precio_unitario: item.price
+              })))
+            };
+  
+            // Enviar los detalles del pedido al servidor usando Meteor.call
+            Meteor.call('pedidos.insert', pedidoDetails, (error, result) => {
+              if (error) {
+                console.error('Error al realizar el pedido:', error);
+              } else {
+                console.log('Pedido realizado con éxito:', result);
+                navigate('/thanks-for-shopping', { state: { details, cartItems } });
+              }
+            });
           });
         },
         onError: (err) => {
@@ -42,7 +62,7 @@ const PaymentMethodPage = () => {
         }
       }).render('#paypal-button-container');
     }
-  }, [paymentType, total, navigate]);
+  }, [paymentType, total, navigate, cartItems]);  
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -58,9 +78,8 @@ const PaymentMethodPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (paymentType === 'creditCard') {
-      // Asumiendo que ya has validado los datos de la tarjeta y que el pago ha sido procesado exitosamente
       const pedidoDetails = {
-        usuario_id: 1, // Asegúrate de obtener el ID del usuario autenticado adecuadamente
+        usuario_id: 1,
         total: total,
         detalles: JSON.stringify(cartItems.map(item => ({
           producto_id: item.id,
