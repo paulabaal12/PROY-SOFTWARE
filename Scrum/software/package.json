@@ -10,7 +10,7 @@
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
-    "@babel/runtime": "^7.24.4",
+    "@babel/runtime": "^7.24.5",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@material-ui/core": "^4.12.4",
@@ -24,12 +24,12 @@
     "qrcode": "^1.5.3",
     "qrcode-npm": "^0.0.3",
     "qrcode.react": "^3.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-meteor-data": "^0.2.11",
     "react-modal": "^3.16.1",
     "react-responsive-carousel": "^3.2.23",
-    "react-router-dom": "^6.22.3",
+    "react-router-dom": "^6.23.1",
     "recharts": "^2.12.7",
     "speakeasy": "^2.0.0"
   },

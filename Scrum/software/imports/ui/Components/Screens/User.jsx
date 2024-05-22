@@ -9,6 +9,10 @@ const User = () => {
 		navigate('/user/paymentmanagement');
 	};
 
+	const handleInventoryManagement = () => {
+		navigate('/user/inventorymanagement');	
+	};
+
   	return (
     	<div className='user-page'>
       	  <div className='user-interface'>
@@ -18,8 +22,15 @@ const User = () => {
             	  <i className='arrow'></i> Volver
           	</Link>
             </div>
-            <div className='payment-button'>
-            	<button onClick={handlePaymentManagement}>Gestión de Pagos</button>
+	    <div className='user-menu'>
+	      <div className='action-container'>
+            	  <div className='payment-button'>
+            	    <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
+            	    <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
+            	  </div>
+	      </div>
+	      <div className='delivery-container'>
+	      </div>
             </div>
           </div>
         </div>
