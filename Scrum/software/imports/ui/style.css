@@ -19,7 +19,8 @@ button {
 }
 
 button:hover {
-  background-color: darken(var(--primary-color), 10%);
+  background-color: #003c7d;
+  color: #fff;
 }
 
 .container {
@@ -73,7 +74,6 @@ button:hover {
 .main-content1 {
   margin: 0 auto;
   max-width: 1400px;
-  margin-top: 130px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -102,7 +102,7 @@ button:hover {
 
 .button-agregar {
   background-color: var(--primary-color);
-  color: white;
+  color: rgb(0, 8, 50);
   border: none;
   border-radius: 3px;
 }

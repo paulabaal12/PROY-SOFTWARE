@@ -45,7 +45,7 @@ const ShoppingCartPage = () => {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div className="container shopping-cart">
+    <div className="container1 shopping-cart">
       <Header />
       <h1>Carrito de Compras</h1>
       <table>

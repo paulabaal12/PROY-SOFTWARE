@@ -34,7 +34,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="container1">
       <Header />
       <center>
         <h1 className="titulo1">Nuevos Productos</h1>
