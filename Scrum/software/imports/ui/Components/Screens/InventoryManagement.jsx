@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Typography } from '@mui/material';
 import { PieChart, Pie, Tooltip as PieTooltip, Cell, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip } from 'recharts';
 import { Meteor } from 'meteor/meteor';
-import VenderProductoForm from './VenderProductoForm';
 
 import '../../style.css'; // Importando estilo desde el directorio raíz
 import '../../variables.css'; // Importando variables desde el directorio raíz
@@ -51,10 +50,8 @@ const InventoryManagement = () => {
     return (
         <>
             <div className='inventory-page'>
-
                 <h2>Gestión de Inventario</h2>
                 <button onClick={handleAddProduct} className='add-button'>Agregar Producto</button>
-
                 <ul className='inventory-list'>
                     {products.map(product => (
                         <li key={product.id} className='inventory-item'>
@@ -88,36 +85,37 @@ const InventoryManagement = () => {
                         >
                             {pieData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index% COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <PieTooltip />
-                        <Legend />
-                    </PieChart>
-                </Paper>
-
-                <Paper style={{ padding: '20px' }}>
-                    <Typography variant="h5" component="h2">
-                        Ventas Mensuales
-                    </Typography>
-                    <BarChart   
-                        width={500}
-                        height={300}
-                        data={barData}
-                        margin={{
-                            top: 20, right: 30, left: 20, bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <BarTooltip />
-                        <Legend />
-                        <Bar dataKey="ventas" fill="#8884d8" />
-                    </BarChart>
-                </Paper>
-            </div>
-        </>
-    );
-};
-
-export default InventoryManagement;
+                                ))}
+                            </Pie>
+                            <PieTooltip />
+                            <Legend />
+                        </PieChart>
+                    </Paper>
+    
+                    <Paper style={{ padding: '20px' }}>
+                        <Typography variant="h5" component="h2">
+                            Ventas Mensuales
+                        </Typography>
+                        <BarChart
+                            width={500}
+                            height={300}
+                            data={barData}
+                            margin={{
+                                top: 20, right: 30, left: 20, bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <BarTooltip />
+                            <Legend />
+                            <Bar dataKey="ventas" fill="#8884d8" />
+                        </BarChart>
+                    </Paper>
+                </div>
+            </>
+        );
+    };
+    
+    export default InventoryManagement;
+    
