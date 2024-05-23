@@ -496,3 +496,21 @@ button:hover {
   margin-bottom: 10px;
 }
 
+.chart-container {
+  background-color: var(--chart-background-color);
+  border: 1px solid var(--chart-border-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+/* Personalización específica de gráficos, si es necesario */
+.recharts-pie {
+  stroke: var(--chart-border-color);
+}
+
+.recharts-tooltip-wrapper {
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
