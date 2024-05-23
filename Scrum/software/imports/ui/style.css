@@ -450,3 +450,49 @@ button:hover {
   align-items: center;
   gap: 10px; 
 }
+
+
+
+.containerfavoritos {
+  background-color: #f5f5f5;
+}
+
+.main-contentfavorito {
+  display: flex;
+  justify-content: flex-start; 
+  flex-wrap: wrap;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; 
+}
+
+.product-containerfavorito {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+  margin: 10px;
+  width: 150px; 
+  height: 200px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-containerfavorito:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.product-image-container {
+  width: 150px; 
+  height: 150px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+

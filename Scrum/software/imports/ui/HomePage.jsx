@@ -22,14 +22,17 @@ const HomePage = () => {
 
   const handleFavoriteToggle = (product) => {
     const isFavorite = favoriteProducts.some((p) => p.id === product.id);
-
+  
     if (isFavorite) {
-      setFavoriteProducts(favoriteProducts.filter((p) => p.id !== product.id));
+      const updatedFavorites = favoriteProducts.filter((p) => p.id !== product.id);
+      setFavoriteProducts(updatedFavorites);
+      localStorage.setItem('favoriteProducts', JSON.stringify(updatedFavorites));
     } else {
-      setFavoriteProducts([...favoriteProducts, product]);
+      const newFavorites = [...favoriteProducts, product];
+      setFavoriteProducts(newFavorites);
+      localStorage.setItem('favoriteProducts', JSON.stringify(newFavorites));
     }
   };
-
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -42,8 +45,16 @@ const HomePage = () => {
         }
       });
     };
-
+  
+    const loadFavorites = () => {
+      const storedFavorites = localStorage.getItem('favoriteProducts');
+      if (storedFavorites) {
+        setFavoriteProducts(JSON.parse(storedFavorites));
+      }
+    };
+  
     fetchProducts();
+    loadFavorites();
   }, []);
 
 

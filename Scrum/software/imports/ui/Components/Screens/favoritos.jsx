@@ -1,27 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
+import '../../style.css';
+const Favorito = () => {
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
 
-const Favorito = ({ favoriteProducts }) => {
+  useEffect(() => {
+    const loadFavorites = () => {
+      const storedFavorites = localStorage.getItem('favoriteProducts');
+      if (storedFavorites) {
+        setFavoriteProducts(JSON.parse(storedFavorites));
+      }
+    };
+
+    loadFavorites();
+  }, []);
+
   return (
-    <div className="container1">
+    <div className="containerfavoritos">
       <Header />
       <center>
         <h1>Productos Favoritos</h1>
       </center>
-      <main className="main-content1">
-        <div className="product-scroll-container">
-          {favoriteProducts && favoriteProducts.length > 0 ? (
-            favoriteProducts.map((product, index) => (
-              <div className="product-container" key={index}>
-                <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
-                <h3 className='titulo-producto'>{product.nombre}</h3>
+      <main className="main-contentfavorito">
+        {favoriteProducts && favoriteProducts.length > 0 ? (
+          <div className="product-grid">
+            {favoriteProducts.map((product, index) => (
+              <div className="product-containerfavorito" key={index}>
+                <div className="product-image-container">
+                  <img
+                    src={product.imagen_principal}
+                    alt={product.nombre}
+                    className="product-image"
+                  />
+                </div>
+                <h3 className="titulo-producto">{product.nombre}</h3>
               </div>
-            ))
-          ) : (
-            <p>No hay productos favoritos.</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p>No hay productos favoritos.</p>
+        )}
       </main>
       <Footer />
     </div>
