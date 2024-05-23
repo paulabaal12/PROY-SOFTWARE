@@ -263,7 +263,7 @@ button:hover {
   }
 
   a:hover {
-    color: #3483d3;
+    color: #2263a4;
   }
 
   .button2 {
@@ -290,4 +290,47 @@ button:hover {
   width: 100px;
   height: 100px; 
   object-fit: cover;
+}
+
+.categorias-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.categoria-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.categoria-card:hover {
+  transform: translateY(-5px);
+}
+
+.categoria-imagen {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.categoria-nombre {
+  padding: 1rem;
+  font-size: 1.2rem;
+  color: #130b45;
+  text-decoration: none; 
+}
+
+.categoria-link {
+  text-decoration: none; 
+  color: inherit;
 }

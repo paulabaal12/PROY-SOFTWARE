@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './css/DeliveryManagement.css';
 import { Meteor } from 'meteor/meteor';
 import '../../style.css'; // Importando estilo desde el directorio raíz
 import '../../variables.css'; // Importando variables desde el directorio raíz
