@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
 import '../../style.css'; // Importando estilo desde el directorio raíz
 import '../../variables.css'; // Importando variables desde el directorio raíz
-
 
 const categorias = [
   { nombre: 'Electrónicos', imagen: 'https://ishop.gt/cdn/shop/products/iphone-15-color-rosa-de-128-gb_1200x.jpg?v=1694661924' },
@@ -26,6 +25,12 @@ const categorias = [
 ];
 
 const Categorias = () => {
+  const [hoveredCategoria, setHoveredCategoria] = useState(null);
+
+  const handleCategoriaHover = (index) => {
+    setHoveredCategoria(index);
+  };
+
   return (
     <div>
       <Header />
@@ -33,7 +38,12 @@ const Categorias = () => {
         <h2>Explora nuestras categorías</h2>
         <div className="categorias-grid">
           {categorias.map((categoria, index) => (
-            <div key={index} className="categoria-card">
+            <div
+              key={index}
+              className={`categoria-card ${hoveredCategoria === index ? 'categoria-card-hover' : ''}`}
+              onMouseEnter={() => handleCategoriaHover(index)}
+              onMouseLeave={() => handleCategoriaHover(null)}
+            >
               <Link to={`/categorias/${categoria.nombre}`} className="categoria-link">
                 <img
                   src={categoria.imagen}

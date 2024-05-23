@@ -9,7 +9,6 @@ const VenderProductoPage = () => {
   return (
     <div className="container">
       <Header />
-      <h1 className="titulo1">Vender Producto</h1>
       <VenderProductoForm />
       <Footer />
     </div>
