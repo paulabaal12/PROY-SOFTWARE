@@ -18,6 +18,11 @@ import InventoryManagement from './Components/Screens/InventoryManagement';
 import DeliveryManagement from './Components/Screens/DeliveryManagement';
 import './style.css';
 import './variables.css';
+import CRUDProductos from './Components/Screens/CRUDProductos';
+import ListaProductos from './Components/Screens/ListaProductos';
+import FormularioProducto from './Components/Screens/FormularioProducto';
+
+
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showingRegister, setShowingRegister] = useState(false);
@@ -67,6 +72,11 @@ export const App = () => {
         
         <Route path='/favoritos' element={<Favorito/>}/>
         
+        /*Lo agregare a paymentmanagement luego ;)*/<Route path="/pagos" element={<Visualizador_pagos />} />
+	<Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
+        <Route path="/monitoreo" element={<CRUDProductos />} />
+        <Route path="/lista-productos" element={<ListaProductos />} />
+        <Route path="/formulario-producto" element={<FormularioProducto />} />
 
 
       </Routes>

@@ -1,0 +1,90 @@
+/* Estilos generales para el contenedor principal */
+.crud-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Estilos para los títulos */
+  .crud-title {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos para los botones */
+  .crud-button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .crud-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Estilos específicos para el botón de eliminar */
+  .crud-button-delete {
+    background-color: #f44336; /* Red */
+  }
+  
+  .crud-button-delete:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Estilos para el formulario */
+  .crud-form {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  .crud-form h2 {
+    text-align: center;
+  }
+  
+  .crud-form label {
+    display: block;
+    margin: 10px 0;
+  }
+  
+  .crud-form input, .crud-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Estilos para la tabla de productos */
+  .crud-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .crud-table th, .crud-table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .crud-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .crud-table tr:hover {
+    background-color: #f5f5f5;
+  }
+  

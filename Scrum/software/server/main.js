@@ -236,6 +236,80 @@ Meteor.startup(() => {
     },
 
 
+      
+    'productos.update'(productoId, productoData) {
+      check(productoId, Number);
+      check(productoData, {
+        nombre: String,
+        descripcion: String,
+        precio: Number,
+        categoria: String,
+        estado: String,
+        imagen_principal: String,
+        imagenes_adicionales: [String],
+      });
+  
+      pool.query(
+        'UPDATE productos SET nombre = $1, descripcion = $2, precio = $3, categoria = $4, estado = $5, imagen_principal = $6, imagenes_adicionales = $7 WHERE id = $8',
+        [productoData.nombre, productoData.descripcion, productoData.precio, productoData.categoria, productoData.estado, productoData.imagen_principal, productoData.imagenes_adicionales, productoId],
+        (err, result) => {
+          if (err) {
+            console.error('Error al actualizar el producto:', err);
+            throw new Meteor.Error('database-error', 'Error al actualizar el producto en la base de datos');
+          }
+          console.log('Producto actualizado correctamente en PostgreSQL');
+        }
+      );
+    },
+
+    'productos.delete'(productoId) {
+      check(productoId, Number);
+  
+      pool.query(
+        'DELETE FROM productos WHERE id = $1',
+        [productoId],
+        (err, result) => {
+          if (err) {
+            console.error('Error al eliminar el producto:', err);
+            throw new Meteor.Error('database-error', 'Error al eliminar el producto de la base de datos');
+          }
+          console.log('Producto eliminado correctamente en PostgreSQL');
+        }
+      );
+    },
+
+
+    'pedidos.getAll'() {
+      return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM pedidos', (err, result) => {
+          if (err) {
+            console.error('Error fetching orders:', err);
+            reject(new Meteor.Error('database-error', 'Error fetching orders from the database'));
+          } else {
+            resolve(result.rows);
+          }
+        });
+      });
+    },
+
+    'pedidos.updateEstado'(pedidoId, nuevoEstado) {
+      check(pedidoId, Number);
+      check(nuevoEstado, String);
+  
+      pool.query(
+        'UPDATE pedidos SET estado = $1 WHERE id_pedido = $2',
+        [nuevoEstado, pedidoId],
+        (err, result) => {
+          if (err) {
+            console.error('Error updating order status:', err);
+            throw new Meteor.Error('database-error', 'Error updating order status in the database');
+          }
+          console.log('Order status updated successfully');
+        }
+      );
+    },
+
+
     'pedidos.insert'(pedidoData) {
       check(pedidoData, {
         usuario_id: Number,

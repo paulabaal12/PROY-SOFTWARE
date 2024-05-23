@@ -18,6 +18,7 @@ const carouselImages = [
 const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [notification, setNotification] = useState({ show: false, message: '' });
 
   const handleFavoriteToggle = (product) => {
     const isFavorite = favoriteProducts.some((p) => p.id === product.id);
@@ -28,6 +29,7 @@ const HomePage = () => {
       setFavoriteProducts([...favoriteProducts, product]);
     }
   };
+
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -44,29 +46,56 @@ const HomePage = () => {
     fetchProducts();
   }, []);
 
+
+  const handleAddToCart = (product) => {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const existingProduct = cartItems.find(item => item.id === product.id);
+  
+    if (existingProduct) {
+      // Si el producto ya existe en el carrito, solo incrementa la cantidad
+      cartItems = cartItems.map(item => 
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      // Asegúrate de incluir todos los campos necesarios del producto aquí
+      cartItems.push({
+        id: product.id, // ID del producto
+        name: product.nombre, // Nombre del producto
+        price: product.precio, // Precio del producto
+        quantity: 1, // Cantidad inicial
+        image: product.imagen_principal // Imagen del producto (opcional)
+      });
+    }
+  
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    setNotification({ show: true, message: 'Producto añadido al carrito' });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 3000);
+  };
+  
+
+
   return (
     <div className="container1">
       <Header />
-      <center>
-        <h1 className="titulo1">Nuevos Productos</h1>
-      </center>
+      {notification.show && <div className="notification">{notification.message}</div>}
+      <center><h1 className="titulo1">Nuevos Productos</h1></center>
       <main className="main-content1">
         <div className="product-scroll-container">
           {products.map((product, index) => (
-           <div className="product-container" key={index}>
-           <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
-           <h3 className='titulo-producto'>{product.nombre}</h3>
-           <p className='titulo-precio'>Precio: {product.precio}</p>
-           <div className="product-actions">
-             <button className="button-agregar">Agregar al carrito</button>
-             <span
-               className={`favorite-icon ${favoriteProducts.some((p) => p.id === product.id) ? 'favorite' : ''}`}
-               onClick={() => handleFavoriteToggle(product)}
-             >
-               &#10084;
-             </span>
-           </div>
-         </div>
+            <div className="product-container" key={index}>
+              <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
+              <h3 className='titulo-producto'>{product.nombre}</h3>
+              <p className='titulo-precio'>Precio: {product.precio}</p>
+              <div className="product-actions">
+                <button className="button-agregar" onClick={() => handleAddToCart(product)}>Agregar al carrito</button>
+                <span className={`favorite-icon ${favoriteProducts.some(p => p.id === product.id) ? 'favorite' : ''}`}
+                  onClick={() => handleFavoriteToggle(product)}>
+                  &#10084;
+                </span>
+              </div>
+            </div>
           ))}
         </div>
       </main>

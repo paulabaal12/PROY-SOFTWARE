@@ -2,21 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
-
+import '../../style.css';
+import '../../variables.css';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-
-  const initialProducts = [
-    { id: 1, name: "Producto Temporal 1", quantity: 2, price: 12.99 },
-    { id: 2, name: "Producto Temporal 2", quantity: 1, price: 39.99 },
-    { id: 3, name: "Producto Temporal 3", quantity: 5, price: 7.49 },
-    { id: 4, name: "Producto Temporal 4", quantity: 3, price: 24.99 }
-  ];
-
-  const [cartItems, setCartItems] = useState(initialProducts);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCartItems = localStorage.getItem('cartItems');
+    return savedCartItems ? JSON.parse(savedCartItems).map(item => ({
+      ...item,
+      price: parseFloat(item.price)  // Ensure price is a float
+    })) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
@@ -42,7 +39,7 @@ const ShoppingCartPage = () => {
     navigate('/payment-summary', { state: { cartItems } });
   };
 
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = cartItems.reduce((acc, item) => acc + (item.price || 0) * item.quantity, 0);
 
   return (
     <div className="container1 shopping-cart">
@@ -67,8 +64,8 @@ const ShoppingCartPage = () => {
                 {item.quantity}
                 <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
               </td>
-              <td>${item.price.toFixed(2)}</td>
-              <td>${(item.quantity * item.price).toFixed(2)}</td>
+              <td>${item.price ? item.price.toFixed(2) : '0.00'}</td>
+              <td>${item.price ? (item.quantity * item.price).toFixed(2) : '0.00'}</td>
               <td>
                 <button onClick={() => handleRemove(item.id)}>Eliminar</button>
               </td>
