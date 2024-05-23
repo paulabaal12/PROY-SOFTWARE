@@ -7,5 +7,9 @@
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --chart-primary-color: #4285F4;  /* Azul para gráficos */
+    --chart-secondary-color: #DB4437; /* Rojo para gráficos */
+    --chart-background-color: #F4F4F4; /* Fondo para áreas de gráficos */
+    --chart-border-color: #e0e0e0; /* Borde para componentes del gráfico */
   }
   
