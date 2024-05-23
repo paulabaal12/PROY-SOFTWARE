@@ -9,6 +9,7 @@ import ShoppingCartPage from './Components/Screens/ShoppingCartPage';
 import PaymentMethodPage from './Components/Screens/PaymentMethodPage';
 import PaymentSummaryPage from './Components/Screens/PaymentSummaryPage';
 import Categorias from './Components/Screens/categoriasPage';
+import Favorito from './Components/Screens/favoritos';
 import ThanksForShopping from './Components/Screens/ThanksForShopping';
 import User from './Components/Screens/User';
 import Visualizador_pagos from './Components/Screens/visualizador_pagos';
@@ -63,6 +64,8 @@ export const App = () => {
         <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
         <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
+        
+        <Route path='/favoritos' element={<Favorito/>}/>
         
 
 

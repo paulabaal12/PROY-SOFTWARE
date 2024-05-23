@@ -17,6 +17,17 @@ const carouselImages = [
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+
+  const handleFavoriteToggle = (product) => {
+    const isFavorite = favoriteProducts.some((p) => p.id === product.id);
+
+    if (isFavorite) {
+      setFavoriteProducts(favoriteProducts.filter((p) => p.id !== product.id));
+    } else {
+      setFavoriteProducts([...favoriteProducts, product]);
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -42,12 +53,20 @@ const HomePage = () => {
       <main className="main-content1">
         <div className="product-scroll-container">
           {products.map((product, index) => (
-            <div className="product-container" key={index}>
-              <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
-              <h3 className='titulo-producto'>{product.nombre}</h3>
-              <p className='titulo-precio'>Precio: {product.precio}</p>
-              <button className="button-agregar">Agregar al carrito</button>
-            </div>
+           <div className="product-container" key={index}>
+           <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
+           <h3 className='titulo-producto'>{product.nombre}</h3>
+           <p className='titulo-precio'>Precio: {product.precio}</p>
+           <div className="product-actions">
+             <button className="button-agregar">Agregar al carrito</button>
+             <span
+               className={`favorite-icon ${favoriteProducts.some((p) => p.id === product.id) ? 'favorite' : ''}`}
+               onClick={() => handleFavoriteToggle(product)}
+             >
+               &#10084;
+             </span>
+           </div>
+         </div>
           ))}
         </div>
       </main>

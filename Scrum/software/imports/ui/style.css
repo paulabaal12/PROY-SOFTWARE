@@ -29,9 +29,15 @@ button:hover {
   padding: 20px;
 }
 
-.header, .footer {
+.header {
   background-color: var(--primary-color);
   color: #fff;
+  padding: 10px 20px;
+}
+
+.footer {
+  background-color: var(--primary-color);
+  color: #01022e;
   padding: 10px 20px;
 }
 
@@ -427,4 +433,20 @@ button:hover {
 
 .VenderProductoPage{
   background: linear-gradient(to right, transparent, rgb(225, 241, 255))
+}
+
+.favorite-icon {
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.favorite-icon.favorite {
+  color: red;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
 }
