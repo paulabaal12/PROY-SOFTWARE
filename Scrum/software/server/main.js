@@ -246,7 +246,7 @@ Meteor.startup(() => {
         categoria: String,
         estado: String,
         imagen_principal: String,
-        imagenes_adicionales: [String],
+        imagenes_adicionales: [String], // Esto debe ser un array de strings
       });
   
       pool.query(

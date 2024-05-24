@@ -69,6 +69,7 @@ const ListaPedidos = ({ pedidos, onEstadoCambiado }) => {
                 onChange={e => setEstadoSeleccionado(e.target.value)}
               >
                 <option value="Pendiente">Pendiente</option>
+                <option value="Cancelado">Cancelado</option>
                 <option value="En Proceso">En Proceso</option>
                 <option value="Enviado">Enviado</option>
                 <option value="Entregado">Entregado</option>

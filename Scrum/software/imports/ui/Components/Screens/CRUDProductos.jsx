@@ -4,6 +4,8 @@ import ListaProductos from './ListaProductos';
 import FormularioProducto from './FormularioProducto';
 import ListaPedidos from './ListaPedidos';
 import './css/CRUD.css';
+import '../../style.css'; // Importando estilo desde el directorio raíz
+import '../../variables.css'; // Importando variables desde el directorio raíz
 
 const CRUDProductos = () => {
   const [productos, setProductos] = useState([]);

@@ -18,7 +18,7 @@ const ListaProductos = ({ productos, onEditar, onEliminar }) => {
                 <td>{producto.nombre}</td>
                 <td>${producto.precio}</td>
                 <td>
-                    <button onClick={() => onEditar(producto)} className="crud-button">Editar</button>
+                <button onClick={() => onEditar(producto)}>Editar</button>
                     <button onClick={() => onEliminar(producto.id)} className="crud-button crud-button-delete">Eliminar</button>
                 </td>
                 </tr>
