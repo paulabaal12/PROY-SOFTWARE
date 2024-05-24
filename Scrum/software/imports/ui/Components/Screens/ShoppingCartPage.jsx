@@ -42,43 +42,47 @@ const ShoppingCartPage = () => {
   const total = cartItems.reduce((acc, item) => acc + (item.price || 0) * item.quantity, 0);
 
   return (
-    <div className="container1 shopping-cart">
-      <Header />
-      <h1>Carrito de Compras</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cartItems.map(item => (
-            <tr key={item.id}>
-              <td>{item.name}</td>
-              <td>
-                <button onClick={() => handleChangeQuantity(item.id, -1)} disabled={item.quantity <= 1}>-</button>
-                {item.quantity}
-                <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
-              </td>
-              <td>${item.price ? item.price.toFixed(2) : '0.00'}</td>
-              <td>${item.price ? (item.quantity * item.price).toFixed(2) : '0.00'}</td>
-              <td>
-                <button onClick={() => handleRemove(item.id)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="checkout">
-        <p>Total: ${total.toFixed(2)}</p>
-        <button onClick={handleCheckout}>Proceder al Pago</button>
+    <>
+      <div className="containerr">
+        <Header />
       </div>
-      <Footer />
-    </div>
+      <div className="container1 shopping-cart">
+        <h1>Carrito de Compras</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cartItems.map(item => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td>
+                  <button onClick={() => handleChangeQuantity(item.id, -1)} disabled={item.quantity <= 1}>-</button>
+                  {item.quantity}
+                  <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
+                </td>
+                <td>${item.price ? item.price.toFixed(2) : '0.00'}</td>
+                <td>${item.price ? (item.quantity * item.price).toFixed(2) : '0.00'}</td>
+                <td>
+                  <button onClick={() => handleRemove(item.id)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="checkout">
+          <p>Total: ${total.toFixed(2)}</p>
+          <button onClick={handleCheckout}>Proceder al Pago</button>
+        </div>
+        <Footer />
+      </div>
+    </>
   );
 };
 

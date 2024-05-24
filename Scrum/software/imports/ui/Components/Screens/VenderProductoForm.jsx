@@ -67,7 +67,7 @@ const VenderProductoForm = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="form-containerr">
       {!productoAgregado && (
         <>
           <h1 className='form-title'>Vender Producto</h1>

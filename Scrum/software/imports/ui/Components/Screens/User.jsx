@@ -21,28 +21,32 @@ const User = () => {
   };
 
   return (
-    <div className="container user-page">
-      <Header />
-      <div className="user-interface">
-        <div className="user-header">
-          <h2>Usuario</h2>
-          <Link to="/homepage" className="back-button">
-            <i className="arrow"></i> Volver
-          </Link>
-        </div>
-        <div className="user-menu">
-          <div className="action-container">
-            <div className="payment-button">
-              <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
-              <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
-              <button onClick={handleDeliveryManagement}>Gestión de Repartidor</button>
-            </div>
-          </div>
-          <div className="delivery-container"></div>
-        </div>
+    <>
+      <div className="containerr">
+        <Header />
       </div>
-      <Footer />
-    </div>
+      <div className="container user-page">
+        <div className="user-interface">
+          <div className="user-header">
+            <h2>Usuario</h2>
+            <Link to="/homepage" className="back-button">
+              <i className="arrow"></i> Volver
+            </Link>
+          </div>
+          <div className="user-menu">
+            <div className="action-container">
+              <div className="payment-button">
+                <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
+                <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
+                <button onClick={handleDeliveryManagement}>Gestión de Repartidor</button>
+              </div>
+            </div>
+            <div className="delivery-container"></div>
+          </div>
+        </div >
+      </div>
+      <div  className="containerr"> <Footer /></div>
+    </>
   );
 };
 

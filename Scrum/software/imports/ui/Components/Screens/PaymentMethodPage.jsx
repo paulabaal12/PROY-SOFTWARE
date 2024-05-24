@@ -93,20 +93,23 @@ const PaymentMethodPage = () => {
   };
 
   return (
-    <div className="container payment-method-page">
-      <Header />
-      <h1>Seleccione su Método de Pago</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            <input
-              type="radio"
-              name="paymentType"
-              value="creditCard"
-              checked={paymentType === 'creditCard'}
-              onChange={handlePaymentTypeChange}
-            />
-            Tarjeta de Crédito
+      <>
+        <div className="containerr">
+          <Header />
+        </div>
+        <div className="container payment-method-page">
+          <h1>Seleccione su Método de Pago</h1>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="paymentType"
+                  value="creditCard"
+                  checked={paymentType === 'creditCard'}
+                  onChange={handlePaymentTypeChange}
+                />
+                Tarjeta de Crédito
           </label>
           <label>
             <input
@@ -168,17 +171,19 @@ const PaymentMethodPage = () => {
             </label>
           </div>
         )}
-        {paymentType === 'paypal' && (
-          <div id="paypal-button-container"></div>
-        )}
-        <div className="total-payment">
-          <p>Total a Pagar: ${total.toFixed(2)}</p>
-        </div>
-        <button type="submit">Confirmar Pago</button>
-      </form>
-      <Footer />
-    </div>
+          {paymentType === 'paypal' && (
+            <div id="paypal-button-container"></div>
+          )}
+          <div className="total-payment">
+            <p>Total a Pagar: ${total.toFixed(2)}</p>
+          </div>
+          <button type="submit">Confirmar Pago</button>
+        </form>
+        <Footer />
+      </div>
+    </>
   );
 };
+
 
 export default PaymentMethodPage;

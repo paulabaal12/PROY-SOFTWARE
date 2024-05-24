@@ -7,7 +7,7 @@ import '../../variables.css'; // Importando variables desde el directorio raíz
 
 const VenderProductoPage = () => {
   return (
-    <div className="container">
+    <div className="containerr">
       <Header />
       <VenderProductoForm />
       <Footer />
