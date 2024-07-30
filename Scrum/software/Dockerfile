@@ -1,9 +1,15 @@
-FROM postgres:latest
+FROM node:14
 
-COPY ./server/db/schema.sql /docker-entrypoint-initdb.d/
+WORKDIR /usr/src/app
 
-ENV POSTGRES_USER=user
-ENV POSTGRES_PASSWORD=userpassword
-ENV POSTGRES_DB=users_db
+RUN curl https://install.meteor.com/ | sh
 
-EXPOSE 5432
+COPY . .
+
+RUN meteor npm install
+
+RUN meteor build --directory /usr/src/app/build --allow-superuser
+
+EXPOSE 3000
+
+CMD ["node", "build/main.js"]
