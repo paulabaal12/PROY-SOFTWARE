@@ -25,3 +25,5 @@ numtel:pg
 service-configuration
 accounts-google
 accounts-2fa
+meteortesting:mocha
+practicalmeteor:chai
