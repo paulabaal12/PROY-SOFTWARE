@@ -21,7 +21,7 @@ import './variables.css';
 import CRUDProductos from './Components/Screens/CRUDProductos';
 import ListaProductos from './Components/Screens/ListaProductos';
 import FormularioProducto from './Components/Screens/FormularioProducto';
-
+import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,10 +69,11 @@ export const App = () => {
         <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
         <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
+        <Route path="/categoria/:nombre" element={<CategoriaDetalle />} />
         
         <Route path='/favoritos' element={<Favorito/>}/>
         
-        /*Lo agregare a paymentmanagement luego ;)*/<Route path="/pagos" element={<Visualizador_pagos />} />
+  <Route path="/pagos" element={<Visualizador_pagos />} />
 	<Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path="/monitoreo" element={<CRUDProductos />} />
         <Route path="/lista-productos" element={<ListaProductos />} />

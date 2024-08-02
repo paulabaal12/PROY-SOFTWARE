@@ -6,10 +6,10 @@ import '../../style.css'; // Importando estilo desde el directorio raíz
 import '../../variables.css'; // Importando variables desde el directorio raíz
 
 const categorias = [
-  { nombre: 'Electrónicos', imagen: 'https://ishop.gt/cdn/shop/products/iphone-15-color-rosa-de-128-gb_1200x.jpg?v=1694661924' },
+  { nombre: 'Electrónicos', imagen: 'https://d1cft8rz0k7w99.cloudfront.net/n/0/0/3/c/003cd2e1138f51f207ac5a4ed6aa67ab443bb861_KitchenSystem_395378_01.jpg' },
   { nombre: 'Ropa', imagen: 'https://png.pngtree.com/png-clipart/20240202/original/pngtree-blue-knitted-sweater-isolated-on-a-white-background-casual-winter-clothing-png-image_14217300.png' },
-  { nombre: 'Hogar', imagen: 'https://d1cft8rz0k7w99.cloudfront.net/n/0/0/3/c/003cd2e1138f51f207ac5a4ed6aa67ab443bb861_KitchenSystem_395378_01.jpg' },
-  { nombre: 'Libros', imagen: 'https://http2.mlstatic.com/D_NQ_NP_721067-MCO47873097887_102021-O.webp' },
+  { nombre: 'Hogar', imagen: 'https://suenoszzz.com/21670-large_default/sillon-irene.jpg' },
+  { nombre: 'Libros', imagen: 'https://http2.mlstatic.com/D_NQ_NP_721067-MCO47873097887_102021-O.webp' }, 
   { nombre: 'Juguetes', imagen: 'https://cpadistributor.com/109316-large_default/bluey-pack-2-figuras-3-surtidos-bly07000-famosa.jpg' },
   { nombre: 'Deportes', imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFRMDYAFIPdFhsg_5Uhi3BpcEKW8SofTJs8c5cs9h3gQ&s' },
   { nombre: 'Belleza', imagen: 'https://www.sephora.com/productimages/sku/s2495497-main-zoom.jpg?imwidth=612' },
@@ -23,6 +23,7 @@ const categorias = [
   { nombre: 'Arte', imagen: 'https://st3.depositphotos.com/29384342/33862/i/450/depositphotos_338623306-stock-photo-various-school-accessories-children-creativity.jpg' },
   { nombre: 'Música', imagen: 'https://cdn.shopify.com/s/files/1/2036/5517/files/TaylorSwift-TTPDLP_180x@2x.webp?v=1710748887' },
 ];
+
 
 const Categorias = () => {
   const [hoveredCategoria, setHoveredCategoria] = useState(null);
@@ -44,7 +45,7 @@ const Categorias = () => {
               onMouseEnter={() => handleCategoriaHover(index)}
               onMouseLeave={() => handleCategoriaHover(null)}
             >
-              <Link to={`/categorias/${categoria.nombre}`} className="categoria-link">
+              <Link to={`/categoria/${categoria.nombre}`} className="categoria-link">
                 <img
                   src={categoria.imagen}
                   alt={categoria.nombre}

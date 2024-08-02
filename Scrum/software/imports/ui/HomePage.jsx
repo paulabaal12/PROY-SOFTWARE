@@ -6,16 +6,16 @@ import Footer from './Components/Footer';
 import './style.css';
 
 const categories = [
-  { name: 'Hogar', image: '/images/1.png', link: '/categoria/hogar' },
-  { name: 'Videojuegos', image: '/images/2.png', link: '/categoria/videojuegos' },
-  { name: 'Belleza', image: '/images/3.png', link: '/categoria/belleza' },
-  { name: 'Juguetes', image: '/images/4.png', link: '/categoria/juguetes' },
-  { name: 'Deportes', image: '/images/5.png', link: '/categoria/deportes' },
-  { name: 'Alimentos', image: '/images/6.png', link: '/categoria/alimentos' },
-  { name: 'Mascotas', image: '/images/7.png', link: '/categoria/mascotas' },
-  { name: 'Manualidades', image: '/images/8.png', link: '/categoria/manualidades' },
-  { name: 'Electrónicos', image: '/images/9.png', link: '/categoria/hogar' },
-  { name: 'Tendencias', image: '/images/10.png', link: '/categoria/tendencias' },
+  { name: 'Hogar', image: '/images/1.png', link: '/categoria/Hogar' },
+  { name: 'Videojuegos', image: '/images/2.png', link: '/categoria/Videojuegos' },
+  { name: 'Belleza', image: '/images/3.png', link: '/categoria/Belleza' },
+  { name: 'Juguetes', image: '/images/4.png', link: '/categoria/Juguetes' },
+  { name: 'Deportes', image: '/images/5.png', link: '/categoria/Deportes' },
+  { name: 'Alimentos', image: '/images/6.png', link: '/categoria/Alimentos' },
+  { name: 'Mascotas', image: '/images/7.png', link: '/categoria/Mascotas' },
+  { name: 'Arte', image: '/images/8.png', link: '/categoria/Arte' },
+  { name: 'Electrónicos', image: '/images/9.png', link: '/categoria/Electrónicos' },
+  { name: 'Tendencias', image: '/images/10.png', link: '/categoria/Tendencias' },
 ];
 const CategoryItem = ({ name, image, link }) => (
   <Link to={link} className="category-item">

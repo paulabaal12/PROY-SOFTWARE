@@ -1126,3 +1126,56 @@ align-items:center;
   margin: 20px 0; 
   text-align: center;
 }
+
+.categoria-detalle-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.categoria-content {
+  display: flex;
+  gap: 30px;
+}
+
+.filtros-sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filtros-sidebar h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.filtros-sidebar label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.filtros-sidebar input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+
+.titulo-precio {
+  padding: 0 10px 10px;
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.categoria-detalle-container h1 {
+  text-align: center; 
+  margin: 20px 0; 
+  font-size: 2em; 
+  color: #333; 
+}

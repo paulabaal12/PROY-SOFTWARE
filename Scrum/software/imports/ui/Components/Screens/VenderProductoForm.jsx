@@ -34,7 +34,7 @@ const VenderProductoForm = ({ producto }) => {
     const productoData = {
       nombre,
       descripcion,
-      precio: Number(precio), // Convierte el precio a número para evitar problemas
+      precio: Number(precio), 
       categoria,
       estado,
       imagen_principal: imagenPrincipal,
@@ -42,7 +42,7 @@ const VenderProductoForm = ({ producto }) => {
     };
   
     const method = producto ? 'productos.update' : 'productos.insert';
-    const params = producto ? [producto.id, productoData] : [productoData]; // Asegúrate de que producto.id es un número
+    const params = producto ? [producto.id, productoData] : [productoData]; 
   
     Meteor.call(method, ...params, (error, response) => {
       if (error) {
@@ -127,12 +127,22 @@ const VenderProductoForm = ({ producto }) => {
               >
                 <option value="">Seleccionar categoría</option>
                 <option value="Hogar">Hogar</option>
-                <option value="Entretenimiento">Entretenimiento</option>
-                <option value="Ropa">Ropa</option>
+                <option value="Electrónicos">Electrónicos</option>
+                <option value="Libros">Libros</option>
                 <option value="Accesorio">Accesorio</option>
-                <option value="Cocina">Cocina</option>
-                <option value="Electronica">Electrónica</option>
-                <option value="Comida">Comida</option>
+                <option value="Juguetes">Juguetes</option>
+                <option value="Deportes">Deportes</option>
+                <option value="Belleza">Belleza</option>
+                <option value="Alimentos">Alimentos</option>
+                <option value="Automóviles">Automóviles</option>
+                <option value="Viajes">Viajes</option>
+                <option value="Mascotas">Mascotas</option>
+                <option value="Salud">Salud</option>
+                <option value="Jardín">Jardín</option>
+                <option value="Herramientas">Herramientas</option>
+                <option value="Arte">Arte</option>
+                <option value="Música">Música</option>
+                <option value="Videojuegos">Videojuegos</option>
               </select>
             </div>
             <div className="form-group">
