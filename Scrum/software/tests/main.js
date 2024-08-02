@@ -1,5 +1,5 @@
 import assert from "assert";
-import '../server/userMethods/userMethods.js'
+//import '../server/userMethods/userMethods.js'
 describe("software", function () {
   it("package.json has correct name", async function () {
     const { name } = await import("../package.json");
