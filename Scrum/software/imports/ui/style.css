@@ -1118,3 +1118,11 @@ align-items:center;
   font-size: 25px;
   margin-top: -1rem; 
 }
+
+.titulo-categorias {
+  font-size: 30px; 
+  font-weight: bold;
+  color: var(--text-color);
+  margin: 20px 0; 
+  text-align: center;
+}

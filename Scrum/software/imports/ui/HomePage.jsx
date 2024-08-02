@@ -17,7 +17,6 @@ const categories = [
   { name: 'Electrónicos', image: '/images/9.png', link: '/categoria/hogar' },
   { name: 'Tendencias', image: '/images/10.png', link: '/categoria/tendencias' },
 ];
-
 const CategoryItem = ({ name, image, link }) => (
   <Link to={link} className="category-item">
     <img src={image} alt={name} className="category-image" />
@@ -32,7 +31,6 @@ const HomePage = () => {
 
   const handleFavoriteToggle = (product) => {
     const isFavorite = favoriteProducts.some((p) => p.id === product.id);
-  
     if (isFavorite) {
       const updatedFavorites = favoriteProducts.filter((p) => p.id !== product.id);
       setFavoriteProducts(updatedFavorites);
@@ -55,14 +53,14 @@ const HomePage = () => {
         }
       });
     };
-  
+
     const loadFavorites = () => {
       const storedFavorites = localStorage.getItem('favoriteProducts');
       if (storedFavorites) {
         setFavoriteProducts(JSON.parse(storedFavorites));
       }
     };
-  
+
     fetchProducts();
     loadFavorites();
   }, []);
@@ -70,9 +68,9 @@ const HomePage = () => {
   const handleAddToCart = (product) => {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     const existingProduct = cartItems.find(item => item.id === product.id);
-  
+
     if (existingProduct) {
-      cartItems = cartItems.map(item => 
+      cartItems = cartItems.map(item =>
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
@@ -84,7 +82,7 @@ const HomePage = () => {
         image: product.imagen_principal
       });
     }
-  
+
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     setNotification({ show: true, message: 'Producto añadido al carrito' });
     setTimeout(() => {
@@ -95,9 +93,9 @@ const HomePage = () => {
   return (
     <div className="container1">
       <Header />
-      
+
       {notification.show && <div className="notification">{notification.message}</div>}
-      <center><h1 className="titulo1">Nuevos Productos</h1></center>
+      <center><h1 className="titulo-categorias">Nuevos Productos</h1></center>
       <main className="main-content1">
         <div className="product-scroll-container">
           {products.map((product, index) => (
@@ -116,9 +114,9 @@ const HomePage = () => {
           ))}
         </div>
       </main>
-      
+
       <section className="categories-section">
-        <h2>Explora nuestras categorías populares</h2>
+        <h2 className="titulo-categorias">Explora nuestras categorías populares</h2>
         <div className="categories-grid">
           {categories.map((category, index) => (
             <CategoryItem key={index} name={category.name} image={category.image} link={category.link} />
