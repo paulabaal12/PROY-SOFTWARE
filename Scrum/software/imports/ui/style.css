@@ -1069,3 +1069,52 @@ align-items:center;
 .delete-button:hover {
 	background-color: #c82333;
 }
+
+.categories-section {
+  margin: 2rem 0;
+}
+
+.categories-section h2 {
+  text-align: start;
+  margin-bottom: 0.5rem;
+  font-size: 30px;
+  margin-left: 3rem; 
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 15px));
+  gap: 1rem;
+  justify-content: center; 
+}
+
+
+.category-item {
+  text-align: center;
+  padding: 0.5rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+}
+
+.category-item:hover {
+  transform: scale(1.05);
+}
+
+.category-image {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+
+}
+
+.category-name {
+  font-weight: bold;
+  font-size: 25px;
+  margin-top: -1rem; 
+}
