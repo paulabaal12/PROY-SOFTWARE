@@ -21,7 +21,9 @@ RUN chown -R meteoruser:meteoruser /usr/src/app
 
 USER meteoruser
 
-RUN meteor build --directory /usr/src/app/build
+RUN meteor update
+
+# RUN meteor build --directory /usr/src/app/build
 
 EXPOSE 3000
 
