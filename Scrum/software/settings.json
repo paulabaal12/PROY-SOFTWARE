@@ -1,6 +1,6 @@
 {
   "postgres": {
-    "host": "localhost",
+    "host": "db",
     "port": 5433,
     "database": "users_db",
     "user": "user",
