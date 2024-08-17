@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import DropdownCart from './Screens/DropdownCart';
 import '../style.css'; // Asegúrate de que la ruta sea correcta
 import '../variables.css'; // Asegúrate de que la ruta sea correcta
 const Header = ({ cartCount }) => {
   const userName = localStorage.getItem('userName') || 'Usuario';
-  const iconSize = 45 + (cartCount * 5); // Aumenta 5px por cada producto
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    setCartItems(storedCartItems);
+  }, [cartCount]);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const closeDropdown = () => {
+    setShowDropdown(false);
+  };
+
   return (
     <header className="header">
       <div className="navbar">
@@ -34,13 +50,12 @@ const Header = ({ cartCount }) => {
       </div>
       <div className="user-cart">
         <Link to="/user" className="user-name">{userName}</Link>
-        <div className="cart-icon">
-          <Link to="/cart" className="cart-icon-link">
-            <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito de compras" width="45" height="45" />
-            {cartCount > 0 && (
-              <span className="cart-count">{cartCount}</span>
-            )}
-          </Link>
+        <div className="cart-icon" onClick={toggleDropdown}>
+          <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito de compras" width="45" height="45" />
+          {cartCount > 0 && (
+            <span className="cart-count">{cartCount}</span>
+          )}
+          {showDropdown && <DropdownCart cartItems={cartItems} onClose={closeDropdown} />}
         </div>
         <Link to="/vender-producto" className="button2">Vender</Link>
       </div>
