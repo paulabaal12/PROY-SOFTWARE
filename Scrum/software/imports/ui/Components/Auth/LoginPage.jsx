@@ -29,7 +29,7 @@ const LoginPage = ({ onLoginSuccess }) => {
     });
   };
 
-  const handle2FAVerification = () => {
+  /*const handle2FAVerification = () => {
     Meteor.call('usuarios.verifyTwoFactorCode', email, verificationCode, (error, result) => {
       if (error) {
         setError('Error en la verificación 2FA. Por favor intenta de nuevo.');
@@ -42,6 +42,7 @@ const LoginPage = ({ onLoginSuccess }) => {
       }
     });
   };
+*/
 
   return (
     <div className="login-container body1">
