@@ -86,6 +86,9 @@ const CategoriaDetalle = () => {
                   <h3 className='titulo-producto'>{producto.nombre}</h3>
                   <p className='titulo-precio'>Precio: ${producto.precio}</p>
                   <button className="button-agregar">Agregar al carrito</button>
+                  <button className="button-info" onClick={handleMoreInfoClick}>
+                    Más Información
+                  </button>
                 </div>
               ))
             )}
