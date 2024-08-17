@@ -13,7 +13,13 @@ const DropdownCart = ({ cartItems, onClose }) => {
               <div className="dropdown-cart-item-details">
                 <p>{item.name}</p>
                 <p>Cantidad: {item.quantity}</p>
-                <p>Precio: ${item.price.toFixed(2)}</p>
+                <p>
+                  Precio: ${
+                    typeof item.price === 'number'
+                      ? item.price.toFixed(2)
+                      : parseFloat(item.price).toFixed(2) || '0.00'
+                  }
+                </p>
               </div>
             </div>
           ))
