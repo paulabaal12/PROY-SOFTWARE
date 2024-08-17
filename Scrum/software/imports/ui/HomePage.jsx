@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
@@ -17,6 +17,7 @@ const categories = [
   { name: 'Electrónicos', image: '/images/9.png', link: '/categoria/Electrónicos' },
   { name: 'Tendencias', image: '/images/10.png', link: '/categoria/Tendencias' },
 ];
+
 const CategoryItem = ({ name, image, link }) => (
   <Link to={link} className="category-item">
     <img src={image} alt={name} className="category-image" />
@@ -25,6 +26,7 @@ const CategoryItem = ({ name, image, link }) => (
 );
 
 const HomePage = () => {
+  //const history = useHistory();
   const [products, setProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [notification, setNotification] = useState({ show: false, message: '' });
@@ -92,6 +94,15 @@ const HomePage = () => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
   };
 
+  //const handleMoreInfoClick = (productoId) => {
+  //  history.push(`/producto/${productoId}`);
+  //};
+
+  const handleMoreInfoClick = (productoId) => {
+    navigate(`/producto/${productoId}`);
+  };
+
+  
   return (
     <div className="container1">
       <Header cartCount={cartCount} /> {/* Pasar el cartCount como prop */}
@@ -107,6 +118,12 @@ const HomePage = () => {
               <p className='titulo-precio'>Precio: {product.precio}</p>
               <div className="product-actions">
                 <button className="button-agregar" onClick={() => handleAddToCart(product)}>Agregar al carrito</button>
+                
+                <div className="product-card">
+                <button onClick={() => handleMoreInfoClick(product.id)}>Más Información</button>
+
+                </div>
+                
                 <span className={`favorite-icon ${favoriteProducts.some(p => p.id === product.id) ? 'favorite' : ''}`}
                   onClick={() => handleFavoriteToggle(product)}>
                   &#10084;
