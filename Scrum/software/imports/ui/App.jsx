@@ -22,6 +22,7 @@ import CRUDProductos from './Components/Screens/CRUDProductos';
 import ListaProductos from './Components/Screens/ListaProductos';
 import FormularioProducto from './Components/Screens/FormularioProducto';
 import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
+import ProductDetail from './Components/Screens/ProductDetail'; // Ruta corregida
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -70,16 +71,12 @@ export const App = () => {
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
         <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
         <Route path="/categoria/:nombre" element={<CategoriaDetalle />} />
-        
         <Route path='/favoritos' element={<Favorito/>}/>
-        
-  <Route path="/pagos" element={<Visualizador_pagos />} />
-	<Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path="/monitoreo" element={<CRUDProductos />} />
         <Route path="/lista-productos" element={<ListaProductos />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
-
-
+        {/* Ruta corregida y no duplicada */}
+        <Route path="/producto/:id" element={<ProductDetail />} />
       </Routes>
     </Router>
   );
