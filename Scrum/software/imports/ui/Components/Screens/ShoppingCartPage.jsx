@@ -48,37 +48,33 @@ const ShoppingCartPage = () => {
       </div>
       <div className="container1 shopping-cart">
         <h1>Carrito de Compras</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Precio Unitario</th>
-              <th>Total</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartItems.map(item => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>
+        <div className="cart-items-container">
+          {cartItems.map(item => (
+            <div key={item.id} className="cart-item">
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="cart-item-image" 
+                onError={(e) => e.target.src = '/path-to-placeholder-image/placeholder.png'} 
+              />
+
+              <div className="cart-item-details">
+                <p className="cart-item-name">{item.name}</p>
+                <div className="cart-item-quantity">
                   <button onClick={() => handleChangeQuantity(item.id, -1)} disabled={item.quantity <= 1}>-</button>
-                  {item.quantity}
+                  <span>{item.quantity}</span>
                   <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
-                </td>
-                <td>${item.price ? item.price.toFixed(2) : '0.00'}</td>
-                <td>${item.price ? (item.quantity * item.price).toFixed(2) : '0.00'}</td>
-                <td>
-                  <button onClick={() => handleRemove(item.id)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                <p className="cart-item-price">Precio: ${item.price.toFixed(2)}</p>
+                <p className="cart-item-total">Total: ${(item.quantity * item.price).toFixed(2)}</p>
+                <button onClick={() => handleRemove(item.id)} className="remove-button">Eliminar</button>
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="checkout">
           <p>Total: ${total.toFixed(2)}</p>
-          <button onClick={handleCheckout}>Proceder al Pago</button>
+          <button onClick={handleCheckout} className="checkout-button">Proceder al Pago</button>
         </div>
         <Footer />
       </div>
