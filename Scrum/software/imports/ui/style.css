@@ -113,6 +113,13 @@ button:hover {
   border-radius: 3px;
 }
 
+.info-producto {
+  background-color: var(--primary-color);
+  color: rgb(0, 8, 50);
+  border: none;
+  border-radius: 3px;
+}
+
 .search-bar {
   display: flex;
   align-items: center;
