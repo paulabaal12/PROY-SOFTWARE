@@ -330,6 +330,32 @@ Meteor.startup(() => {
     },
 
 
+    'productos.getAll_id'(productoId) {
+    check(productoId, Number);
+    console.log('Consultando producto con ID:', productoId); // Depuración
+
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT * FROM productos WHERE id = $1', [productoId], (err, result) => {
+        if (err) {
+          console.error('Error al obtener productos:', err);
+          reject(new Meteor.Error('database-error', 'Error al obtener productos de la base de datos'));
+        } else {
+          if (result.rows.length > 0) {
+            console.log('Producto encontrado:', result.rows[0]); // Depuración
+            resolve(result.rows);
+          } else {
+            console.log('Producto no encontrado'); // Depuración
+            resolve([]);
+          }
+        }
+      });
+    });
+    },
+
+
+
+
+
     'pedidos.insert'(pedidoData) {
       check(pedidoData, {
         usuario_id: Number,
