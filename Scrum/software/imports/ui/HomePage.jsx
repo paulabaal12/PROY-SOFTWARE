@@ -28,19 +28,7 @@ const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [notification, setNotification] = useState({ show: false, message: '' });
-
-  const handleFavoriteToggle = (product) => {
-    const isFavorite = favoriteProducts.some((p) => p.id === product.id);
-    if (isFavorite) {
-      const updatedFavorites = favoriteProducts.filter((p) => p.id !== product.id);
-      setFavoriteProducts(updatedFavorites);
-      localStorage.setItem('favoriteProducts', JSON.stringify(updatedFavorites));
-    } else {
-      const newFavorites = [...favoriteProducts, product];
-      setFavoriteProducts(newFavorites);
-      localStorage.setItem('favoriteProducts', JSON.stringify(newFavorites));
-    }
-  };
+  const [cartCount, setCartCount] = useState(0); // Estado para el número de productos en el carrito
 
   useEffect(() => {
     const fetchProducts = () => {
@@ -61,8 +49,21 @@ const HomePage = () => {
       }
     };
 
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+    };
+
     fetchProducts();
     loadFavorites();
+    updateCartCount(); // Inicializa el contador del carrito
+
+    window.addEventListener('storage', updateCartCount); // Actualiza el contador si el carrito cambia
+
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+    };
   }, []);
 
   const handleAddToCart = (product) => {
@@ -88,11 +89,12 @@ const HomePage = () => {
     setTimeout(() => {
       setNotification({ show: false, message: '' });
     }, 3000);
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
   };
 
   return (
     <div className="container1">
-      <Header />
+      <Header cartCount={cartCount} /> {/* Pasar el cartCount como prop */}
 
       {notification.show && <div className="notification">{notification.message}</div>}
       <center><h1 className="titulo-categorias">Nuevos Productos</h1></center>

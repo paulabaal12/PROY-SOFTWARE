@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../style.css'; // Asegúrate de que la ruta sea correcta
 import '../variables.css'; // Asegúrate de que la ruta sea correcta
-const Header = () => {
+const Header = ({ cartCount }) => {
   const userName = localStorage.getItem('userName') || 'Usuario';
-
+  const iconSize = 45 + (cartCount * 5); // Aumenta 5px por cada producto
   return (
     <header className="header">
       <div className="navbar">
@@ -37,6 +37,9 @@ const Header = () => {
         <div className="cart-icon">
           <Link to="/cart" className="cart-icon-link">
             <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito de compras" width="45" height="45" />
+            {cartCount > 0 && (
+              <span className="cart-count">{cartCount}</span>
+            )}
           </Link>
         </div>
         <Link to="/vender-producto" className="button2">Vender</Link>
