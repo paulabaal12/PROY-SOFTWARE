@@ -50,7 +50,7 @@ const RegisterPage = () => {
       }
     });
   };
-  
+  //to implement /refine
   const activate2FA = (userId) => {
     Meteor.call('usuarios.enableTwoFactorAuth', userId, (err, result) => {
       if (err) {
