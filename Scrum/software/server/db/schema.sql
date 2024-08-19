@@ -85,7 +85,8 @@ ALTER TABLE ventas ADD FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor
 
 ALTER TABLE pedidos ADD PRIMARY KEY (id_pedido);
 ALTER TABLE pedidos ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
+ALTER TABLE pedidos ADD FOREIGN KEY (direccion_id) REFERENCES direcciones (id);
 
 ALTER TABLE direcciones ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
-ALTER TABLE pedidos ADD FOREIGN KEY (pedido_id) REFERENCES pedidos (id_pedido);
+ALTER TABLE envios ADD FOREIGN KEY (pedido_id) REFERENCES pedidos (id_pedido);
 
