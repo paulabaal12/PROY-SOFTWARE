@@ -1,7 +1,7 @@
 services:
   db:
     build:
-      context: ./server/db
+      context: ./server/PostgreSQL/db
       dockerfile: Dockerfile
     container_name: meteor_postgresdb
     environment:

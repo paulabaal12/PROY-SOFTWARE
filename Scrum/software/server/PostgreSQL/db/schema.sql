@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS envios (
 	numero_rastreo VARCHAR(32),
 	fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	estado_envio VARCHAR(50) DEFAULT 'En tránsito',
-)
+);
 
 -- Sección 2: Constraints, aqui pueden agregar toda la estructura y relacion entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);

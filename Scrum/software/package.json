@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor --settings settings.json",
-    "build-image-db": "docker build -t postgres ./server/db",
+    "build-image-db": "docker build -t postgres ./server/PostgreSQL/db",
     "build-image-app": "docker build -t meteor-app .",
     "run-container": "docker run --name meteor_postgresdb -p 5433:5432 -e POSTGRES_HOST_AUTH_METHOD=trust postgres",
     "test": "meteor test --once --driver-package meteortesting:mocha",
