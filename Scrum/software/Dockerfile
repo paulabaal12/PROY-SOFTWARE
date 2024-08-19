@@ -1,9 +1,32 @@
-FROM postgres:latest
+FROM node:18
 
-COPY ./server/db/schema.sql /docker-entrypoint-initdb.d/
+RUN apt-get update && apt-get install -y \
+  curl \
+  openssl \
+  libssl-dev
 
-ENV POSTGRES_USER=user
-ENV POSTGRES_PASSWORD=userpassword
-ENV POSTGRES_DB=users_db
+RUN rm -rf /var/lib/apt/lists/*
 
-EXPOSE 5432
+WORKDIR /usr/src/app
+
+RUN curl https://install.meteor.com/ | sh
+
+COPY package*.json ./
+RUN meteor npm install
+
+RUN useradd -m meteoruser
+COPY . .
+
+RUN chown -R meteoruser:meteoruser /usr/src/app
+
+USER meteoruser
+
+RUN meteor update
+
+RUN curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+
+RUN chmod +x wait-for-it.sh
+
+EXPOSE 3000
+
+CMD ["./wait-for-it.sh", "db:5432", "--", "npm", "start"]

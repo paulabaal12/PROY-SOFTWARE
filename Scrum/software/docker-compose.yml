@@ -1,0 +1,22 @@
+services:
+  db:
+    build:
+      context: ./server/db
+      dockerfile: Dockerfile
+    container_name: meteor_postgresdb
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpassword
+      POSTGRES_DB: users_db
+    ports:
+      - "5433:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meteor_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
