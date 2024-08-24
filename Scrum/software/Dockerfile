@@ -7,17 +7,16 @@ RUN apt-get update && apt-get install -y \
 
 RUN rm -rf /var/lib/apt/lists/*
 
+RUN useradd -m meteoruser
 WORKDIR /usr/src/app
+RUN chown -R meteoruser:meteoruser /usr/src/app
 
 RUN curl https://install.meteor.com/ | sh
 
 COPY package*.json ./
 RUN meteor npm install
 
-RUN useradd -m meteoruser
 COPY . .
-
-RUN chown -R meteoruser:meteoruser /usr/src/app
 
 USER meteoruser
 
