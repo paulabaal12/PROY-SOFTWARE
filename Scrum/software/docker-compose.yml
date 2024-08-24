@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: userpassword
       POSTGRES_DB: users_db
+    networks:
+      - int
     ports:
       - "5433:5432"
 
@@ -20,3 +22,13 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    networks:
+      - int
+      - ext
+
+networks:
+  int:
+    driver: bridge
+    internal: true
+  ext:
+    driver: bridge
