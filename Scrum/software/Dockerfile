@@ -13,14 +13,18 @@ RUN chown -R meteoruser:meteoruser /usr/src/app
 
 RUN curl https://install.meteor.com/ | sh
 
+COPY package.json ./
+
+RUN rm -f package-lock.json
+
+RUN npm install -g npm@10.8.2
+
+RUN mkdir -p /usr/src/app/.meteor/local && chown -R meteoruser:meteoruser /usr/src/app/.meteor
+
 USER meteoruser
-COPY package*.json ./
-RUN meteor npm install
+RUN meteor npm install --legacy-peer-deps
 
 COPY . .
-
-
-RUN meteor update
 
 RUN curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 
