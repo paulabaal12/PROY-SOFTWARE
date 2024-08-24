@@ -13,12 +13,12 @@ RUN chown -R meteoruser:meteoruser /usr/src/app
 
 RUN curl https://install.meteor.com/ | sh
 
+USER meteoruser
 COPY package*.json ./
 RUN meteor npm install
 
 COPY . .
 
-USER meteoruser
 
 RUN meteor update
 
