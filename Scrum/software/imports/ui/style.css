@@ -1302,3 +1302,54 @@ align-items:center;
 .remove-button:hover {
   background-color: #c82333;
 }
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.password-input-container .input-field {
+  width: 100%;
+  padding-right: 40px; 
+  margin-bottom: 0; 
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password:hover,
+.toggle-password:focus {
+  outline: none;
+  background: none;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  color: #888;
+}
+
+.eye-icon:hover {
+  color: #888; 
+}

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Modal from 'react-modal';
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
-
+import '../../style.css';
+import '../../variables.css';
 
 Modal.setAppElement('#root');
 
@@ -19,12 +18,14 @@ const RegisterPage = () => {
     hasAgreedToPrivacyPolicy: false,
     enable_2fa: false,
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
   const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
   const [qrCodeSvg, setQrCodeSvg] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
 
   const handleChange = (event) => {
     const { id, value, checked, type } = event.target;
@@ -50,7 +51,8 @@ const RegisterPage = () => {
       }
     });
   };
-  //to implement /refine
+
+  
   const activate2FA = (userId) => {
     Meteor.call('usuarios.enableTwoFactorAuth', userId, (err, result) => {
       if (err) {
@@ -62,12 +64,17 @@ const RegisterPage = () => {
     });
   };
 
+  const togglePasswordVisibility = (e) => {
+    e.preventDefault();
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="register-container body1">
       <div className="form-container">
         <h1 className="centered">Registro</h1>
         <form id="register-form" onSubmit={handleSubmit}>
-          {['name', 'email', 'password', 'dpi', 'location'].map(field => (
+          {['name', 'email', 'dpi', 'location'].map(field => (
             <input
               key={field}
               type={field === 'email' ? 'email' : 'text'}
@@ -78,6 +85,36 @@ const RegisterPage = () => {
               onChange={handleChange}
             />
           ))}
+          <div className="password-input-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="Contraseña"
+              className="input-field"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <button 
+              type="button" 
+              className="toggle-password" 
+              onClick={togglePasswordVisibility}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="eye-icon">
+                {showPassword ? (
+                  <g>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </g>
+                ) : (
+                  <g>
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </g>
+                )}
+              </svg>
+            </button>
+          </div>
           <div className="privacy-policy-checkbox">
             <input
               type="checkbox"
