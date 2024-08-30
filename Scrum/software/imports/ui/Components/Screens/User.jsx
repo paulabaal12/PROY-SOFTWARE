@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
+import '../../style.css'; 
+import '../../variables.css';
 
 const User = () => {
   const navigate = useNavigate();
@@ -18,6 +18,10 @@ const User = () => {
 
   const handleDeliveryManagement = () => {
     navigate('/user/deliverymanagement');
+  };
+
+  const handleLogout = () => {
+    navigate('/'); 
   };
 
   return (
@@ -36,18 +40,30 @@ const User = () => {
           <div className="user-menu">
             <div className="action-container">
               <div className="payment-button">
-                <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
-                <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
-                <button onClick={handleDeliveryManagement}>Gestión de Repartidor</button>
+                <div className="button-container">
+                  <img src="/images/pagos.png" alt="Gestión de Pagos" className="uniform-image" />
+                  <button onClick={handlePaymentManagement}>Gestión de Pagos</button>
+                </div>
+                <div className="button-container">
+                  <img src="/images/inventario.png" alt="Gestión de Inventario" className="uniform-image" />
+                  <button onClick={handleInventoryManagement}>Gestión de Inventario</button>
+                </div>
+                <div className="button-container">
+                  <img src="/images/repartidor.png" alt="Gestión de Repartidor" className="uniform-image" />
+                  <button onClick={handleDeliveryManagement}>Gestión de Repartidor</button>
+                </div>
               </div>
             </div>
-            <div className="delivery-container"></div>
           </div>
-        </div >
+          <div className="logout-container">
+            <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
+          </div>
+        </div>
       </div>
-      <div  className="containerr"> <Footer /></div>
+      <Footer />
     </>
   );
 };
 
 export default User;
+
