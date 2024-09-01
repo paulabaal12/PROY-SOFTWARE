@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "chai": "^5.1.1",
+    "cypress": "^13.14.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.8",
     "mocha": "^10.7.0"
