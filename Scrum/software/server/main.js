@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { transporter } from './config/email';
-import { pool } from './db/postgres';
+import { pool } from './PostgreSQL/db/postgres';
 import './methods/users';
 import './methods/products';
 import './methods/sales';

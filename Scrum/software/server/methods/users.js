@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import bcrypt from 'bcrypt';
-import { pool } from '../db/postgres';
-import { generateTwoFactorSecret, generateQRCode, verifyTwoFactorToken } from '../utils/twoFactorAuth';
+import { pool } from '../PostgreSQL/db/postgres';
+import { generateTwoFactorSecret, generateQRCode, verifyTwoFactorToken } from '../utils/2FA.js';
 
 Meteor.methods({
   'usuarios.insert'(data) {

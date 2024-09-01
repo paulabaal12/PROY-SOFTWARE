@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { pool } from '../db/postgres';
+import { pool } from '../PostgreSQL/db/postgres';
 
 Meteor.methods({
   'pedidos.getAll'() {
