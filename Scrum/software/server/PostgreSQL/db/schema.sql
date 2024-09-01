@@ -83,6 +83,7 @@ ALTER TABLE envios ADD PRIMARY KEY (id_envio);
 ALTER TABLE ventas ADD PRIMARY KEY (id_venta);
 ALTER TABLE ventas ADD FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id);
 
+ALTER TABLE direcciones ADD PRIMARY KEY (id);
 ALTER TABLE pedidos ADD PRIMARY KEY (id_pedido);
 ALTER TABLE pedidos ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
 ALTER TABLE pedidos ADD FOREIGN KEY (direccion_id) REFERENCES direcciones (id);
