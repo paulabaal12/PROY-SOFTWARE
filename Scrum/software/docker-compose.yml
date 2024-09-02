@@ -4,10 +4,8 @@ services:
       context: ./server/PostgreSQL/db
       dockerfile: Dockerfile
     container_name: meteor_postgresdb
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: userpassword
-      POSTGRES_DB: users_db
+    env_file:
+      - .env
     networks:
       - int
     ports:
