@@ -33,6 +33,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.23.1",
     "recharts": "^2.12.7",
+    "simpl-schema": "^3.4.6",
     "speakeasy": "^2.0.0"
   },
   "meteor": {
