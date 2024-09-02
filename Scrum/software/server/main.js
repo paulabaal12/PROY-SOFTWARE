@@ -5,7 +5,14 @@ import './methods/users';
 import './methods/products';
 import './methods/sales';
 import './methods/orders';
-import './MongoDB/chat';
+import '../MongoDB/orderTracking';
+import '../MongoDB/feedback';
+import '../MongoDB/Methods/orderTrackingMethods';
+import '../MongoDB/Methods/feedbackMethods';
+import '../MongoDB/chat';
+import '../MongoDB/collections';
+
+
 
 Meteor.startup(() => {
   // Configuración inicial del servidor
