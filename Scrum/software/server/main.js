@@ -5,6 +5,7 @@ import './methods/users';
 import './methods/products';
 import './methods/sales';
 import './methods/orders';
+import './MongoDB/chat';
 
 Meteor.startup(() => {
   // Configuración inicial del servidor

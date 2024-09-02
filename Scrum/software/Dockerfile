@@ -25,7 +25,7 @@ RUN mkdir -p /usr/src/app/.meteor/local && chown -R meteoruser:meteoruser /usr/s
 
 USER meteoruser
 RUN meteor update
-RUN meteor npm install --legacy-peer-deps
+RUN meteor npm install simpl-schema --legacy-peer-deps
 
 COPY . .
 
