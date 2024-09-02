@@ -5,12 +5,12 @@ import './methods/users';
 import './methods/products';
 import './methods/sales';
 import './methods/orders';
-import '../MongoDB/orderTracking';
-import '../MongoDB/feedback';
-import '../MongoDB/Methods/orderTrackingMethods';
-import '../MongoDB/Methods/feedbackMethods';
-import '../MongoDB/chat';
-import '../MongoDB/collections';
+import '../server/MongoDB/orderTracking';
+import '../server/MongoDB/feedback';
+import '../server/MongoDB/Methods/orderTrackingMethods';
+import '../server/MongoDB/Methods/feedbackMethods';
+import '../server/MongoDB/chat';
+import '../server/MongoDB/collections';
 
 
 
