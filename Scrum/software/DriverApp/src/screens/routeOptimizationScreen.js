@@ -1,55 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 const RouteOptimizationScreen = ({ navigation, route }) => {
-  const { orderId, location } = route.params; // Obtener orderId y location de los parámetros de la ruta
-  const [mapLoaded, setMapLoaded] = useState(false); // Estado para manejar si el mapa está cargado
+  const { orderId } = route.params;
+  const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
-    if (location) {
-      setMapLoaded(true); // Marcar el mapa como cargado si la ubicación está disponible
-    }
-  }, [location]);
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        setLoading(false);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      setLoading(false);
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>{errorMsg}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Optimized Route for Order ID: {orderId}</Text>
-
-      {location ? (
-        <TouchableOpacity 
-          style={styles.mapContainer} 
-          onPress={() => navigation.navigate('Map')}
-        >
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              latitudeDelta: 0.01, // Delta más pequeño para un zoom más cercano
-              longitudeDelta: 0.01,
-            }}
-            liteMode={true} // Esto reduce la carga de renderizado
-            scrollEnabled={false} // Deshabilitar el desplazamiento para hacer una vista previa estática
-            zoomEnabled={false} // Deshabilitar el zoom
-            onMapReady={() => setMapLoaded(true)} // Marcar el mapa como listo cuando esté cargado
-          >
-            <Marker
-              coordinate={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-              }}
-              title="You are here"
-              description="This is your current location"
-            />
-          </MapView>
-        </TouchableOpacity>
-      ) : (
-        <Text style={styles.text}>Loading map...</Text> // Mostrar mensaje de carga si la ubicación no está disponible
-      )}
-
-      {!mapLoaded && <Text style={styles.loadingText}>Loading map...</Text>} {/* Mostrar texto de carga hasta que el mapa esté listo */}
-
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }}
+          title="You are here"
+          description="This is your current location"
+        />
+      </MapView>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OrderTracking', { orderId })}>
         <Text style={styles.buttonText}>Start Tracking</Text>
       </TouchableOpacity>
@@ -68,15 +80,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
   },
-  mapContainer: {
+  map: {
     width: '100%',
     height: 200,
     marginBottom: 20,
     borderRadius: 10,
     overflow: 'hidden',
-  },
-  map: {
-    flex: 1,
   },
   button: {
     backgroundColor: '#1e90ff',
@@ -91,7 +100,11 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: '#888',
-    marginBottom: 20,
+    marginTop: 10,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
   },
 });
 
