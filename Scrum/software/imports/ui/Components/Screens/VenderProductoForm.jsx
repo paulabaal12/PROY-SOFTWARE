@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
-import ProductoAgregadoMensaje from './ProductoAgregadoMensaje ';
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
+import ProductoAgregadoMensaje from './ProductoAgregadoMensaje';
+import '../../style.css';
+import '../../variables.css';
 
 const VenderProductoForm = ({ producto }) => {
   const [nombre, setNombre] = useState('');
@@ -14,6 +14,7 @@ const VenderProductoForm = ({ producto }) => {
   const [imagenPrincipal, setImagenPrincipal] = useState('');
   const [imagenesAdicionales, setImagenesAdicionales] = useState([]);
   const [productoAgregado, setProductoAgregado] = useState(false);
+  const [imagenError, setImagenError] = useState('');
 
   const navigate = useNavigate();
 
@@ -31,10 +32,14 @@ const VenderProductoForm = ({ producto }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (imagenError) {
+      alert('Por favor, corrija los errores antes de enviar el formulario.');
+      return;
+    }
     const productoData = {
       nombre,
       descripcion,
-      precio: Number(precio), 
+      precio: Number(precio),
       categoria,
       estado,
       imagen_principal: imagenPrincipal,
@@ -42,7 +47,7 @@ const VenderProductoForm = ({ producto }) => {
     };
   
     const method = producto ? 'productos.update' : 'productos.insert';
-    const params = producto ? [producto.id, productoData] : [productoData]; 
+    const params = producto ? [producto.id, productoData] : [productoData];
   
     Meteor.call(method, ...params, (error, response) => {
       if (error) {
@@ -56,10 +61,18 @@ const VenderProductoForm = ({ producto }) => {
       }
     });
   };
-  
+
+  const validateImageUrl = (url) => {
+    if (url.length > 200) {
+      return 'La URL es demasiado larga. Debe tener menos de 200 caracteres.';
+    }
+    return '';
+  };
 
   const handleImagenPrincipalChange = (e) => {
-    setImagenPrincipal(e.target.value);
+    const url = e.target.value;
+    setImagenPrincipal(url);
+    setImagenError(validateImageUrl(url));
   };
 
   const handleImagenesAdicionalesChange = (e) => {
@@ -169,7 +182,14 @@ const VenderProductoForm = ({ producto }) => {
                 required
                 className="form-input"
               />
+              {imagenError && <p className="error-message">{imagenError}</p>}
             </div>
+            {imagenPrincipal && !imagenError && (
+              <div className="image-preview-container">
+                <h3 className="form-subtitle">Vista previa de imagen</h3>
+                <img src={imagenPrincipal} alt="Vista previa" className="image-preview" />
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="imagenesAdicionales" className="form-label">Imágenes Adicionales:</label>
               <input
@@ -181,7 +201,7 @@ const VenderProductoForm = ({ producto }) => {
               />
             </div>
             <div className="form-buttons">
-              <button type="submit" className="form-button">Vender Producto</button>
+              <button type="submit" className="form-button" disabled={!!imagenError}>Vender Producto</button>
               <button type="button" className="form-button form-button-cancel" onClick={handleCancelar}>Cancelar</button>
             </div>
           </form>
