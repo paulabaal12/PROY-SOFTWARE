@@ -5,7 +5,7 @@ import Footer from '../Footer';
 import '../../style.css'; 
 import '../../variables.css';
 
-const User = () => {
+const User = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handlePaymentManagement = () => {
@@ -21,7 +21,8 @@ const User = () => {
   };
 
   const handleLogout = () => {
-    navigate('/'); 
+    onLogout(); 
+    navigate('/login'); 
   };
 
   return (
@@ -66,4 +67,3 @@ const User = () => {
 };
 
 export default User;
-

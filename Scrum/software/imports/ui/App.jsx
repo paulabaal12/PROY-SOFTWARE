@@ -22,7 +22,8 @@ import CRUDProductos from './Components/Screens/CRUDProductos';
 import ListaProductos from './Components/Screens/ListaProductos';
 import FormularioProducto from './Components/Screens/FormularioProducto';
 import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
-import ProductDetail from './Components/Screens/ProductDetail'; // Ruta corregida
+import ProductDetail from './Components/Screens/ProductDetail'; 
+import SearchResults from './Components/Screens/SearchResults';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -53,11 +54,22 @@ export const App = () => {
             )
           }
         />
-        <Route path="/register" element={<RegisterPage onRegisterSuccess={handleLoginSuccess} />} />
+        <Route
+          path="/login"
+          element={
+            !isLoggedIn ? (
+              <LoginPage onLoginSuccess={handleLoginSuccess} setShowRegister={toggleRegister} />
+            ) : (
+              <Navigate replace to="/homepage" />
+            )
+          }
+        />
+        <Route path="/register" element={<RegisterPage onLoginSuccess={handleLoginSuccess} />} />
         <Route
           path="/homepage"
-          element={isLoggedIn ? <HomePage onLogout={handleLogout} /> : <Navigate replace to="/" />}
+          element={isLoggedIn ? <HomePage onLogout={handleLogout} /> : <Navigate replace to="/login" />}
         />
+    
         <Route path="/producto/:id" element={<ProductoDetalles />} />
         <Route path="/vender-producto" element={<VenderProductoPage />} /> 
         <Route path="/cart" element={<ShoppingCartPage />} />
@@ -65,7 +77,7 @@ export const App = () => {
         <Route path="/payment-method" element={<PaymentMethodPage />} />
         <Route path="/categorias" element={<Categorias />} />
         <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
-        <Route path="/user" element={<User/>} />
+        <Route path="/user" element={<User onLogout={handleLogout} />} />
         <Route path="/pagos" element={<Visualizador_pagos />} />
         <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
@@ -74,8 +86,8 @@ export const App = () => {
         <Route path='/favoritos' element={<Favorito/>}/>
         <Route path="/monitoreo" element={<CRUDProductos />} />
         <Route path="/lista-productos" element={<ListaProductos />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
-        {/* Ruta corregida y no duplicada */}
         <Route path="/producto/:id" element={<ProductDetail />} />
       </Routes>
     </Router>

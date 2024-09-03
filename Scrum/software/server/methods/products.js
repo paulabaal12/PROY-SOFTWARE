@@ -106,5 +106,31 @@ Meteor.methods({
         }
       });
     });
+  }, 
+
+  'productos.search'(searchQuery) {
+    check(searchQuery, String);
+
+    console.log('Buscando productos con query:', searchQuery);
+
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM productos 
+        WHERE nombre ILIKE $1 OR descripcion ILIKE $1
+        LIMIT 20
+      `;
+      const values = [`%${searchQuery}%`];
+
+      pool.query(query, values, (err, result) => {
+        if (err) {
+          console.error('Error al buscar productos:', err);
+          reject(new Meteor.Error('database-error', 'Error al buscar productos en la base de datos'));
+        } else {
+          console.log('Resultados de búsqueda:', result.rows);
+          resolve(result.rows);
+        }
+      });
+    });
   }
+
 });
