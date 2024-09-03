@@ -1,7 +1,7 @@
 // MongoDB/feedbackMethods.js
 
 import { Meteor } from 'meteor/meteor';
-import { Feedback } from './feedback';
+import { Feedback } from '../feedback';
 
 Meteor.methods({
   'feedback.submit'(feedbackData) {

@@ -1,8 +1,8 @@
 // MongoDB/orderTrackingMethods.js
 
 import { Meteor } from 'meteor/meteor';
-import { OrderTracking } from './orderTracking';
-import { pool } from '../PostgreSQL/db/postgres';
+import { OrderTracking } from '../orderTracking';
+import { pool } from '../../PostgreSQL/db/conn';
 
 Meteor.methods({
   'orderTracking.syncWithPostgres'(orderId) {

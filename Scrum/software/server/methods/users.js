@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import bcrypt from 'bcrypt';
-import { pool } from '../PostgreSQL/db/postgres';
+import { pool } from '../PostgreSQL/db/conn';
 import { generateTwoFactorSecret, generateQRCode, verifyTwoFactorToken } from '../utils/2FA.js';
 
 Meteor.methods({

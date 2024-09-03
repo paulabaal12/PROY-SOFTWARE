@@ -1,5 +1,5 @@
 import { Mongo } from 'meteor/mongo';
-import { SimpleSchema } from 'simpl-schema';
+import  SimpleSchema  from 'simpl-schema';
 // Se definen coleciones que son equivalentes a tablas, para almacenar la info de c/u
 export const Chats = new Mongo.Collection('chats');
 export const Messages = new Mongo.Collection('messages');

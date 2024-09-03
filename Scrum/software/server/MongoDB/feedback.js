@@ -13,4 +13,3 @@ Feedback.schema = new SimpleSchema({
   createdAt: { type: Date, defaultValue: new Date() },
 });
 
-Feedback.attachSchema(Feedback.schema);

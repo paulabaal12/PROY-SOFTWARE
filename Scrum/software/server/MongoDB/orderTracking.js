@@ -12,4 +12,3 @@ OrderTracking.schema = new SimpleSchema({
   lastUpdated: { type: Date, defaultValue: new Date() },
 });
 
-OrderTracking.attachSchema(OrderTracking.schema);
