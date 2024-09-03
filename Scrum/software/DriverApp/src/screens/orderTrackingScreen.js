@@ -11,6 +11,8 @@ const OrderTrackingScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <Text style={styles.text}>Tracking Order ID: {orderId}</Text>
       <Text style={styles.text}>Current Status: {status}</Text>
+      <Button title="Track Order on Map" onPress={() => navigation.navigate('Map')} />
+
       <Button title="Mark as Delivered" onPress={() => setStatus('Delivered')} />
       <Button title="Submit Feedback" onPress={() => navigation.navigate('Feedback', { orderId })} />
     </View>
