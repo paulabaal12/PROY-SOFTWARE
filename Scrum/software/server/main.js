@@ -5,19 +5,14 @@ import './methods/users';
 import './methods/products';
 import './methods/sales';
 import './methods/orders';
-import '../server/MongoDB/orderTracking';
-import '../server/MongoDB/feedback';
 import '../server/MongoDB/Methods/orderTrackingMethods';
 import '../server/MongoDB/Methods/feedbackMethods';
 import '../server/MongoDB/chat';
 import '../server/MongoDB/collections';
 
-
-
 Meteor.startup(() => {
   // Configuración inicial del servidor
   console.log('Servidor iniciado');
-
 
   // Verificar configuración del servicio de email
   transporter.verify((error, success) => {
