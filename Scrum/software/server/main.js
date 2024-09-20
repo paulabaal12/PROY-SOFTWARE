@@ -9,6 +9,9 @@ import '../server/MongoDB/Methods/orderTrackingMethods';
 import '../server/MongoDB/Methods/feedbackMethods';
 import '../server/MongoDB/chat';
 import '../server/MongoDB/collections';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Cargar las variables de entorno
 
 Meteor.startup(() => {
   // Configuración inicial del servidor

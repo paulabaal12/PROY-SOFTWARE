@@ -6,20 +6,29 @@ import RouteOptimizationScreen from '../screens/routeOptimizationScreen';
 import LocationLoadingScreen from '../screens/locationloadingScreen';
 import OrderTrackingScreen from '../screens/orderTrackingScreen';
 import FeedbackScreen from '../screens/feedbackScreen';
-import MapScreen from '../screens/MapScreen'; // Corrected casing
+import MapScreen from '../screens/MapScreen';
+import RegisterScreen from '../screens/registrationScreen';
+import LoginScreen from '../screens/loginScreen';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="OrderSelection">
-        <Stack.Screen name="OrderSelection" component={OrderSelectionScreen} options={{ title: 'Select Order' }} />
-        <Stack.Screen name="LocationLoading" component={LocationLoadingScreen} options={{ title: 'Loading Location' }} />
-        <Stack.Screen name="RouteOptimization" component={RouteOptimizationScreen} options={{ title: 'Optimized Route' }} />
-        <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} options={{ title: 'Order Tracking' }} />
-        <Stack.Screen name="Feedback" component={FeedbackScreen} options={{ title: 'Feedback' }} />
-        <Stack.Screen name="Map" component={MapScreen} options={{ title: 'Map View' }} />
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false, // Hide headers for all screens
+        }}
+      >
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="OrderSelection" component={OrderSelectionScreen} />
+        <Stack.Screen name="LocationLoading" component={LocationLoadingScreen} />
+        <Stack.Screen name="RouteOptimization" component={RouteOptimizationScreen} />
+        <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
+        <Stack.Screen name="Feedback" component={FeedbackScreen} />
+        <Stack.Screen name="Map" component={MapScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
