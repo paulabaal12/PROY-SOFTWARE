@@ -27,5 +27,5 @@ if ! podman pod exists $POD_NAME; then
 fi
 
 printf "Levantando contenedores"
-podman run -d --name $DB_CONTAINER --pod $POD_NAME --env-file .env meteor_postgresdb
-podman run -d --name $APP_CONTAINER --pod $POD_NAME meteor_app
+podman run -d --replace --name $DB_CONTAINER --pod $POD_NAME --env-file .env meteor_postgresdb
+podman run -d --replace --name $APP_CONTAINER --pod $POD_NAME meteor_app
