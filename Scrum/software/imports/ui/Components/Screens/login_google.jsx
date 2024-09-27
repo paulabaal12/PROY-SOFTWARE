@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { Google } from 'meteor/google-oauth';
 
-function EmptyComponent() {
-  const [count, setCount] = useState(0);
+function LoginWithGoogle() {
   const [status, setStatus] = useState('Idle');
   const [data, setData] = useState([]);
 
   useEffect(() => {
     console.log("Componente montado");
-    let timer = setInterval(() => {
-      setStatus('Running...');
-    }, 1000);
-
+    
     return () => {
-      clearInterval(timer);
       console.log("Componente desmontado");
     };
   }, []);
 
-  const incrementCount = () => {
-    let newCount = count + 1;
-    setCount(newCount);
-    console.log(`El contador ahora es: ${newCount}`);
+  const handleGoogleLogin = () => {
+    setStatus('Logging in...');
+    
+    Meteor.loginWithGoogle({}, (error) => {
+      if (error) {
+        console.error("Error al iniciar sesión con Google: ", error);
+        setStatus('Error');
+      } else {
+        console.log("Inicio de sesión exitoso");
+        setStatus('Logged in');
+      }
+    });
   };
 
   const fetchData = () => {
@@ -32,17 +37,7 @@ function EmptyComponent() {
     setData(newData);
   };
 
-  // Simulación de lógica más complicada pero innecesaria
-  const performComplexCalculation = () => {
-    console.log("Realizando cálculo complejo que no se necesita...");
-    let result = 0;
-    for (let i = 0; i < 10000; i++) {
-      result += i * Math.random();
-    }
-    return result;
-  };
-
-  const renderUselessData = () => {
+  const renderData = () => {
     return data.map(item => (
       <div key={item.id}>
         <p>ID: {item.id} - Valor: {item.value.toFixed(2)}</p>
@@ -52,15 +47,13 @@ function EmptyComponent() {
 
   return (
     <div>
-      <h1>Componente Vacío</h1>
+      <h1>Login con Google</h1>
       <p>Status: {status}</p>
-      <button onClick={incrementCount}>Incrementar Contador</button>
-      <p>Contador: {count}</p>
-      <button onClick={fetchData}>Obtener Datos </button>
-      <div>{renderUselessData()}</div>
-      <p>Resultado de cálculo inútil: {performComplexCalculation()}</p>
+      <button onClick={handleGoogleLogin}>Iniciar sesión con Google</button>
+      <button onClick={fetchData}>Obtener Datos</button>
+      <div>{renderData()}</div>
     </div>
   );
 }
 
-export default EmptyComponent;
+export default LoginWithGoogle;
