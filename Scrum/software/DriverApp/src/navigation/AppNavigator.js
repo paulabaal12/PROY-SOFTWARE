@@ -9,18 +9,19 @@ import FeedbackScreen from '../screens/feedbackScreen';
 import MapScreen from '../screens/MapScreen';
 import RegisterScreen from '../screens/registrationScreen';
 import LoginScreen from '../screens/loginScreen';
-
+import HomeScreen from '../screens/homeScreen';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Home"
         screenOptions={{
           headerShown: false, // Hide headers for all screens
         }}
       >
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="OrderSelection" component={OrderSelectionScreen} />

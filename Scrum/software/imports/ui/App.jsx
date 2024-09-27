@@ -24,6 +24,7 @@ import FormularioProducto from './Components/Screens/FormularioProducto';
 import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
 import ProductDetail from './Components/Screens/ProductDetail'; 
 import SearchResults from './Components/Screens/SearchResults';
+import Productos from './Components/Screens/productos';
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -79,6 +80,7 @@ export const App = () => {
         <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
         <Route path="/user" element={<User onLogout={handleLogout} />} />
         <Route path="/pagos" element={<Visualizador_pagos />} />
+        <Route path="/productos" element={<Productos />} />
         <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
         <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>

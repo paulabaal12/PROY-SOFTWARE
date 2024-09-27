@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import axios from 'axios'; // Add Axios for API requests
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -8,25 +9,22 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("Passwords do not match.");
+      Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
     try {
-      const response = await axios.post('http://your-meteor-backend-url.com/api/register', { email, password });
-      const { success, message } = response.data;
-
-      if (success) {
-        Alert.alert("Registration Successful!", message);
-        navigation.navigate("Login"); // Redirect to Login screen
+      const response = await axios.post('http://your-backend-url.com/api/register', { email, password });
+      if (response.data.success) {
+        Alert.alert("Registration Successful", "You can now log in.");
+        navigation.navigate("Login");
       } else {
-        Alert.alert("Registration Failed", message);
+        Alert.alert("Registration Failed", response.data.message);
       }
     } catch (error) {
-      Alert.alert("Error", error.response ? error.response.data.message : error.message);
+      Alert.alert("Error", error.response ? error.response.data.message : "An error occurred");
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -42,8 +40,8 @@ const RegisterScreen = ({ navigation }) => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
-        placeholderTextColor="#666"
         keyboardType="email-address"
+        placeholderTextColor="#666"
       />
 
       <TextInput
@@ -70,10 +68,7 @@ const RegisterScreen = ({ navigation }) => {
 
       <Text style={styles.signUpText}>
         Already have an account?{" "}
-        <Text
-          style={styles.signUpLink}
-          onPress={() => navigation.navigate("Login")}
-        >
+        <Text style={styles.signUpLink} onPress={() => navigation.navigate("Login")}>
           Log In
         </Text>
       </Text>
