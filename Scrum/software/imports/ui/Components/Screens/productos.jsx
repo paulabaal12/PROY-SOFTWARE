@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import Header from './Components/Header';
-import Footer from './Components/Footer';
+import Header from '../Header';
+import Footer from '../Footer';
 import '../../style.css';
 import '../../variables.css';
 
