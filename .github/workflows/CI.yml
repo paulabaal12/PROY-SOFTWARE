@@ -12,6 +12,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    defaults:
+      run:
+        working-directory: .\Scrum\software\
+    
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
@@ -25,12 +29,13 @@ jobs:
         run: |
           curl https://install.meteor.com/ | sh
           
+      - name: Verificar directorio
+        run: |
+          pwd
+          ls -la
+          
       - name: Instalar dependencias
         run: meteor npm install
-        
-      - name: Ejecutar linter
-        run: meteor npm run lint
-        continue-on-error: true
         
       - name: Ejecutar pruebas
         run: meteor npm test
