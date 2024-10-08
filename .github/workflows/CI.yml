@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14.21.3'
+          node-version: '20.17.0'
           
       - name: Instalar Meteor
         run: |
