@@ -1,0 +1,36 @@
+name: Meteor CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.21.3'
+          
+      - name: Instalar Meteor
+        run: |
+          curl https://install.meteor.com/ | sh
+          
+      - name: Instalar dependencias
+        run: meteor npm install
+        
+      - name: Ejecutar linter
+        run: meteor npm run lint
+        continue-on-error: true
+        
+      - name: Ejecutar pruebas
+        run: meteor npm test
