@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy via SSH
       run: |
-        ssh -o StrictHostKeyChecking=no gustavo@190.148.223.41 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa gustavo@190.148.223.41 << 'EOF'
           cd ./Scrum/software
           git pull origin main
           bash rebuild.sh
