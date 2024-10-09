@@ -25,7 +25,6 @@ import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
 import ProductDetail from './Components/Screens/ProductDetail'; 
 import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
-import ProductoDetalle from './Components/Screens/ProductoDetalle'
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
