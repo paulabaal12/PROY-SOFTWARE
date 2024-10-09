@@ -25,6 +25,7 @@ import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
 import ProductDetail from './Components/Screens/ProductDetail'; 
 import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
+import ProductoDetalle from './Components/Screens/ProductoDetalle'
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -91,6 +92,7 @@ export const App = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
         <Route path="/producto/:id" element={<ProductDetail />} />
+        <Route path="/productos/:productoId" element={<ProductoDetalles />} />
       </Routes>
     </Router>
   );
