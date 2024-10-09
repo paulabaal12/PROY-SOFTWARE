@@ -10,6 +10,8 @@ const ProductoDetalles = () => {
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: '' });
+  const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +38,32 @@ const ProductoDetalles = () => {
     };
   }, [productoId]);
 
+  const handleAddToCart = () => {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const existingProduct = cartItems.find(item => item.id === producto.id);
+
+    if (existingProduct) {
+      cartItems = cartItems.map(item =>
+        item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      cartItems.push({
+        id: producto.id,
+        name: producto.nombre,
+        price: producto.precio,
+        quantity: 1,
+        image: producto.imagen_principal
+      });
+    }
+
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    setNotification({ show: true, message: 'Producto añadido al carrito' });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 3000);
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
+  };
+
   if (loading) {
     return <div className="loading-message1">Cargando...</div>;
   }
@@ -45,10 +73,9 @@ const ProductoDetalles = () => {
   }
 
   return (
-    
     <div className="containerr">
-      
-      <Header />
+      <Header cartCount={cartCount} />
+      {notification.show && <div className="notification">{notification.message}</div>}
       <button onClick={() => navigate(-1)} className="back-button">← Volver</button>
       <div className="product-container">
         <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
@@ -57,6 +84,9 @@ const ProductoDetalles = () => {
         <p className="titulo-precio">Precio: ${producto.precio}</p>
         <p>Categoría: {producto.categoria}</p>
         <p>Estado: {producto.estado}</p>
+
+        {/* Botón agregado aquí para que esté siempre visible */}
+        <button className="button-agregar" onClick={handleAddToCart}>Agregar al carrito</button>
 
         {producto.imagenes_adicionales && producto.imagenes_adicionales.length > 0 && (
           <div>
@@ -74,7 +104,6 @@ const ProductoDetalles = () => {
           </div>
         )}
       </div>
-      
       <Footer />
     </div>
   );
