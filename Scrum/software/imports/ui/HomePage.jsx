@@ -99,7 +99,7 @@ const HomePage = () => {
   //};
 
   const handleMoreInfoClick = (productoId) => {
-    navigate(`/producto/${productoId}`);
+    navigation.navigate(`/productos/${productoId}`);
   };
 
   
