@@ -17,8 +17,8 @@ dotenv.config(); // Cargar las variables de entorno
 
 Meteor.startup(() => {
 
-  const clientId = '';
-  const secret = '';
+  const clientId = '615025458027-pi7npk8nbjb2nt4a3dqrpbal9btbfv2p.apps.googleusercontent.com';
+  const secret = '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';
 
   console.log('Client ID:', clientId);
   console.log('Client Secret:', secret);
@@ -47,13 +47,6 @@ Meteor.startup(() => {
     }
   );
   
-  WebApp.rawConnectHandlers.use((req, res, next) => {
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin'); // Añadir esto
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Permitir accesos desde cualquier origen
-    next();
-  });
   
 
   
