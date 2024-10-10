@@ -17,8 +17,8 @@ dotenv.config(); // Cargar las variables de entorno
 
 Meteor.startup(() => {
 
-  const clientId = 'ID';
-  const secret = 'SECRET';
+  const clientId = '';
+  const secret = '';
 
   console.log('Client ID:', clientId);
   console.log('Client Secret:', secret);
