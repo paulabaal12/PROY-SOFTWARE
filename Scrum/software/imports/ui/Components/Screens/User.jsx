@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
 import '../../style.css'; 
@@ -25,6 +25,10 @@ const User = ({ onLogout }) => {
     navigate('/login'); 
   };
 
+  const handleBack = () => {
+    navigate('/homepage');
+  };
+
   return (
     <>
       <div className="containerr">
@@ -33,10 +37,12 @@ const User = ({ onLogout }) => {
       <div className="container user-page">
         <div className="user-interface">
           <div className="user-header">
+            <div className="back-button-container">
+              <button className="back-button" onClick={handleBack}>
+                &#8249; Volver
+              </button>
+            </div>
             <h2>Usuario</h2>
-            <Link to="/homepage" className="back-button">
-              <i className="arrow"></i> Volver
-            </Link>
           </div>
           <div className="user-menu">
             <div className="action-container">

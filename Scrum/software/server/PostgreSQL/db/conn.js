@@ -6,7 +6,7 @@ const pgConfig = Meteor.settings.postgres || {
   port: 5432,
   database: 'users_database',
   user: 'postgres',
-  password: ''
+  password: 'resusan120104'
 };
 
 export const pool = new Pool(pgConfig);
