@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { Card, Button } from 'react-native-paper';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -20,20 +21,23 @@ const HomeScreen = () => {
     { id: '4', title: 'Notifications', icon: 'bell', screen: 'Notifications' },
   ];
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
-
   const renderOrder = ({ item }) => (
-    <View style={styles.orderCard}>
-      <Text style={styles.orderText}>Customer: {item.customer}</Text>
-      <Text style={styles.orderText}>Location: {item.location}</Text>
-      <Text style={styles.orderText}>Order: {item.orderDetails}</Text>
-      <TouchableOpacity 
-        style={styles.selectButton} 
-        onPress={() => setSelectedOrder(item)}
-      >
-        <Text style={styles.selectButtonText}>Select Order</Text>
-      </TouchableOpacity>
-    </View>
+    <Card style={styles.orderCard}>
+      <Card.Content>
+        <Text style={styles.orderText}>Customer: {item.customer}</Text>
+        <Text style={styles.orderText}>Location: {item.location}</Text>
+        <Text style={styles.orderText}>Order: {item.orderDetails}</Text>
+      </Card.Content>
+      <Card.Actions>
+        <Button 
+          mode="contained" 
+          style={styles.orderButton} 
+          onPress={() => navigation.navigate('RouteOptimization', { orderId: item.id })}
+        >
+          Start Delivery
+        </Button>
+      </Card.Actions>
+    </Card>
   );
 
   const renderActionItem = ({ item }) => (
@@ -41,56 +45,41 @@ const HomeScreen = () => {
       style={styles.actionCard}
       onPress={() => navigation.navigate(item.screen)}
     >
-      <FontAwesome name={item.icon} size={40} color="#fcbf49" />
+      <FontAwesome name={item.icon} size={36} color="#fcbf49" />
       <Text style={styles.actionTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+    <StatusBar barStyle="dark-content" />
       {/* Slideshow of Available Orders */}
       <Text style={styles.headerTitle}>Available Orders</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.slideshow}>
-        {availableOrders.map((order) => (
-          <View key={order.id} style={styles.orderCard}>
-            <Text style={styles.orderText}>Customer: {order.customer}</Text>
-            <Text style={styles.orderText}>Location: {order.location}</Text>
-            <Text style={styles.orderText}>Order: {order.orderDetails}</Text>
-            <TouchableOpacity 
-              style={styles.selectButton} 
-              onPress={() => setSelectedOrder(order)}
-            >
-              <Text style={styles.selectButtonText}>Select Order</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+        {availableOrders.map((order) => renderOrder({ item: order }))}
       </ScrollView>
 
       {/* Action Cards Section */}
       <Text style={styles.sectionTitle}>Actions</Text>
-      <FlatList
-        data={actions}
-        renderItem={renderActionItem}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.actionRow}
-      />
+      <View style={styles.actionRow}>
+        {actions.map((action) => renderActionItem({ item: action }))}
+      </View>
 
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNavBar}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('Home')}>
           <FontAwesome name="home" size={24} color="#1e90ff" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('OrderTracking')}>
+        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('OrderTracking')}>
           <FontAwesome name="truck" size={24} color="#666" />
           <Text style={styles.navText}>Orders</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Map')}>
+        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('Map')}>
           <FontAwesome name="map" size={24} color="#666" />
           <Text style={styles.navText}>Map</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('Profile')}>
           <FontAwesome name="user" size={24} color="#666" />
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
@@ -102,63 +91,74 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop:0,
     backgroundColor: '#fff',
     padding: 20,
   },
   headerTitle: {
     fontSize: 22,
+    marginTop:25,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
   },
   slideshow: {
-    marginBottom: 20,
+    marginBottom: 15,  // Reducir margen para subir las acciones
   },
   orderCard: {
+
     backgroundColor: '#f5f5f5',
-    padding: 20,
+    padding: 0,
     borderRadius: 10,
     marginRight: 10,
-    width: 250,
+    width: 200,
+    height:300,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height:2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3,
   },
   orderText: {
     fontSize: 16,
     marginBottom: 10,
   },
-  selectButton: {
+  orderButton: {
     backgroundColor: '#1e90ff',
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  selectButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 10,
     color: '#333',
   },
   actionRow: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    marginTop:0,
   },
-  actionCard: {
+actionCard: {
     backgroundColor: '#f5f5f5',
-    padding: 20,
+    padding: 20,  // Ajusta el padding para el espacio interior
     borderRadius: 10,
     alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-  },
+    flex: 2,  // Ajusta para que las tarjetas se adapten al ancho de la fila
+    marginHorizontal: 5,  // Espacio entre tarjetas
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3,
+    width: 150,  // Modifica el ancho de la tarjeta de acción
+},
+
   actionTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     marginTop: 10,
     textAlign: 'center',
+    color: '#333',
   },
   bottomNavBar: {
     flexDirection: 'row',
@@ -171,7 +171,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: 70,
+  },
+  navBarItem: {
+    alignItems: 'center',
   },
   navText: {
     fontSize: 12,
