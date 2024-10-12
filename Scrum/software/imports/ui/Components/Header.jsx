@@ -49,6 +49,7 @@ const Header = ({ cartCount }) => {
           <span></span>
         </div>
         <nav className={`navbar ${showMenu ? 'show' : ''}`}>
+          <button className="close-menu" onClick={toggleMenu}>×</button>
           <ul>
             <li><Link to="/" onClick={() => setShowMenu(false)}>Inicio</Link></li>
             <li><Link to="/categorias" onClick={() => setShowMenu(false)}>Categorías</Link></li>
@@ -81,6 +82,7 @@ const Header = ({ cartCount }) => {
           <Link to="/vender-producto" className="button2">Vender</Link>
         </div>
       </div>
+      {showMenu && <div className="menu-overlay" onClick={toggleMenu}></div>}
     </header>
   );
 };
