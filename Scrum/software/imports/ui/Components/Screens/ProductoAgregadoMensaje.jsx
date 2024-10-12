@@ -1,12 +1,23 @@
 import React from 'react';
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
+import '../../style.css';
+import '../../variables.css'; 
+import { Link } from 'react-router-dom';
+
 
 const ProductoAgregadoMensaje = () => {
   return (
-    <div className="producto-agregado-mensaje">
-      <p>Tu producto se agregó correctamente.</p>
-      <p>Serás redirigido a la página principal en unos segundos...</p>
+    <div className="producto-agregado-overlay">
+      <div className="producto-agregado-container">
+        <div className="check-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h2>¡Felicidades!</h2>
+        <p>Tu producto ha sido procesado correctamente.</p>
+        <Link to="/homepage" className="go-home-button">Ir a Inicio</Link>
+      </div>
     </div>
   );
 };
