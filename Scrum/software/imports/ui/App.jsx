@@ -25,6 +25,10 @@ import CategoriaDetalle from './Components/Screens/CategoriaDetalle';
 import ProductDetail from './Components/Screens/ProductDetail'; 
 import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
+import ProductCatalog from './Components/Screens/ProductCatalog';
+import ProductDetails from './Components/Screens/ProductDetails';
+
+
 
 export const App = () => {
 
@@ -82,7 +86,6 @@ export const App = () => {
         <Route path="/thanks-for-shopping" element={<ThanksForShopping />} />
         <Route path="/user" element={<User onLogout={handleLogout} />} />
         <Route path="/pagos" element={<Visualizador_pagos />} />
-        <Route path="/productos" element={<Productos />} />
         <Route path='/user/paymentmanagement' element={<PaymentManagement/>}/>
         <Route path='/user/deliverymanagement' element={<DeliveryManagement/>}/>
         <Route path='/user/inventorymanagement' element={<InventoryManagement/>}/>
@@ -92,8 +95,9 @@ export const App = () => {
         <Route path="/lista-productos" element={<ListaProductos />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
-        <Route path="/producto/:id" element={<ProductDetail />} />
         <Route path="/productos/:productoId" element={<ProductoDetalles />} />
+        <Route path="/productos" element={<ProductCatalog />} />
+        <Route path="/productos/:id" element={<ProductDetails />} />    
       </Routes>
     </Router>
   );
