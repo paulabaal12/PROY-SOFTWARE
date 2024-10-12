@@ -1,72 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import ProductList from './Components/Screens/ProductList';
+import CategoryGrid from './Components/Screens/CategoryGrid';
 import './style.css';
 
-const categories = [
-  { name: 'Hogar', image: '/images/1.png', link: '/categoria/Hogar' },
-  { name: 'Videojuegos', image: '/images/2.png', link: '/categoria/Videojuegos' },
-  { name: 'Belleza', image: '/images/3.png', link: '/categoria/Belleza' },
-  { name: 'Juguetes', image: '/images/4.png', link: '/categoria/Juguetes' },
-  { name: 'Deportes', image: '/images/5.png', link: '/categoria/Deportes' },
-  { name: 'Alimentos', image: '/images/6.png', link: '/categoria/Alimentos' },
-  { name: 'Mascotas', image: '/images/7.png', link: '/categoria/Mascotas' },
-  { name: 'Arte', image: '/images/8.png', link: '/categoria/Arte' },
-  { name: 'Electrónicos', image: '/images/9.png', link: '/categoria/Electrónicos' },
-  { name: 'Tendencias', image: '/images/10.png', link: '/categoria/Tendencias' },
-];
-
-const CategoryItem = ({ name, image, link }) => (
-  <Link to={link} className="category-item">
-    <img src={image} alt={name} className="category-image" />
-    <p className="category-name">{name}</p>
-  </Link>
-);
-
 const HomePage = () => {
-  //const history = useHistory();
   const [products, setProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [notification, setNotification] = useState({ show: false, message: '' });
-  const [cartCount, setCartCount] = useState(0); // Estado para el número de productos en el carrito
+  const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProducts = () => {
-      Meteor.call('productos.getAll', (error, productosData) => {
-        if (error) {
-          console.error('Error al obtener los productos:', error);
-        } else {
-          const productosOrdenados = productosData.sort((a, b) => b.id - a.id);
-          setProducts(productosOrdenados.slice(0, 19));
-        }
-      });
-    };
-
-    const loadFavorites = () => {
-      const storedFavorites = localStorage.getItem('favoriteProducts');
-      if (storedFavorites) {
-        setFavoriteProducts(JSON.parse(storedFavorites));
-      }
-    };
-
-    const updateCartCount = () => {
-      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-      setCartCount(totalItems);
-    };
-
     fetchProducts();
     loadFavorites();
-    updateCartCount(); // Inicializa el contador del carrito
+    updateCartCount();
 
-    window.addEventListener('storage', updateCartCount); // Actualiza el contador si el carrito cambia
-
+    window.addEventListener('storage', updateCartCount);
     return () => {
       window.removeEventListener('storage', updateCartCount);
     };
   }, []);
+
+  const fetchProducts = () => {
+    Meteor.call('productos.getAll', (error, productosData) => {
+      if (error) {
+        console.error('Error al obtener los productos:', error);
+      } else {
+        const productosOrdenados = productosData.sort((a, b) => b.id - a.id);
+        setProducts(productosOrdenados.slice(0, 19));
+      }
+    });
+  };
+
+  const loadFavorites = () => {
+    const storedFavorites = localStorage.getItem('favoriteProducts');
+    if (storedFavorites) {
+      setFavoriteProducts(JSON.parse(storedFavorites));
+    }
+  };
+
+  const updateCartCount = () => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalItems);
+  };
 
   const handleAddToCart = (product) => {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -88,60 +68,53 @@ const HomePage = () => {
 
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     setNotification({ show: true, message: 'Producto añadido al carrito' });
-    setTimeout(() => {
-      setNotification({ show: false, message: '' });
-    }, 3000);
-    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
+    setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+    updateCartCount();
   };
-
-  //const handleMoreInfoClick = (productoId) => {
-  //  history.push(`/producto/${productoId}`);
-  //};
 
   const handleMoreInfoClick = (productoId) => {
-    navigation.navigate(`/productos/${productoId}`);
+    navigate(`/productos/${productoId}`);
   };
 
-  
+  const handleFavoriteToggle = (product) => {
+    const newFavorites = favoriteProducts.some(p => p.id === product.id)
+      ? favoriteProducts.filter(p => p.id !== product.id)
+      : [...favoriteProducts, product];
+    
+    setFavoriteProducts(newFavorites);
+    localStorage.setItem('favoriteProducts', JSON.stringify(newFavorites));
+  };
+
+  const handleTitleClick = () => {
+    navigate('/productos');
+  };
+
   return (
-    <div className="container1">
-      <Header cartCount={cartCount} /> {/* Pasar el cartCount como prop */}
-
-      {notification.show && <div className="notification">{notification.message}</div>}
-      <center><h1 className="titulo-categorias">Nuevos Productos</h1></center>
-      <main className="main-content1">
-        <div className="product-scroll-container">
-          {products.map((product, index) => (
-            <div className="product-container" key={index}>
-              <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
-              <h3 className='titulo-producto'>{product.nombre}</h3>
-              <p className='titulo-precio'>Precio: {product.precio}</p>
-              <div className="product-actions">
-                <button className="button-agregar" onClick={() => handleAddToCart(product)}>Agregar al carrito</button>
-                
-                <div className="product-card">
-                <button onClick={() => handleMoreInfoClick(product.id)}>Más Información</button>
-
-                </div>
-                
-                <span className={`favorite-icon ${favoriteProducts.some(p => p.id === product.id) ? 'favorite' : ''}`}
-                  onClick={() => handleFavoriteToggle(product)}>
-                  &#10084;
-                </span>
-              </div>
-            </div>
-          ))}
+    <div className="container3">
+      <Header cartCount={cartCount} />
+      {notification.show && 
+        <div className="notification">
+          <img src={'/images/carrito.png'} alt="Icono" className="notification-icon" />
+          {notification.message}
         </div>
+      }
+      <main className="categories-section2">
+        <div className="section-title-container" onClick={handleTitleClick}>
+          <h2 className="section-title">Nuevos Productos</h2>
+          <span className="arrow-icon">&gt;</span>
+        </div>
+        <ProductList 
+          products={products} 
+          onAddToCart={handleAddToCart} 
+          onMoreInfo={handleMoreInfoClick}
+          onFavoriteToggle={handleFavoriteToggle}
+          favoriteProducts={favoriteProducts}
+        />
+        <section className="categories-section">
+          <h2 className="section-title">Explora nuestras categorías populares</h2>
+          <CategoryGrid />
+        </section>
       </main>
-
-      <section className="categories-section">
-        <h2 className="titulo-categorias">Explora nuestras categorías populares</h2>
-        <div className="categories-grid">
-          {categories.map((category, index) => (
-            <CategoryItem key={index} name={category.name} image={category.image} link={category.link} />
-          ))}
-        </div>
-      </section>
 
       <Footer />
     </div>

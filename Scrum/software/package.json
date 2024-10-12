@@ -20,6 +20,7 @@
     "check": "^1.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "fuse.js": "^7.0.0",
     "i18next": "^23.15.1",
     "meteor-node-stubs": "^1.2.7",
     "meteor-promise": "github:meteor/promise",

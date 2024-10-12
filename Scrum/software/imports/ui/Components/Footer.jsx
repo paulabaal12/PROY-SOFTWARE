@@ -1,6 +1,6 @@
 import React from 'react';
-import '../style.css'; // Asegúrate de que la ruta sea correcta
-import '../variables.css'; // Asegúrate de que la ruta sea correcta
+import '../style.css';
+import '../variables.css';
 
 const Footer = () => {
   return (
