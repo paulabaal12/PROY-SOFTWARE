@@ -35,6 +35,11 @@ const RegisterPage = () => {
   // REGISTRAR USUARIO CON GOOGLE
   // REGISTRAR USUARIO CON GOOGLE
 const handleGoogleRegister = () => {
+  if (!formData.hasAgreedToPrivacyPolicy) {
+    setShowPrivacyAlert(true);
+    setError('Debes aceptar la política de privacidad para registrarte.');
+    return;
+  }
   if (googleLoginInProgress) {
     console.log("Proceso de login con Google ya en progreso.");
     return; // Evitar duplicación
@@ -189,14 +194,19 @@ const handleGoogleRegister = () => {
           </div>
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="btn" disabled={loading}>{loading ? 'Cargando...' : 'Crear Cuenta'}</button>
+            <br /><br />
+          {/* Botón de registro con Google */}
+          <button onClick={handleGoogleRegister} className="google-login-container">
+            <div className="logo-google-login">
+              <img src="images/google-logo.png" alt="Google Logo" />
+            </div>
+            <span className="btn-google-login">Registrarse con Google</span>
+          </button>
+
+
+
         </form>
 
-        {/* Botón de registro con Google */}
-        <div className="google-login-container">
-          <button onClick={handleGoogleRegister} className="btn-google-login">
-            Registrarse con Google
-          </button>
-        </div>
       </div>
     </div>
   );
