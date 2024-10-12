@@ -15,6 +15,7 @@ const VenderProductoForm = ({ producto }) => {
   const [imagenesAdicionales, setImagenesAdicionales] = useState([]);
   const [productoAgregado, setProductoAgregado] = useState(false);
   const [imagenError, setImagenError] = useState('');
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'USD');
 
   const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ const VenderProductoForm = ({ producto }) => {
       setEstado(producto.estado);
       setImagenPrincipal(producto.imagen_principal);
       setImagenesAdicionales(producto.imagenes_adicionales);
+      setCurrency(producto.currency || 'USD');
     }
   }, [producto]);
 
@@ -44,6 +46,7 @@ const VenderProductoForm = ({ producto }) => {
       estado,
       imagen_principal: imagenPrincipal,
       imagenes_adicionales: imagenesAdicionales.map(url => url.toString()),
+      currency,
     };
   
     const method = producto ? 'productos.update' : 'productos.insert';
@@ -120,14 +123,25 @@ const VenderProductoForm = ({ producto }) => {
             </div>
             <div className="form-group">
               <label htmlFor="precio" className="form-label">Precio:</label>
-              <input
-                type="number"
-                id="precio"
-                value={precio}
-                onChange={(e) => setPrecio(e.target.value)}
-                required
-                className="form-input"
-              />
+              <div className="price-input-group">
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="currency-select"
+                >
+                  <option value="USD">$</option>
+                  <option value="EUR">€</option>
+                  <option value="GBP">£</option>
+                </select>
+                <input
+                  type="number"
+                  id="precio"
+                  value={precio}
+                  onChange={(e) => setPrecio(e.target.value)}
+                  required
+                  className="form-input"
+                />
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="categoria" className="form-label">Categoría:</label>

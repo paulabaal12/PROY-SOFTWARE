@@ -4,7 +4,7 @@ import DropdownCart from './Screens/DropdownCart';
 import '../style.css';
 import '../variables.css';
 
-const Header = ({ cartCount }) => {
+const Header = ({ cartCount, currency }) => {
   const userName = localStorage.getItem('userName') || 'Usuario';
   const [showDropdown, setShowDropdown] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -40,6 +40,12 @@ const Header = ({ cartCount }) => {
     setShowMenu(!showMenu);
   };
 
+  const handleCurrencyChange = (e) => {
+    const newCurrency = e.target.value;
+    localStorage.setItem('currency', newCurrency);
+    window.dispatchEvent(new Event('currencyChange'));
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -60,10 +66,10 @@ const Header = ({ cartCount }) => {
         </nav>
         <form onSubmit={handleSearchSubmit} className="search-form">
           <div className="search">
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="searchTerm"
-              placeholder="Buscar..." 
+              placeholder="Buscar..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -77,8 +83,14 @@ const Header = ({ cartCount }) => {
           <div className="cart-icon" onClick={toggleDropdown}>
             <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito de compras" width="45" height="45" />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
-            {showDropdown && <DropdownCart cartItems={cartItems} onClose={closeDropdown} />}
+            {showDropdown && <DropdownCart cartItems={cartItems} onClose={closeDropdown} currency={currency} />}
           </div>
+          <select value={currency} onChange={handleCurrencyChange} className="currency-select">
+            <option value="USD">$</option>
+            <option value="GT">Q</option>
+            <option value="EUR">€</option>
+            <option value="GBP">£</option>
+          </select>
           <Link to="/vender-producto" className="button2">Vender</Link>
         </div>
       </div>
