@@ -29,35 +29,211 @@ button:hover {
   padding: 20px;
 }
 
-.header {
-  background-color: var(--primary-color);
-  color: #fff;
-  padding: 10px 20px;
-}
-
 .footer {
   background-color: var(--primary-color);
   color: #01022e;
   padding: 10px 20px;
 }
-
 .header {
   background-color: var(--primary-color);
   color: #fff;
   padding: 10px 20px;
+}
+
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.header-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: var(--background-color);
+.navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
 }
 
+.navbar li {
+  margin-right: 3rem;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-family);
+}
+
+.user-name {
+  font-family: var(--font-family);
+  font-size: 18px;
+  margin-right: 20px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: bold;
+}
+
+.search-form {
+  flex-grow: 1;
+  max-width: 400px;
+  margin: 0 20px;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #004479;
+  border-right: none;
+  padding: 5px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  font-size: 16px;
+  color: #000000;
+}
+
+.searchButton {
+  width: 50px;
+  height: 40px;
+  border: 1px solid #004479;
+  background: #004479;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-cart {
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  position: relative;
+  margin-right: 20px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.button2 {
+  padding: 8px 16px;
+  background-color: #004479;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  margin-right: 20px; 
+}
+
+.menu-toggle span {
+  height: 3px;
+  width: 25px;
+  background-color: #000000;
+  margin-bottom: 4px;
+  border-radius: 2px;
+}
+
+@media screen and (max-width: 1024px) {
+  .header-content {
+    justify-content: flex-start;
+  }
+
+  .navbar {
+    order: 3;
+    width: 100%;
+    display: none;
+  }
+
+  .navbar.show {
+    display: block;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+  }
+
+  .navbar li {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    order: 1; 
+  }
+
+  .search-form {
+    order: 3;
+    margin: 10px 0;
+    width: 100%; 
+    max-width: none;
+  }
+
+  .user-cart {
+    order: 2;
+    margin-left: auto; 
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .header-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .menu-toggle {
+    margin-right: 15px; 
+  }
+
+  .search-form {
+    order: 4; 
+    margin: 10px 0;
+  }
+
+  .user-cart {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+
+  .user-name {
+    margin-right: 15px;
+    margin-bottom: 5px;
+  }
+
+  .button2 {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
 .titulo1 {
   position: relative;
   top: 110px; 
@@ -128,38 +304,6 @@ button:hover {
   align-items: center;
   margin-left: auto;
   margin-right: 30px;
-}
-
-.navbar {
-  padding: 1rem;
-}
-
-.navbar ul {
-  list-style: none;
-  display: flex;
-  justify-content: space-around;
-}
-
-.navbar li {
-  margin-right: 3rem;
-}
-
-.navbar a {
-  text-decoration: none;
-  color: #000000;
-  font-size: 20px;
-  line-height: 100%;
-  font-weight: 700;
-  font-family: var(--font-family);
-}
-
-.user-name {
-  font-family: var(--font-family);
-  font-size: 20px;
-  margin-right: 20px;
-  text-decoration: none;
-  color: inherit;
-  font-weight: bold;
 }
 
 .carousel-image {
@@ -800,19 +944,6 @@ transform: translateY(2px);}
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
-
-.user-header {
-width: 60vw;
-height: 10vh;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-border-bottom:2px solid #ccc;
-margin:0;
-}
-
-
 
 .back-button {
   text-decoration: none;
