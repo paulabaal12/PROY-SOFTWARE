@@ -195,17 +195,16 @@ const handleGoogleRegister = () => {
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="btn" disabled={loading}>{loading ? 'Cargando...' : 'Crear Cuenta'}</button>
             <br /><br />
-          {/* Botón de registro con Google */}
-          <button onClick={handleGoogleRegister} className="google-login-container">
+        
+        </form>
+
+{/* Botón de registro con Google */}
+<button onClick={handleGoogleRegister} className="google-login-container">
             <div className="logo-google-login">
               <img src="images/google-logo.png" alt="Google Logo" />
             </div>
             <span className="btn-google-login">Registrarse con Google</span>
           </button>
-
-
-
-        </form>
 
       </div>
     </div>
