@@ -1,69 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Linking } from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
 
-const RouteOptimizationScreen = ({ navigation, route }) => {
+const RouteOptimizationScreen = ({ route }) => {
+  const navigation = useNavigation();
   const { orderId } = route.params;
-  const [location, setLocation] = useState(null);
+
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [pickupLocation, setPickupLocation] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [orderDetails, setOrderDetails] = useState(null);
 
   useEffect(() => {
     (async () => {
+      // Obtener ubicación actual
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        Alert.alert('Permiso denegado', 'No se pudo acceder a la ubicación.');
         setLoading(false);
         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      setCurrentLocation(location.coords);
+
+      // Simulamos la obtención de detalles del pedido
+      const details = {
+        pickupLatitude: location.coords.latitude + 0.01,
+        pickupLongitude: location.coords.longitude + 0.01,
+        sellerPhone: '123456789',  // Número del vendedor
+        customerName: 'John Doe',
+        deliveryAddress: '456 Elm St',
+      };
+      setPickupLocation({
+        latitude: details.pickupLatitude,
+        longitude: details.pickupLongitude,
+      });
+      setOrderDetails(details);
+
       setLoading(false);
     })();
   }, []);
 
-  if (loading) {
+  const handleConfirmPickup = () => {
+    // Simular confirmación de recogida
+    Alert.alert('Recogida Confirmada', 'La recogida ha sido confirmada.');
+    navigation.navigate('Delivery', { orderId });
+  };
+
+  const handleContactSeller = () => {
+    const phoneNumber = `tel:${orderDetails.sellerPhone}`;
+    Linking.openURL(phoneNumber);
+  };
+
+  if (loading || !currentLocation || !pickupLocation || !orderDetails) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (errorMsg) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{errorMsg}</Text>
+        <Text style={styles.loadingText}>Cargando detalles...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Optimized Route for Order ID: {orderId}</Text>
+      <Text style={styles.title}>Ruta al Punto de Recogida</Text>
+      <Text style={styles.subtitle}>Cliente: {orderDetails.customerName}</Text>
+      <Text style={styles.subtitle}>Dirección de Entrega: {orderDetails.deliveryAddress}</Text>
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
         }}
       >
-        <Marker
-          coordinate={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          }}
-          title="You are here"
-          description="This is your current location"
+        <Marker coordinate={currentLocation} title="Tu Ubicación" />
+        <Marker coordinate={pickupLocation} title="Punto de Recogida" />
+        <Polyline
+          coordinates={[currentLocation, pickupLocation]}
+          strokeColor="#1e90ff"
+          strokeWidth={3}
         />
       </MapView>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OrderTracking', { orderId })}>
-        <Text style={styles.buttonText}>Start Tracking</Text>
+      <TouchableOpacity style={styles.contactButton} onPress={handleContactSeller}>
+        <Text style={styles.buttonText}>Contactar Vendedor</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmPickup}>
+        <Text style={styles.buttonText}>Confirmar Recogida</Text>
       </TouchableOpacity>
     </View>
   );
@@ -72,39 +99,44 @@ const RouteOptimizationScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    padding: 16,
   },
-  text: {
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  title: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 8,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 8,
   },
   map: {
-    width: '100%',
-    height: 200,
-    marginBottom: 20,
+    flex: 1,
     borderRadius: 10,
-    overflow: 'hidden',
   },
-  button: {
+  contactButton: {
+    backgroundColor: '#fcbf49',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  confirmButton: {
     backgroundColor: '#1e90ff',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#888',
-    marginTop: 10,
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
   },
 });
 

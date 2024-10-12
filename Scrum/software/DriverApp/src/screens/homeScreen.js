@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Image, StatusBar } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ScrollView, StatusBar } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,32 +9,54 @@ const HomeScreen = () => {
   const availableOrders = [
     { id: '1', customer: 'John Doe', location: '123 Main St', orderDetails: '2 packages' },
     { id: '2', customer: 'Jane Smith', location: '456 Elm St', orderDetails: '1 package' },
+    { id: '3', customer: 'John Doe', location: '123 Main St', orderDetails: '2 packages' },
+    { id: '4', customer: 'Jane Smith', location: '456 Elm St', orderDetails: '1 package' },
   ];
 
   const actions = [
     { id: '1', title: 'Track Orders', icon: 'truck', screen: 'OrderTracking' },
-    { id: '2', title: 'Find Courier', icon: 'motorcycle', screen: 'Courier' },
-    { id: '3', title: 'View Feedback', icon: 'comments', screen: 'Feedback' },
-    { id: '4', title: 'Notifications', icon: 'bell', screen: 'Notifications' },
+    { id: '2', title: 'Contact Seller', icon: 'phone', screen: 'ContactSeller' },
+    { id: '3', title: 'Contact Buyer', icon: 'phone-square', screen: 'ContactBuyer' },
+    { id: '4', title: 'Order History', icon: 'history', screen: 'OrderHistory' },
   ];
-
+  const handleSelectOrder = async (order) => {
+    try {
+      console.log(`Selected order ${order.id}`);
+  
+      // Simular una respuesta de validación sin conexión a la red
+      const placeholderResponse = {
+        available: true,  // Puedes cambiar esto a `false` para probar la otra ruta
+      };
+  
+      // Simular la lógica de validación
+      if (placeholderResponse.available) {
+        // Navegar a la pantalla de optimización de ruta
+        navigation.navigate('OrderTracking', { orderId: order.id });
+      } else {
+        alert('Order is no longer available');
+      }
+    } catch (error) {
+      console.error('Error validating order:', error);
+      alert('Error validating order, please try again later.');
+    }
+  };
+  
   return (
     <View style={styles.container}>
-      {/* Asegúrate de que la barra de estado sea visible */}
       <StatusBar barStyle="dark-content" />
       {/* Header */}
       <Text style={styles.headerTitle}>Available Orders</Text>
 
       {/* Slideshow of Available Orders */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.slideshow}>
-        {availableOrders.map((order) => (
+      {availableOrders.map((order) => (
           <View key={order.id} style={styles.orderCard}>
             <Text style={styles.orderText}>Customer: {order.customer}</Text>
             <Text style={styles.orderText}>Location: {order.location}</Text>
             <Text style={styles.orderText}>Order: {order.orderDetails}</Text>
             <TouchableOpacity 
               style={styles.selectButton} 
-              onPress={() => console.log(`Selected order ${order.id}`)}
+              onPress={() => handleSelectOrder(order)}
             >
               <Text style={styles.selectButtonText}>Start Delivery</Text>
             </TouchableOpacity>
@@ -87,18 +109,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 20,  // Asegura espacio para la barra de estado de iPhone
+    paddingTop: 20,
     paddingHorizontal: 20,
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    marginTop:35,
+    marginTop: 35,
     color: '#333',
   },
   slideshow: {
-    marginBottom: 15,  // Reducir margen para subir las acciones
+    marginBottom: 15,
   },
   orderCard: {
     backgroundColor: '#f5f5f5',
@@ -125,13 +147,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,  // Ajustar margen para reducir espacio entre las acciones
+    marginBottom: 10,
     color: '#333',
   },
   actionRow: {
     justifyContent: 'space-between',
     marginBottom: 20,
-    marginTop: 0,  // Eliminar margen superior
   },
   actionCard: {
     backgroundColor: '#f5f5f5',
@@ -161,7 +182,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
     backgroundColor: '#fff',
     position: 'relative',
-    bottom: 0,
+    bottom: 10,
     width: '100%',
   },
   navBarItem: {

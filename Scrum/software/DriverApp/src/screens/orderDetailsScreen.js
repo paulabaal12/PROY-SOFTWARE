@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const OrderTrackingScreen = ({ navigation, route }) => {
-  const { orderId, customer, pickupLocation, deliveryLocation, orderDetails } = route.params; // Información del pedido
+const OrderDetailsScreen = ({ navigation, route }) => {
+  const { orderId, customer, location, orderDetails } = route.params; // Obtener detalles del pedido desde los parámetros
   const [currentLocation, setCurrentLocation] = useState(null); // Ubicación actual del repartidor
   const [loading, setLoading] = useState(true);
-  const [orderStage, setOrderStage] = useState('Pickup'); // Estado del pedido
 
   useEffect(() => {
     // Obtener ubicación actual del repartidor
@@ -36,9 +35,8 @@ const OrderTrackingScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Order ID: {orderId} - {orderStage}</Text>
-
-      {/* Mapa con ubicación actual y destino */}
+      {/* Mapa con la ruta */}
+      <Text style={styles.headerText}>Order Details for Order ID: {orderId}</Text>
       <MapView
         style={styles.map}
         initialRegion={{
@@ -55,28 +53,21 @@ const OrderTrackingScreen = ({ navigation, route }) => {
           }}
           title="You are here"
         />
-        {/* Marcador de la ubicación de recogida o entrega */}
+        {/* Agregar marcador para la ubicación de entrega */}
         <Marker
-          coordinate={orderStage === 'Pickup' ? pickupLocation : deliveryLocation}
-          title={orderStage === 'Pickup' ? 'Pickup Location' : 'Delivery Location'}
-          description={orderStage === 'Pickup' ? 'Pick up the order here' : 'Deliver the order here'}
-        />
-        {/* Línea entre el repartidor y el destino */}
-        <Polyline
-          coordinates={[
-            { latitude: currentLocation.coords.latitude, longitude: currentLocation.coords.longitude },
-            orderStage === 'Pickup' ? pickupLocation : deliveryLocation,
-          ]}
-          strokeColor="#1e90ff"
-          strokeWidth={3}
+          coordinate={{
+            latitude: 14.634915, // Coordenadas de ejemplo
+            longitude: -90.506882, // Coordenadas de ejemplo
+          }}
+          title={location}
+          description="Delivery location"
         />
       </MapView>
 
-      {/* Detalles del Pedido */}
+      {/* Detalles del pedido */}
       <View style={styles.orderDetails}>
         <Text style={styles.detailText}>Customer: {customer}</Text>
-        <Text style={styles.detailText}>Pickup: {pickupLocation.address}</Text>
-        <Text style={styles.detailText}>Delivery: {deliveryLocation.address}</Text>
+        <Text style={styles.detailText}>Location: {location}</Text>
         <Text style={styles.detailText}>Order: {orderDetails}</Text>
       </View>
 
@@ -84,7 +75,7 @@ const OrderTrackingScreen = ({ navigation, route }) => {
       <View style={styles.actionButtons}>
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => console.log("Start Navigation")}
+          onPress={() => navigation.navigate('MapNavigation', { location })}
         >
           <Text style={styles.buttonText}>Start Navigation</Text>
         </TouchableOpacity>
@@ -93,23 +84,14 @@ const OrderTrackingScreen = ({ navigation, route }) => {
           style={styles.button} 
           onPress={() => console.log("Contact Seller/Customer")}
         >
-          <Text style={styles.buttonText}>Contact Seller/Customer</Text>
+          <Text style={styles.buttonText}>Contact Seller</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => {
-            if (orderStage === 'Pickup') {
-              setOrderStage('Delivery'); // Cambiar a la etapa de entrega
-            } else {
-              console.log("Order Delivered");
-              navigation.goBack(); // Volver a la pantalla anterior
-            }
-          }}
+          onPress={() => console.log("Confirm Pickup/Delivery")}
         >
-          <Text style={styles.buttonText}>
-            {orderStage === 'Pickup' ? 'Confirm Pickup' : 'Confirm Delivery'}
-          </Text>
+          <Text style={styles.buttonText}>Confirm Pickup</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -161,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OrderTrackingScreen;
+export default OrderDetailsScreen;
