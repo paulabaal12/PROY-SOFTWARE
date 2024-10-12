@@ -27,6 +27,8 @@ import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
 
 export const App = () => {
+
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showingRegister, setShowingRegister] = useState(false);
 
