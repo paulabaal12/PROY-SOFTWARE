@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
+import GenericForm from './GenericForm';
 
 const FormularioProducto = ({ producto, modo, onFinish }) => {
   const [nombre, setNombre] = useState('');
