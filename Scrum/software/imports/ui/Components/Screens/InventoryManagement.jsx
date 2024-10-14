@@ -1,121 +1,123 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography } from '@mui/material';
-import { PieChart, Pie, Tooltip as PieTooltip, Cell, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip } from 'recharts';
-import { Meteor } from 'meteor/meteor';
+import { useTracker } from 'meteor/react-meteor-data';
+import { Mongo } from 'meteor/mongo';
+import Header from '../Header';
+import Footer from '../Footer';
+import '../../style.css'; // Importar estilos
 
-import '../../style.css'; // Importando estilo desde el directorio raíz
-import '../../variables.css'; // Importando variables desde el directorio raíz
+const Productos = new Mongo.Collection('productos'); // Colección de productos
 
 const InventoryManagement = () => {
-    const [products, setProducts] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [cartCount, setCartCount] = useState(0); // Estado del carrito
+  const [notification, setNotification] = useState({ show: false, message: '' });
 
-    useEffect(() => {
-        Meteor.call('productos.getAll', (error, result) => {
-            if (error) {
-                console.error('Error fetching products:', error);
-            } else {
-                setProducts(result);
-            }
-        });
-    }, []);
+  // Obtener productos desde la colección usando Tracker
+  const productosData = useTracker(() => {
+    Meteor.subscribe('productos');
+    return Productos.find().fetch();
+  }, []);
 
-    const handleAddProduct = () => {
-        alert('Agregar nuevo producto');
-    };
+  useEffect(() => {
+    setProductos(productosData);
 
-    const handleEditProduct = (id) => {
-        alert(`Editar producto con ID: ${id}`);
-    };
+    // Simulamos la carga del número de productos en el carrito
+    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const totalItems = storedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    setCartCount(totalItems);
+  }, [productosData]);
 
-    const handleDeleteProduct = (id) => {
-        alert(`Eliminar producto con ID: ${id}`);
-    };
+  const handleAddToCart = (producto) => {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const existingProduct = cartItems.find((item) => item.id === producto.id);
 
-    const pieData = [
-        { name: 'Categoría A', value: 400 },
-        { name: 'Categoría B', value: 300 },
-        { name: 'Categoría C', value: 300 },
-        { name: 'Categoría D', value: 200 },
-    ];
+    if (existingProduct) {
+      cartItems = cartItems.map((item) =>
+        item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      cartItems.push({ ...producto, quantity: 1 });
+    }
 
-    const barData = [
-        { name: 'Enero', ventas: 400 },
-        { name: 'Febrero', ventas: 300 },
-        { name: 'Marzo', ventas: 500 },
-        { name: 'Abril', ventas: 200 },
-    ];
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    setNotification({ show: true, message: 'Producto añadido al carrito' });
 
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+    setCartCount(cartItems.reduce((acc, item) => acc + item.quantity, 0));
+  };
 
-    return (
-        <>
-            <div className='inventory-page'>
-                <h2>Gestión de Inventario</h2>
-                <button onClick={handleAddProduct} className='add-button'>Agregar Producto</button>
-                <ul className='inventory-list'>
-                    {products.map(product => (
-                        <li key={product.id} className='inventory-item'>
-                            <span>{`${product.nombre} - ${product.categoria} - $${product.precio.toFixed(2)}`}</span>
-                            <button onClick={() => handleEditProduct(product.id)} className='edit-button'>Editar</button>
-                            <button onClick={() => handleDeleteProduct(product.id)} className='delete-button'>Eliminar</button>
-                        </li>
-                    ))}
-                </ul>
-            </div>        
+  const handleDeleteProduct = (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      Productos.remove(id);
+      setProductos(productos.filter((producto) => producto.id !== id));
+      setNotification({ show: true, message: 'Producto eliminado' });
 
-            <div style={{ padding: '20px' }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Gestión de Inventarios
-                </Typography>
-        
-                <Paper style={{ padding: '20px', marginBottom: '20px' }}>
-                    <Typography variant="h5" component="h2">
-                        Distribución del Inventario por Categorías
-                    </Typography>
-                    <PieChart width={400} height={400}>
-                        <Pie
-                            data={pieData}
-                            cx={200}
-                            cy={200}
-                            labelLine={false}
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                        >
-                            {pieData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index% COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <PieTooltip />
-                            <Legend />
-                        </PieChart>
-                    </Paper>
-    
-                    <Paper style={{ padding: '20px' }}>
-                        <Typography variant="h5" component="h2">
-                            Ventas Mensuales
-                        </Typography>
-                        <BarChart
-                            width={500}
-                            height={300}
-                            data={barData}
-                            margin={{
-                                top: 20, right: 30, left: 20, bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <BarTooltip />
-                            <Legend />
-                            <Bar dataKey="ventas" fill="#8884d8" />
-                        </BarChart>
-                    </Paper>
+      setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+    }
+  };
+
+  return (
+    <div className="containerr">
+      <Header cartCount={cartCount} />
+      <div className="inventory-page">
+        <h1 className="titulo1">Gestión de Inventario</h1>
+
+        {notification.show && (
+          <div className="notification">
+            <img src={'/images/carrito.png'} alt="Notificación" className="notification-icon" />
+            {notification.message}
+          </div>
+        )}
+
+        <button className="add-button">Añadir Nuevo Producto</button>
+
+        {productos.length > 0 ? (
+          <div className="inventory-list">
+            {productos.map((producto) => (
+              <div key={producto.id} className="inventory-item">
+                <div className="product-details">
+                  <img
+                    src={producto.imagen_principal || '/images/placeholder.png'}
+                    alt={producto.nombre}
+                    className="product-image"
+                  />
+                  <div>
+                    <h3 className="product-name">{producto.nombre}</h3>
+                    <p className="product-price">Q{producto.precio.toFixed(2)}</p>
+                    <p className="product-category"><strong>Categoría:</strong> {producto.categoria}</p>
+                    <p className="product-status"><strong>Estado:</strong> {producto.estado}</p>
+                  </div>
                 </div>
-            </>
-        );
-    };
-    
-    export default InventoryManagement;
-    
+                <div className="product-actions">
+                  <button
+                    className="edit-button"
+                    onClick={() => alert(`Editar producto: ${producto.nombre}`)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteProduct(producto.id)}
+                  >
+                    Eliminar
+                  </button>
+                  <button
+                    className="button-add"
+                    onClick={() => handleAddToCart(producto)}
+                  >
+                    Añadir al Carrito
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No hay productos en el inventario.</p>
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default InventoryManagement;
