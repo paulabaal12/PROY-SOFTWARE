@@ -28,6 +28,7 @@ import Productos from './Components/Screens/productos';
 import ProductCatalog from './Components/Screens/ProductCatalog';
 import ProductDetails from './Components/Screens/ProductDetails';//ver producto detalle
 import ProductosPage from './Components/Screens/ProductosPage';
+import PedidosPage from './Components/Screens/PedidosPage';
 
 
 
@@ -99,6 +100,7 @@ export const App = () => {
         <Route path="/productos/:productoId" element={<ProductoDetalles />} />
         <Route path="/productos" element={<ProductCatalog />} />
         <Route path="/producto2/:id" element={<ProductDetails />} />    
+        <Route path="/pedidos" element={<PedidosPage />} />
       </Routes>
     </Router>
   );
