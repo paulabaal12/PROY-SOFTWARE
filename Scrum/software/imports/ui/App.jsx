@@ -27,6 +27,7 @@ import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
 import ProductCatalog from './Components/Screens/ProductCatalog';
 import ProductDetails from './Components/Screens/ProductDetails';//ver producto detalle
+import ProductosPage from './Components/Screens/ProductosPage';
 
 
 
@@ -96,6 +97,7 @@ export const App = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
         <Route path="/productos/:productoId" element={<ProductoDetalles />} />
+        <Route path="/productos/" element={<ProductosPage />} />
         <Route path="/productos1" element={<ProductCatalog />} />
         <Route path="/producto2/:id" element={<ProductDetails />} />    
       </Routes>
