@@ -97,8 +97,7 @@ export const App = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
         <Route path="/productos/:productoId" element={<ProductoDetalles />} />
-        <Route path="/productos/" element={<ProductosPage />} />
-        <Route path="/productos1" element={<ProductCatalog />} />
+        <Route path="/productos" element={<ProductCatalog />} />
         <Route path="/producto2/:id" element={<ProductDetails />} />    
       </Routes>
     </Router>
