@@ -199,7 +199,7 @@ const RegisterPage = () => {
         
         <div className="register-prompt">
           <p>Ya tienes una cuenta?</p>
-          <button onClick={() => navigate('/login')} className="btn1 centered">Regístrate</button>
+          <button onClick={() => navigate('/login')} className="btn1 centered">Iniciar sesión</button>
         </div>
           <center>
           <h1>--------- ó ---------</h1>
