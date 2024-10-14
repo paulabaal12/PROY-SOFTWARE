@@ -48,6 +48,13 @@ Meteor.startup(() => {
   );
   
   
+WebApp.rawConnectHandlers.use((req, res, next) => {
+  console.log('Request Headers:', req.headers); // Agregar este log para depuración
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  next();
+});
 
   
 

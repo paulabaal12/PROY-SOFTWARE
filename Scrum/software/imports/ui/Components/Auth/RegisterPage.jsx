@@ -34,58 +34,56 @@ const RegisterPage = () => {
 
   // REGISTRAR USUARIO CON GOOGLE
   // REGISTRAR USUARIO CON GOOGLE
-const handleGoogleRegister = () => {
-  if (!formData.hasAgreedToPrivacyPolicy) {
-    setShowPrivacyAlert(true);
-    setError('Debes aceptar la política de privacidad para registrarte.');
-    return;
-  }
-  if (googleLoginInProgress) {
-    console.log("Proceso de login con Google ya en progreso.");
-    return; // Evitar duplicación
-  }
-  setGoogleLoginInProgress(true);
-
-  console.log("Iniciando proceso de login con Google");
+  const handleGoogleRegister = () => {
+    if (!formData.hasAgreedToPrivacyPolicy) {
+      setShowPrivacyAlert(true);
+      setError('Debes aceptar la política de privacidad para registrarte.');
+      return;
+    }
+    if (googleLoginInProgress) return; // Evita intentos múltiples.
   
-  Meteor.loginWithGoogle((error, result) => {
-    if (error) {
-      console.error('Error en el inicio de sesión con Google:', error);
-      setError('Error en el registro con Google.');
-      setGoogleLoginInProgress(false);
-    } else {
-      console.log('Resultado de Google:', result);
-
-      // Verifica si se obtuvo el perfil correctamente
-      if (!result || !result.profile) {
-        console.error('No se obtuvo el perfil del usuario de Google.');
-        setError('No se obtuvo la información del perfil de Google.');
+    setGoogleLoginInProgress(true);
+    console.log('Iniciando proceso de login con Google');
+  
+    Meteor.loginWithGoogle({ requestPermissions: ['email', 'profile'] }, (error) => {
+      if (error) {
+        console.error('Error en el inicio de sesión con Google:', error);
+        setError('Error en el registro con Google.');
         setGoogleLoginInProgress(false);
         return;
       }
-      
-      const googleUser = {
-        name: result.profile.name || '',
-        email: result.profile.email || '',
-        picture: result.profile.picture || ''
-      };
-
-      console.log('Usuario de Google obtenido:', googleUser);
-      
-      // Llamada al método de registro en el servidor
-      Meteor.call('usuarios.googleRegister', googleUser, (err, res) => {
-        if (err) {
-          console.error('Error al registrar el usuario de Google:', err);
-          setError('Error al registrar con Google.');
-        } else {
-          console.log('Usuario registrado o autenticado con Google:', res);
-          navigate('/'); // Redirigir después de registro o autenticación exitosa
-        }
+  
+      const user = Meteor.user(); // Obtener datos del usuario de Meteor.
+      console.log('Usuario obtenido desde Meteor:', user);
+  
+      if (user && user.services?.google) {
+        const googleUser = {
+          name: user.services.google.name || '',
+          email: user.services.google.email || '',
+          picture: user.services.google.picture || '',
+        };
+  
+        console.log('Usuario de Google:', googleUser);
+  
+        // Registrar usuario en el servidor.
+        Meteor.call('usuarios.googleRegister', googleUser, (err, res) => {
+          if (err) {
+            console.error('Error al registrar el usuario de Google:', err);
+            setError('Error al registrar con Google.');
+          } else {
+            console.log('Usuario registrado o autenticado:', res);
+            navigate('/'); // Redirigir después de éxito.
+          }
+          setGoogleLoginInProgress(false);
+        });
+      } else {
+        setError('No se pudo obtener la información del perfil de Google.');
+        console.error('No se obtuvo el perfil completo.');
         setGoogleLoginInProgress(false);
-      });
-    }
-  });
-};
+      }
+    });
+  };
+  
 
 
   // SUBMIT FORMULARIO DE REGISTRO MANUAL
@@ -194,18 +192,25 @@ const handleGoogleRegister = () => {
           </div>
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="btn" disabled={loading}>{loading ? 'Cargando...' : 'Crear Cuenta'}</button>
-            <br /><br />
+            
         
         </form>
 
-{/* Botón de registro con Google */}
-<button onClick={handleGoogleRegister} className="google-login-container">
+        
+        <div className="register-prompt">
+          <p>Ya tienes una cuenta?</p>
+          <button onClick={() => navigate('/login')} className="btn1 centered">Regístrate</button>
+        </div>
+          <center>
+          <h1>--------- ó ---------</h1>
+          {/* Botón de registro con Google */}
+          <button onClick={handleGoogleRegister} className="google-login-container">
             <div className="logo-google-login">
               <img src="images/google-logo.png" alt="Google Logo" />
             </div>
             <span className="btn-google-login">Registrarse con Google</span>
           </button>
-
+          </center>
       </div>
     </div>
   );
