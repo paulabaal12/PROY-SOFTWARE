@@ -26,7 +26,7 @@ import ProductDetail from './Components/Screens/ProductDetail';
 import SearchResults from './Components/Screens/SearchResults';
 import Productos from './Components/Screens/productos';
 import ProductCatalog from './Components/Screens/ProductCatalog';
-import ProductDetails from './Components/Screens/ProductDetails';
+import ProductDetails from './Components/Screens/ProductDetails';//ver producto detalle
 
 
 
@@ -96,8 +96,8 @@ export const App = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/formulario-producto" element={<FormularioProducto />} />
         <Route path="/productos/:productoId" element={<ProductoDetalles />} />
-        <Route path="/productos" element={<ProductCatalog />} />
-        <Route path="/productos/:id" element={<ProductDetails />} />    
+        <Route path="/productos1" element={<ProductCatalog />} />
+        <Route path="/producto2/:id" element={<ProductDetails />} />    
       </Routes>
     </Router>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -13,6 +13,9 @@ const CategoriaDetalle = () => {
     precioMax: 1000000,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [notification, setNotification] = useState({ show: false, message: '' });
+  const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('Nombre de la categoría:', nombre);
@@ -39,6 +42,36 @@ const CategoriaDetalle = () => {
     }));
   };
 
+  const handleAddToCart = (producto) => {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const existingProduct = cartItems.find(item => item.id === producto.id);
+
+    if (existingProduct) {
+      cartItems = cartItems.map(item =>
+        item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      cartItems.push({
+        id: producto.id,
+        name: producto.nombre,
+        price: producto.precio,
+        quantity: 1,
+        image: producto.imagen_principal
+      });
+    }
+
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    setNotification({ show: true, message: 'Producto añadido al carrito' });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 3000);
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
+  };
+
+  const handleMoreInfoClick = (productoId) => {
+    navigate(`/productos/${productoId}`);
+  };
+
   const productosFiltrados = productos.filter(producto => 
     producto.precio >= filtros.precioMin && producto.precio <= filtros.precioMax
   );
@@ -51,7 +84,8 @@ const CategoriaDetalle = () => {
 
   return (
     <div>
-      <Header />
+      <Header cartCount={cartCount} />
+      {notification.show && <div className="notification">{notification.message}</div>}
       <div className="categoria-detalle-container">
         <h1>{nombre}</h1>
         <div className="categoria-content">
@@ -85,8 +119,10 @@ const CategoriaDetalle = () => {
                   <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
                   <h3 className='titulo-producto'>{producto.nombre}</h3>
                   <p className='titulo-precio'>Precio: ${producto.precio}</p>
-                  <button className="button-agregar">Agregar al carrito</button>
-                  <button className="button-info" onClick={handleMoreInfoClick}>
+                  <button className="button-agregar" onClick={() => handleAddToCart(producto)}>
+                    Agregar al carrito
+                  </button>
+                  <button className="button-info" onClick={() => handleMoreInfoClick(producto.id)}>
                     Más Información
                   </button>
                 </div>

@@ -42,7 +42,10 @@ const ProductDetails = () => {
 
   return (
     <div className="product-details">
+
       <Header />
+      <p>hola mundo</p>
+
       <main className="product-details__main">
         <h1 className="product-details__title">{product.nombre}</h1>
         <div className="product-details__content">
@@ -64,7 +67,7 @@ const ProductDetails = () => {
             )}
             {product.imagenes_adicionales && product.imagenes_adicionales.length > 0 && (
               <div className="product-details__additional-images">
-                <h3>Imágenes Adicionales:</h3>
+                <h3>Imágenes Adicionales HJOL :</h3>
                 <div className="product-details__image-gallery">
                   {product.imagenes_adicionales.map((imagen, index) => (
                     <img key={index} src={imagen} alt={`Imagen adicional ${index + 1}`} className="product-details__additional-image" />

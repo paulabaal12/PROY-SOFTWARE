@@ -12,6 +12,9 @@ const ProductoDetalles = () => {
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [cartCount, setCartCount] = useState(0);
+  const [favoriteProducts, setFavoriteProducts] = useState(
+    JSON.parse(localStorage.getItem('favoriteProducts')) || []
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,6 +67,20 @@ const ProductoDetalles = () => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
   };
 
+  const handleFavoriteToggle = () => {
+    const isFavorite = favoriteProducts.some(p => p.id === producto.id);
+    const newFavorites = isFavorite
+      ? favoriteProducts.filter(p => p.id !== producto.id)
+      : [...favoriteProducts, producto];
+    
+    setFavoriteProducts(newFavorites);
+    localStorage.setItem('favoriteProducts', JSON.stringify(newFavorites));
+    setNotification({ show: true, message: isFavorite ? 'Producto eliminado de favoritos' : 'Producto añadido a favoritos' });
+    setTimeout(() => {
+      setNotification({ show: false, message: '' });
+    }, 3000);
+  };
+
   if (loading) {
     return <div className="loading-message1">Cargando...</div>;
   }
@@ -77,33 +94,28 @@ const ProductoDetalles = () => {
       <Header cartCount={cartCount} />
       {notification.show && <div className="notification">{notification.message}</div>}
       <button onClick={() => navigate(-1)} className="back-button">← Volver</button>
-      <div className="product-container">
-        <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
-        <h2 className="titulo-producto">{producto.nombre}</h2>
-        <p>{producto.descripcion}</p>
-        <p className="titulo-precio">Precio: ${producto.precio}</p>
-        <p>Categoría: {producto.categoria}</p>
-        <p>Estado: {producto.estado}</p>
 
-        {/* Botón agregado aquí para que esté siempre visible */}
-        <button className="button-agregar" onClick={handleAddToCart}>Agregar al carrito</button>
-
-        {producto.imagenes_adicionales && producto.imagenes_adicionales.length > 0 && (
-          <div>
-            <h3 className="image-preview-title">Imágenes Adicionales:</h3>
-            <div className="image-preview-container">
-              {producto.imagenes_adicionales.map((imagen, index) => (
-                <img
-                  key={index}
-                  src={imagen}
-                  alt={`${producto.nombre} - Imagen ${index + 1}`}
-                  className="image-preview"
-                />
-              ))}
-            </div>
+      {/* Contenedor centrado solo para el contenido del producto */}
+      <div className="product-centered">
+        <div className="product-details-container">
+          <div className="image-container">
+            <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
           </div>
-        )}
+
+          <div className="details-container">
+            <h2 className="titulo-producto">{producto.nombre}</h2>
+            <p>Descripción: {producto.descripcion}</p>
+            <p className="titulo-precio">Precio: ${producto.precio}</p>
+            <p>Categoría: {producto.categoria}</p>
+            <p>Estado: {producto.estado}</p>
+            <button className="button-agregar" onClick={handleAddToCart}>Agregar al carrito</button>
+            <button className="button-favorito" onClick={handleFavoriteToggle}>
+              {favoriteProducts.some(p => p.id === producto.id) ? 'Eliminar de favoritos' : 'Agregar a favoritos'}
+            </button>
+          </div>
+        </div>
       </div>
+
       <Footer />
     </div>
   );

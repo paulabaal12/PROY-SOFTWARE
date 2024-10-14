@@ -2504,3 +2504,45 @@ p {
     max-width: 40%;
   }
 }
+.product-details-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+
+/*style productos detalles*/
+.product-image {
+  width: 200px; /* Ajusta este valor al tamaño deseado */
+  height: 200px; /* Ajusta este valor al tamaño deseado */
+  object-fit: cover; /* Asegura que la imagen mantenga su proporción */
+  border-radius: 8px;
+}
+
+.product-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.product-details-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 90%; /* Ancho flexible basado en porcentaje */
+  max-width: 1200px; /* Limita el ancho máximo en pantallas grandes */
+  margin: 0 auto;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.details-container {
+  flex: 2;
+  max-width: 60%; /* El contenido de texto ocupará hasta el 60% del contenedor */
+}
+/*style productos detalles fin*/
