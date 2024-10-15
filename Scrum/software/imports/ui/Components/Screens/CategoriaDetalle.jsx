@@ -22,12 +22,11 @@ const CategoriaDetalle = () => {
     Meteor.call('productos.getAll', (error, result) => {
       if (error) {
         console.error('Error al obtener productos:', error);
-      } else {
-        console.log('Todos los productos:', result);
+      } else if (result) {
+        // Filtra productos según la categoría proporcionada por el parámetro 'nombre'
         const productosFiltrados = result.filter(producto => 
-          producto.categoria.toLowerCase() === nombre.toLowerCase()
+          producto.categoria && producto.categoria.toLowerCase() === nombre.toLowerCase()
         );
-        console.log('Productos filtrados por categoría:', productosFiltrados);
         setProductos(productosFiltrados);
       }
       setIsLoading(false);
@@ -76,41 +75,34 @@ const CategoriaDetalle = () => {
     producto.precio >= filtros.precioMin && producto.precio <= filtros.precioMax
   );
 
-  console.log('Productos filtrados por precio:', productosFiltrados);
-
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return <p className="product-catalog__loading">Cargando productos...</p>;
   }
 
   return (
     <div>
-      <Header cartCount={cartCount} />
+      <Header />
       {notification.show && <div className="notification">{notification.message}</div>}
       <div className="categoria-detalle-container">
         <h1>{nombre}</h1>
         <div className="categoria-content">
-          <aside className="filtros-sidebar">
-            <h2>Filtros</h2>
-            <div>
-              <label>Precio Mínimo:</label>
-              <input 
-                type="number" 
-                name="precioMin" 
-                value={filtros.precioMin} 
+          <aside className="product-catalog__filter">
+            <h2 className="product-catalog__filter-title">Filtros</h2>
+            <div className="product-catalog__price-filter">
+              <h3>Precio</h3>
+              <p>${filtros.precioMin} - ${filtros.precioMax}</p>
+              <input
+                type="range"
+                min={0}
+                max={1000000}
+                name="precioMax"
+                value={filtros.precioMax}
                 onChange={handleFiltroChange}
-              />
-            </div>
-            <div>
-              <label>Precio Máximo:</label>
-              <input 
-                type="number" 
-                name="precioMax" 
-                value={filtros.precioMax} 
-                onChange={handleFiltroChange}
+                className="product-catalog__price-slider"
               />
             </div>
           </aside>
-          <main className="productos-grid">
+          <main className="product-catalog__grid">
             {productosFiltrados.length === 0 ? (
               <p>No hay productos en esta categoría.</p>
             ) : (
@@ -119,12 +111,14 @@ const CategoriaDetalle = () => {
                   <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
                   <h3 className='titulo-producto'>{producto.nombre}</h3>
                   <p className='titulo-precio'>Precio: ${producto.precio}</p>
-                  <button className="button-agregar" onClick={() => handleAddToCart(producto)}>
-                    Agregar al carrito
-                  </button>
-                  <button className="button-info" onClick={() => handleMoreInfoClick(producto.id)}>
-                    Más Información
-                  </button>
+                  <div className="product-buttons">
+                    <button className="button-add" onClick={() => handleAddToCart(producto)}>
+                      Agregar al carrito
+                    </button>
+                    <button className="button-info" onClick={() => handleMoreInfoClick(producto.id)}>
+                      Más Información
+                    </button>
+                  </div>
                 </div>
               ))
             )}

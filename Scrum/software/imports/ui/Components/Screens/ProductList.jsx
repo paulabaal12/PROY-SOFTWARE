@@ -7,7 +7,6 @@ const ProductList = ({ products, onAddToCart, onMoreInfo, onFavoriteToggle, favo
         <img src={product.imagen_principal} alt={product.nombre} className="product-image" />
         <h3 className="product-name">{product.nombre}</h3>
         <p className="product-price">Precio: {product.precio}</p>
-        <div className="product-actions">
           <button className="button-add" onClick={() => onAddToCart(product)}>Agregar al carrito</button>
           <button className="button-info" onClick={() => onMoreInfo(product.id)}>Más Información</button>
           <span 
@@ -16,7 +15,6 @@ const ProductList = ({ products, onAddToCart, onMoreInfo, onFavoriteToggle, favo
           >
             &#10084;
           </span>
-        </div>
       </div>
     ))}
   </div>

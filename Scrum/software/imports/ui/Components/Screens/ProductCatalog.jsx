@@ -59,8 +59,8 @@ const ProductCatalog = () => {
   }
 
   return (
-    <div className="product-catalog1">
-      <Header />
+    <div>
+      <Header/>
       <main className="product-catalog__main">
         <h1 className="product-catalog__title">Catálogo de Productos</h1>
         <div className="product-catalog__container">
@@ -71,7 +71,7 @@ const ProductCatalog = () => {
               <p>${priceRange[0]} - ${priceRange[1]}</p>
               <input
                 type="range"
-                min={2}
+                min={0}
                 max={380}
                 value={priceRange[1]}
                 onChange={(e) => handlePriceChange(e, [priceRange[0], Number(e.target.value)])}
