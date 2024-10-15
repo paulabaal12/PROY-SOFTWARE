@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS metodos_pago (
     usuario_id INT NOT NULL,
     tipo_metodo VARCHAR(50) NOT NULL, -- Ej: PayPal, Transferencia, Pago contra entrega
     detalles JSONB, -- Detalles del método (ej. datos bancarios, cuenta PayPal)
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
 
@@ -87,7 +86,7 @@ ALTER TABLE usuarios ADD PRIMARY KEY (id);
 ALTER TABLE productos ADD COLUMN usuario_id INT;
 ALTER TABLE productos ADD PRIMARY KEY (id);
 ALTER TABLE productos ADD CONSTRAINT fk_usuario
-ALTER TABLE productos FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+ALTER TABLE productos ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
 
 ALTER TABLE vendedores ADD PRIMARY KEY (vendedor_id);
 ALTER TABLE envios ADD PRIMARY KEY (id_envio);
