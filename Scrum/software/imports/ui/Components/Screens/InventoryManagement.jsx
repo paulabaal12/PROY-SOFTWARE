@@ -1,64 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { useTracker } from 'meteor/react-meteor-data';
-import { Mongo } from 'meteor/mongo';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; // Importar estilos
-
-const Productos = new Mongo.Collection('productos'); // Colección de productos
+import '../../style.css'; // Asegúrate de usar el CSS actualizado
 
 const InventoryManagement = () => {
   const [productos, setProductos] = useState([]);
-  const [cartCount, setCartCount] = useState(0); // Estado del carrito
   const [notification, setNotification] = useState({ show: false, message: '' });
-
-  // Obtener productos desde la colección usando Tracker
-  const productosData = useTracker(() => {
-    Meteor.subscribe('productos');
-    return Productos.find().fetch();
-  }, []);
+  const usuarioId = 1; // Cambia esto según tu autenticación
 
   useEffect(() => {
-    setProductos(productosData);
+    fetchUserProductos(); // Cargar productos del usuario al montar el componente
+  }, []);
 
-    // Simulamos la carga del número de productos en el carrito
-    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const totalItems = storedCartItems.reduce((acc, item) => acc + item.quantity, 0);
-    setCartCount(totalItems);
-  }, [productosData]);
-
-  const handleAddToCart = (producto) => {
-    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const existingProduct = cartItems.find((item) => item.id === producto.id);
-
-    if (existingProduct) {
-      cartItems = cartItems.map((item) =>
-        item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-    } else {
-      cartItems.push({ ...producto, quantity: 1 });
-    }
-
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    setNotification({ show: true, message: 'Producto añadido al carrito' });
-
-    setTimeout(() => setNotification({ show: false, message: '' }), 3000);
-    setCartCount(cartItems.reduce((acc, item) => acc + item.quantity, 0));
+  const fetchUserProductos = () => {
+    Meteor.call('productos.getByUser', usuarioId, (err, result) => {
+      if (err) {
+        console.error('Error al obtener productos del usuario:', err);
+      } else {
+        console.log('Productos del usuario obtenidos:', result);
+        setProductos(result);
+      }
+    });
   };
 
   const handleDeleteProduct = (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      Productos.remove(id);
-      setProductos(productos.filter((producto) => producto.id !== id));
-      setNotification({ show: true, message: 'Producto eliminado' });
-
-      setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+      Meteor.call('productos.delete', id, (err) => {
+        if (err) {
+          console.error('Error al eliminar producto:', err);
+        } else {
+          setNotification({ show: true, message: 'Producto eliminado' });
+          setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+          fetchUserProductos(); // Refresca la lista después de eliminar
+        }
+      });
     }
   };
 
   return (
     <div className="containerr">
-      <Header cartCount={cartCount} />
+      <Header cartCount={0} />
       <div className="inventory-page">
         <h1 className="titulo1">Gestión de Inventario</h1>
 
@@ -69,24 +50,29 @@ const InventoryManagement = () => {
           </div>
         )}
 
-        <button className="add-button">Añadir Nuevo Producto</button>
+        <button
+          className="add-button"
+          onClick={() => alert('Funcionalidad de añadir producto no implementada aún')}
+        >
+          Añadir Nuevo Producto
+        </button>
 
         {productos.length > 0 ? (
-          <div className="inventory-list">
+          <div className="inventory-grid">
             {productos.map((producto) => (
-              <div key={producto.id} className="inventory-item">
-                <div className="product-details">
-                  <img
-                    src={producto.imagen_principal || '/images/placeholder.png'}
-                    alt={producto.nombre}
-                    className="product-image"
-                  />
-                  <div>
-                    <h3 className="product-name">{producto.nombre}</h3>
-                    <p className="product-price">Q{producto.precio.toFixed(2)}</p>
-                    <p className="product-category"><strong>Categoría:</strong> {producto.categoria}</p>
-                    <p className="product-status"><strong>Estado:</strong> {producto.estado}</p>
-                  </div>
+              <div key={producto.id} className="inventory-card">
+                <img
+                  src={producto.imagen_principal || '/images/placeholder.png'}
+                  alt={producto.nombre}
+                  className="product-image"
+                />
+                <div className="product-info">
+                  <h3 className="product-name">{producto.nombre}</h3>
+                  <p className="product-price">
+                    Q{(typeof producto.precio === 'number' ? producto.precio.toFixed(2) : '0.00')}
+                  </p>
+                  <p className="product-category"><strong>Categoría:</strong> {producto.categoria}</p>
+                  <p className="product-status"><strong>Estado:</strong> {producto.estado}</p>
                 </div>
                 <div className="product-actions">
                   <button
@@ -100,12 +86,6 @@ const InventoryManagement = () => {
                     onClick={() => handleDeleteProduct(producto.id)}
                   >
                     Eliminar
-                  </button>
-                  <button
-                    className="button-add"
-                    onClick={() => handleAddToCart(producto)}
-                  >
-                    Añadir al Carrito
                   </button>
                 </div>
               </div>

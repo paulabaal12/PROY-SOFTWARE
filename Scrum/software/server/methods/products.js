@@ -131,6 +131,25 @@ Meteor.methods({
         }
       });
     });
-  }
+  },
+  'productos.getByUser'(usuarioId) {
+    check(usuarioId, Number); // Verificamos que sea un número
+
+    return new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM productos WHERE usuario_id = $1',
+        [usuarioId],
+        (err, result) => {
+          if (err) {
+            console.error('Error al obtener productos del usuario:', err);
+            reject(new Meteor.Error('database-error', 'Error al obtener productos del usuario en la base de datos'));
+          } else {
+            console.log(`Productos del usuario ${usuarioId} obtenidos:`, result.rows);
+            resolve(result.rows);
+          }
+        }
+      );
+    });
+  },
 
 });
