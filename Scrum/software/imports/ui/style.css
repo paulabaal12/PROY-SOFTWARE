@@ -2701,11 +2701,36 @@ p {
   align-items: center;
 }
 
-/* Historial de Pagos */
 .payment-history-item {
   background-color: #f8f9fa;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button {
+  margin-right: 10px; /* Espacio entre los botones */
+  padding: 10px 20px; /* Aumentar el padding si lo deseas */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background-color: #4CAF50; /* Color cuando el tab está activo */
+  color: white;
+}
+
+.delivery-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.no-envios-message {
+  margin-top: 20px; /* Mueve el mensaje más abajo */
+  font-size: 18px;
+  text-align: center;
+  color: #666; /* Puedes cambiar el color si prefieres */
 }

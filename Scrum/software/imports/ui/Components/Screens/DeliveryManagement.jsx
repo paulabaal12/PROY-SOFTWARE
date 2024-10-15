@@ -3,11 +3,12 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { Mongo } from 'meteor/mongo';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; // Importar estilos
+import '../../style.css'; 
 
 const Envios = new Mongo.Collection('envios'); // Colección de envíos
 
 const DeliveryManagement = () => {
+  const [activeTab, setActiveTab] = useState('todos'); // Estado para las tabs
   const [envios, setEnvios] = useState([]);
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [cartCount, setCartCount] = useState(0); // Estado del carrito
@@ -47,6 +48,55 @@ const DeliveryManagement = () => {
     }
   };
 
+  // Función para renderizar los envíos filtrados según la pestaña activa
+  const renderEnvios = (filter) => {
+    if (!envios || envios.length === 0) {
+      return <p className="no-envios-message">No hay envíos registrados.</p>;
+    }
+
+    let filteredEnvios = envios;
+
+    // Comprobar el estado del envío solo si el campo existe
+    if (filter === 'pendientes') {
+      filteredEnvios = envios.filter((envio) => envio.estado_envio && envio.estado_envio !== 'Entregado');
+    } else if (filter === 'entregados') {
+      filteredEnvios = envios.filter((envio) => envio.estado_envio && envio.estado_envio === 'Entregado');
+    }
+
+    return filteredEnvios.length > 0 ? (
+      <ul className="delivery-list">
+        {filteredEnvios.map((envio) => (
+          <li key={envio.id_envio} className="delivery-item">
+            <div>
+              <p><strong>ID del Envío:</strong> {envio.id_envio}</p>
+              <p><strong>Proveedor:</strong> {envio.proveedor_envio}</p>
+              <p><strong>Número de Rastreo:</strong> {envio.numero_rastreo}</p>
+              <p><strong>Estado:</strong> {envio.estado_envio}</p>
+              <p><strong>Fecha de Envío:</strong> {new Date(envio.fecha_envio).toLocaleString()}</p>
+            </div>
+            <div className="delivery-actions">
+              <button
+                className="confirm-button"
+                onClick={() => handleConfirmDelivery(envio.id_envio)}
+                disabled={envio.estado_envio === 'Entregado'}
+              >
+                Confirmar Entrega
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => handleDeleteDelivery(envio.id_envio)}
+              >
+                Eliminar
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="no-envios-message">No hay envíos registrados para este filtro.</p>
+    );
+  };
+
   return (
     <div className="containerr">
       <Header cartCount={cartCount} />
@@ -60,38 +110,38 @@ const DeliveryManagement = () => {
           </div>
         )}
 
-        {envios.length > 0 ? (
-          <ul className="delivery-list">
-            {envios.map((envio) => (
-              <li key={envio.id_envio} className="delivery-item">
-                <div>
-                  <p><strong>ID del Envío:</strong> {envio.id_envio}</p>
-                  <p><strong>Proveedor:</strong> {envio.proveedor_envio}</p>
-                  <p><strong>Número de Rastreo:</strong> {envio.numero_rastreo}</p>
-                  <p><strong>Estado:</strong> {envio.estado_envio}</p>
-                  <p><strong>Fecha de Envío:</strong> {new Date(envio.fecha_envio).toLocaleString()}</p>
-                </div>
-                <div className="delivery-actions">
-                  <button
-                    className="confirm-button"
-                    onClick={() => handleConfirmDelivery(envio.id_envio)}
-                    disabled={envio.estado_envio === 'Entregado'}
-                  >
-                    Confirmar Entrega
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteDelivery(envio.id_envio)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No hay envíos registrados.</p>
-        )}
+        {/* Tabs para filtrar envíos */}
+        <div className="tabs">
+          <button
+            className={`tab-button ${activeTab === 'todos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('todos')}
+          >
+            Todos los envíos
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'pendientes' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pendientes')}
+          >
+            Pendientes
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'entregados' ? 'active' : ''}`}
+            onClick={() => setActiveTab('entregados')}
+          >
+            Entregados
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            Chat
+          </button>
+        </div>
+
+        {/* Renderizar envíos según la tab activa */}
+        {activeTab === 'todos' && renderEnvios('todos')}
+        {activeTab === 'pendientes' && renderEnvios('pendientes')}
+        {activeTab === 'entregados' && renderEnvios('entregados')}
       </div>
       <Footer />
     </div>
@@ -99,3 +149,4 @@ const DeliveryManagement = () => {
 };
 
 export default DeliveryManagement;
+
