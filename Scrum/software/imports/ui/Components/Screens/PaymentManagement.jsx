@@ -1,77 +1,117 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
 import '../../style.css'; // Asegúrate de que los estilos estén actualizados
 
 const PaymentManagement = () => {
-  const [metodosPago, setMetodosPago] = useState([]);
+  const navigate = useNavigate();
+  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
+
+  // Estado para los métodos de pago, historial y detalles seleccionados
+  const [metodosPago, setMetodosPago] = useState([
+    { tipo_metodo: 'Transferencia', detalles: {} },
+    { tipo_metodo: 'PayPal', detalles: {} },
+    { tipo_metodo: 'Pago contra entrega', detalles: {} }
+  ]);
   const [historialPagos, setHistorialPagos] = useState([]);
   const [detalles, setDetalles] = useState({});
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const usuarioId = 1; // Cambia según la lógica de autenticación
 
-  // Cargar los métodos de pago y el historial al inicio
+  // Redirigir al login si no hay usuario
   useEffect(() => {
-    Meteor.call('paymentMethods.get', usuarioId, (err, res) => {
-      if (!err) {
-        console.log('Métodos de pago obtenidos:', res); // Depuración
-        setMetodosPago(res);
-      } else {
-        console.error('Error al obtener los métodos de pago:', err);
-      }
-    });
+    if (!userId) {
+      console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
+      navigate('/login');
+    } else {
+      console.log(`ID del usuario recuperado: ${userId}`);
+      loadPaymentHistory(userId); // Cargar historial
+    }
+  }, [userId, navigate]);
 
-    Meteor.call('paymentHistory.get', usuarioId, (err, res) => {
+  // Cargar historial de pagos
+  const loadPaymentHistory = (id) => {
+    Meteor.call('paymentHistory.get', id, (err, res) => {
       if (!err) {
-        console.log('Historial de pagos obtenido:', res); // Depuración
+        console.log('Historial de pagos obtenido:', res);
         setHistorialPagos(res);
       } else {
         console.error('Error al obtener el historial de pagos:', err);
       }
     });
-  }, []);
+  };
 
-  const handleUpdate = (id) => {
-    Meteor.call('paymentMethods.update', id, detalles, (err) => {
+  // Actualizar o añadir un método de pago
+  const handleUpdate = () => {
+    if (!selectedMethod) {
+      console.error("No hay método seleccionado.");
+      return;
+    }
+  
+    const payload = {
+      usuario_id: userId, // Asegúrate de que el ID del usuario sea correcto.
+      tipo_metodo: selectedMethod.tipo_metodo, // Verifica que el tipo se envíe correctamente.
+      detalles: {
+        banco: detalles.banco || '',
+        cuenta: detalles.cuenta || '',
+        paypal_id: detalles.paypal_id || '',
+        paypal_secret: detalles.paypal_secret || '',
+      },
+    };
+  
+    console.log("Datos enviados para procesar:", payload);
+  
+    Meteor.call('paymentMethods.insertOrUpdate', payload, (err) => {
       if (!err) {
-        alert('Método de pago actualizado correctamente.');
+        alert('Método de pago procesado correctamente.');
         closeModal();
       } else {
-        console.error('Error al actualizar el método de pago:', err);
+        console.error('Error al procesar el método de pago:', err);
       }
     });
   };
+  
+  
+  
 
   const handleChange = (e) => {
-    e.persist(); // Persistimos el evento para evitar que se libere
+    e.persist(); // Previene que React libere el evento
+  
     setDetalles((prevDetalles) => ({
       ...prevDetalles,
       [e.target.name]: e.target.value,
     }));
   };
+  
 
   const openModal = (method) => {
     if (method) {
-      const { detalles = {} } = method; // Desestructurar los detalles
       console.log('Abriendo modal con:', method); // Depuración
-
-      setSelectedMethod(method);
+  
+      setSelectedMethod(method); // Guarda el método seleccionado en el estado.
+  
       setDetalles({
-        banco: detalles.banco || '',
-        cuenta: detalles.cuenta || '',
-        paypal_id: detalles.paypal_id || '',
-        paypal_secret: detalles.paypal_secret || '',
+        banco: method.detalles?.banco || '',
+        cuenta: method.detalles?.cuenta || '',
+        paypal_id: method.detalles?.paypal_id || '',
+        paypal_secret: method.detalles?.paypal_secret || '',
       });
+  
       setShowModal(true);
     }
   };
+  
+  
+  
+  
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedMethod(null);
     setDetalles({});
   };
+  
 
   return (
     <div className="containerr">
@@ -79,14 +119,14 @@ const PaymentManagement = () => {
       <h1 className="payment-title">Gestión de Métodos de Pago</h1>
 
       <ul className="payment-method-list">
-        {metodosPago.map((metodo) => (
-          <li key={metodo.id} className="payment-method-item">
+        {metodosPago.map((metodo, index) => (
+          <li key={index} className="payment-method-item">
             <span><strong>Tipo de Método:</strong> {metodo.tipo_metodo}</span>
             <button
               onClick={() => openModal(metodo)}
               className="modify-button"
             >
-              Modificar
+              {metodo.detalles ? 'Modificar' : 'Añadir'}
             </button>
           </li>
         ))}
@@ -95,9 +135,9 @@ const PaymentManagement = () => {
       {showModal && selectedMethod && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Modificar {selectedMethod?.tipo_metodo}</h2>
+            <h2>{selectedMethod.detalles ? 'Modificar' : 'Añadir'} {selectedMethod.tipo_metodo}</h2>
             <form>
-              {selectedMethod?.tipo_metodo === 'Transferencia' && (
+              {selectedMethod.tipo_metodo === 'Transferencia' && (
                 <>
                   <label>Banco:</label>
                   <input
@@ -116,7 +156,7 @@ const PaymentManagement = () => {
                 </>
               )}
 
-              {selectedMethod?.tipo_metodo === 'PayPal' && (
+              {selectedMethod.tipo_metodo === 'PayPal' && (
                 <>
                   <label>PayPal ID:</label>
                   <input
@@ -137,7 +177,7 @@ const PaymentManagement = () => {
 
               <button
                 type="button"
-                onClick={() => handleUpdate(selectedMethod.id)}
+                onClick={() => handleUpdate(selectedMethod.tipo_metodo)}
                 className="modify-button"
               >
                 Guardar Cambios

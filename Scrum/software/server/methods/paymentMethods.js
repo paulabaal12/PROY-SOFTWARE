@@ -34,6 +34,35 @@ Meteor.startup(() => {
 });
 
 Meteor.methods({
+  'paymentMethods.insertOrUpdate'({ usuario_id, tipo_metodo, detalles }) {
+    check(usuario_id, Match.OneOf(Number, String));
+    check(tipo_metodo, String);
+    check(detalles, Object);
+
+    const query = `
+      INSERT INTO metodos_pago (usuario_id, tipo_metodo, detalles)
+      VALUES ($1, $2, $3::jsonb)
+      ON CONFLICT (usuario_id, tipo_metodo)
+      DO UPDATE SET detalles = EXCLUDED.detalles
+      RETURNING id;
+    `;
+    const values = [parseInt(usuario_id, 10), tipo_metodo, JSON.stringify(detalles)];
+
+    console.log('Ejecutando consulta SQL:', query, values); // Depuración
+
+    return new Promise((resolve, reject) => {
+      pool.query(query, values, (err, result) => {
+        if (err) {
+          console.error('Error en la consulta SQL:', err); // Log detallado
+          reject(new Meteor.Error('database-error', 'Error al procesar método de pago'));
+        } else {
+          console.log('Método de pago procesado:', result.rows[0]);
+          resolve(result.rows[0]);
+        }
+      });
+    });
+  },
+
   'paymentMethods.get': async function (usuarioId) {
     try {
       const result = await pool.query(
@@ -47,18 +76,6 @@ Meteor.methods({
     }
   },
 
-  'paymentMethods.update': async function (id, detalles) {
-    try {
-      await pool.query(
-        'UPDATE metodos_pago SET detalles = $1 WHERE id = $2',
-        [detalles, id]
-      );
-      return { message: 'Método de pago actualizado correctamente' };
-    } catch (err) {
-      console.error('Error al actualizar el método de pago:', err);
-      throw new Meteor.Error('Error al actualizar el método de pago', err.message);
-    }
-  },
 
   'paymentHistory.get': async function (usuarioId) {
     try {
