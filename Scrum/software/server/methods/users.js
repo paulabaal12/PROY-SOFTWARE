@@ -36,40 +36,41 @@ Meteor.methods({
     );
   },
 
-  // Método para autenticar usuario
-  'usuarios.authenticate'(email, password) {
-    return new Promise((resolve, reject) => {
-      check(email, String);
-      check(password, String);
-
-      pool.query('SELECT * FROM usuarios WHERE email = $1', [email], (err, result) => {
-        if (err) {
-          console.error('Database authentication error:', err);
-          reject(new Meteor.Error('database-error', 'Error al autenticar en la base de datos'));
-          return;
-        }
-
-        if (result.rows.length === 0) {
-          resolve({ authenticated: false });
-          return;
-        }
-
-        const user = result.rows[0];
-        const passwordCorrect = bcrypt.compareSync(password, user.password);
-
-        if (!passwordCorrect) {
-          resolve({ authenticated: false });
-          return;
-        }
-
-        if (user.enable_2fa) {
-          resolve({ authenticated: true, twoFactorRequired: true, userId: user.id });
-        } else {
-          resolve({ authenticated: true, twoFactorRequired: false });
-        }
+    'usuarios.authenticate'(email, password) {
+      return new Promise((resolve, reject) => {
+        check(email, String);
+        check(password, String);
+  
+        pool.query('SELECT * FROM usuarios WHERE email = $1', [email], (err, result) => {
+          if (err) {
+            console.error('Database authentication error:', err);
+            reject(new Meteor.Error('database-error', 'Error al autenticar en la base de datos'));
+            return;
+          }
+  
+          if (result.rows.length === 0) {
+            resolve({ authenticated: false });
+            return;
+          }
+  
+          const user = result.rows[0];
+          const passwordCorrect = bcrypt.compareSync(password, user.password);
+  
+          if (!passwordCorrect) {
+            resolve({ authenticated: false });
+            return;
+          }
+  
+          // Devuelve el userId como parte de la respuesta
+          resolve({
+            authenticated: true,
+            twoFactorRequired: !!user.enable_2fa,
+            userId: user.id,
+          });
+        });
       });
-    });
-  },
+    },
+  
 
   // Método para habilitar la autenticación de dos factores
   'usuarios.enableTwoFactorAuth'(userId) {
@@ -185,7 +186,7 @@ async 'usuarios.googleRegister'(googleUser) {
     console.error('Error al registrar usuario con Google:', error);
     throw new Meteor.Error('database-error', 'Error al registrar usuario con Google');
   }
-}
+},
 
-  
+
 });

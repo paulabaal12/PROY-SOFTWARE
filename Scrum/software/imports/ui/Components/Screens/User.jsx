@@ -1,19 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'; // Asegúrate de importar useEffect
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; 
+import '../../style.css';
 import '../../variables.css';
 
 const User = ({ onLogout }) => {
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]); // Estado para almacenar los productos
+  const [error, setError] = useState(null); // Estado para manejar errores
+
+  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
+
+  useEffect(() => {
+    if (!userId) {
+      console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
+      navigate('/login'); // Redirigir si no hay ID
+    } else {
+      fetchProducts(); // Si hay ID, carga los productos
+    }
+  }, [userId]);
+
+  // Definición de la función fetchProducts para obtener los productos
+  const fetchProducts = () => {
+    console.log(`Obteniendo productos para el usuario con ID: ${userId}`);
+    Meteor.call('productos.getByUser', parseInt(userId), (err, res) => {
+      if (err) {
+        console.error('Error al obtener productos:', err);
+        setError(`Error al obtener productos: ${err.reason || err.message}`);
+      } else {
+        console.log('Productos obtenidos:', res);
+        setProducts(res || []); // Actualiza el estado con los productos
+      }
+    });
+  };
 
   const handlePaymentManagement = () => {
     navigate('/user/paymentmanagement');
   };
 
   const handleInventoryManagement = () => {
-    navigate('/user/inventorymanagement');  
+    navigate('/user/inventorymanagement');
   };
 
   const handleDeliveryManagement = () => {
@@ -21,8 +48,9 @@ const User = ({ onLogout }) => {
   };
 
   const handleLogout = () => {
-    onLogout(); 
-    navigate('/login'); 
+    onLogout();
+    localStorage.removeItem('userId'); // Limpia el ID de usuario al cerrar sesión
+    navigate('/login');
   };
 
   const handleBack = () => {
@@ -62,6 +90,7 @@ const User = ({ onLogout }) => {
               </div>
             </div>
           </div>
+          {error && <div className="error-message">{error}</div>}
           <div className="logout-container">
             <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
           </div>

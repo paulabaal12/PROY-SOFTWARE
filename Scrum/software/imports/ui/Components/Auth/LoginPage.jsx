@@ -18,10 +18,13 @@ const LoginPage = ({ onLoginSuccess }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setError('');
+  
     Meteor.call('usuarios.authenticate', email, password, (error, result) => {
       if (error) {
         setError('Error en el inicio de sesión. Por favor intenta de nuevo.');
       } else if (result.authenticated && !result.twoFactorRequired) {
+        console.log('Login exitoso, userId:', result.userId); // Depuración
+        localStorage.setItem('userId', result.userId); // Almacenar userId
         onLoginSuccess();
       } else if (result.authenticated && result.twoFactorRequired) {
         setShow2FAModal(true);
@@ -30,6 +33,9 @@ const LoginPage = ({ onLoginSuccess }) => {
       }
     });
   };
+  
+  
+  
 
   // Manejo del login con Google
   const handleGoogleLogin = () => {

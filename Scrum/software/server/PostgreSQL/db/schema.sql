@@ -84,7 +84,10 @@ CREATE TABLE IF NOT EXISTS metodos_pago (
 -- Sección 2: Constraints, aqui pueden agregar toda la estructura y relacion entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
 
+ALTER TABLE productos ADD COLUMN usuario_id INT;
 ALTER TABLE productos ADD PRIMARY KEY (id);
+ALTER TABLE productos ADD CONSTRAINT fk_usuario
+ALTER TABLE productos FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
 
 ALTER TABLE vendedores ADD PRIMARY KEY (vendedor_id);
 ALTER TABLE envios ADD PRIMARY KEY (id_envio);
