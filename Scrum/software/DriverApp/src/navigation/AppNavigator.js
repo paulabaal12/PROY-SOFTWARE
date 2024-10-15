@@ -29,8 +29,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="OrderSelection" component={OrderSelectionScreen} />
-        <Stack.Screen name="ContactSeller " component={ContactSellerScreen}/>
-        <Stack.Screen name="ContactBuyer " component={ContactBuyerScreen}/>
+        <Stack.Screen name="ContactSeller" component={ContactSellerScreen}/>
+        <Stack.Screen name="ContactBuyer" component={ContactBuyerScreen}/>
         <Stack.Screen name="LocationLoading" component={LocationLoadingScreen} />
         <Stack.Screen name="RouteOptimization" component={RouteOptimizationScreen} />
         <Stack.Screen name='OrderDetails' component={OrderDetailsScreen}/>
