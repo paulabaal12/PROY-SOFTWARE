@@ -2710,11 +2710,11 @@ p {
 }
 
 .tab-button {
-  margin-right: 10px; /* Espacio entre los botones */
-  padding: 10px 20px; /* Aumentar el padding si lo deseas */
+  margin-right: 10px;
+  padding: 10px 20px; 
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color:  #007bff;
   cursor: pointer;
 }
 
@@ -2729,8 +2729,8 @@ p {
 }
 
 .no-envios-message {
-  margin-top: 20px; /* Mueve el mensaje más abajo */
+  margin-top: 30px;
   font-size: 18px;
   text-align: center;
-  color: #666; /* Puedes cambiar el color si prefieres */
+  color: #666; 
 }
