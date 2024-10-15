@@ -1,5 +1,3 @@
-\c users_db
-
 -- Sección 1: Para crear nuevas tablas, no agregar ningun tipo de constraint
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL,
@@ -24,8 +22,8 @@ CREATE TABLE IF NOT EXISTS productos (
     estado VARCHAR(255) NOT NULL,
     imagen_principal VARCHAR(255),
     imagenes_adicionales TEXT[],
-	peso DECIMAL(10,2),
-	dimensiones VARCHAR(50)
+    peso DECIMAL(10,2),
+    dimensiones VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS vendedores (
@@ -51,9 +49,9 @@ CREATE TABLE IF NOT EXISTS pedidos (
     total DECIMAL(10, 2) NOT NULL,
     detalles JSONB,
     direccion_id INT,
-	costo_envio DECIMAL(10,2),
-	timepo_estimado_entrega TIMESTAMP,
-	estado_envio VARCHAR DEFAULT 'En proceso...'
+    costo_envio DECIMAL(10,2),
+    tiempo_estimado_entrega TIMESTAMP,
+    estado_envio VARCHAR DEFAULT 'En proceso...'
 );
 
 CREATE TABLE IF NOT EXISTS direcciones (
@@ -64,30 +62,28 @@ CREATE TABLE IF NOT EXISTS direcciones (
 );
 
 CREATE TABLE IF NOT EXISTS envios (
-	id_envio SERIAL,
-	pedido_id INT NOT NULL,
-	proveedor_envio VARCHAR(64) NOT NULL,
-	numero_rastreo VARCHAR(32),
-	fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	estado_envio VARCHAR(50) DEFAULT 'En tránsito'
+    id_envio SERIAL,
+    pedido_id INT NOT NULL,
+    proveedor_envio VARCHAR(64) NOT NULL,
+    numero_rastreo VARCHAR(32),
+    fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado_envio VARCHAR(50) DEFAULT 'En tránsito'
 );
 
 CREATE TABLE IF NOT EXISTS metodos_pago (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     tipo_metodo VARCHAR(50) NOT NULL, -- Ej: PayPal, Transferencia, Pago contra entrega
-    detalles JSONB, -- Detalles del método (ej. datos bancarios, cuenta PayPal)
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    detalles JSONB -- Detalles del método (ej. datos bancarios, cuenta PayPal)
 );
 
-
--- Sección 2: Constraints, aqui pueden agregar toda la estructura y relacion entre las tablas
+-- Sección 2: Constraints, aquí pueden agregar toda la estructura y relación entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
 
 ALTER TABLE productos ADD COLUMN usuario_id INT;
 ALTER TABLE productos ADD PRIMARY KEY (id);
 ALTER TABLE productos ADD CONSTRAINT fk_usuario
-ALTER TABLE productos FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
 
 ALTER TABLE vendedores ADD PRIMARY KEY (vendedor_id);
 ALTER TABLE envios ADD PRIMARY KEY (id_envio);

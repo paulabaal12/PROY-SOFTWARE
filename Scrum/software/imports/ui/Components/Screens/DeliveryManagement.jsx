@@ -111,7 +111,6 @@ const DeliveryManagement = () => {
           </div>
         )}
 
-        {/* Tabs para filtrar envíos */}
         <div className="tabs">
           <button
             className={`tab-button ${activeTab === 'todos' ? 'active' : ''}`}
@@ -139,12 +138,10 @@ const DeliveryManagement = () => {
           </button>
         </div>
 
-        {/* Renderizar envíos según la tab activa */}
         {activeTab === 'todos' && renderEnvios('todos')}
         {activeTab === 'pendientes' && renderEnvios('pendientes')}
         {activeTab === 'entregados' && renderEnvios('entregados')}
 
-        {/* Mostrar el chat si la tab activa es "chat" */}
         {activeTab === 'chat' && (
           <Chat participants={['Comprador', 'Vendedor', 'Repartidor']} />
         )}
