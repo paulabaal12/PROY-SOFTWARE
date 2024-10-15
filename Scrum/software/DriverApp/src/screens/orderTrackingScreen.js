@@ -75,29 +75,30 @@ const OrderTrackingScreen = ({ navigation, route }) => {
       {/* Detalles del Pedido */}
       <View style={styles.orderDetails}>
         <Text style={styles.detailText}>Customer: {customer}</Text>
-        <Text style={styles.detailText}>Pickup: {pickupLocation.address}</Text>
-        <Text style={styles.detailText}>Delivery: {deliveryLocation.address}</Text>
+        <Text style={styles.detailText}>Pickup: {pickupLocation?.address || 'Pickup location not available'}</Text>
+        <Text style={styles.detailText}>Delivery: {deliveryLocation?.address || 'Delivery location not available'}</Text>
         <Text style={styles.detailText}>Order: {orderDetails}</Text>
       </View>
 
+
       {/* Botones de acción */}
       <View style={styles.actionButtons}>
-        <TouchableOpacity 
-          style={styles.button} 
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => console.log("Start Navigation")}
         >
           <Text style={styles.buttonText}>Start Navigation</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.button} 
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => console.log("Contact Seller/Customer")}
         >
           <Text style={styles.buttonText}>Contact Seller/Customer</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.button} 
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => {
             if (orderStage === 'Pickup') {
               setOrderStage('Delivery'); // Cambiar a la etapa de entrega
@@ -126,11 +127,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 55,
     textAlign: 'center',
   },
   map: {
     width: '100%',
-    height: 300,
+    height: 200,
     marginBottom: 20,
   },
   orderDetails: {

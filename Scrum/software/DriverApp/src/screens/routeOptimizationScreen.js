@@ -99,10 +99,10 @@ const RouteOptimizationScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 50,
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: 50,
     fontSize: 16,
   },
   title: {
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
     borderRadius: 10,
+    height:'85%',
   },
   contactButton: {
     backgroundColor: '#fcbf49',

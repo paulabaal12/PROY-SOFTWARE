@@ -11,6 +11,7 @@ const OrderSelectionScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headerTitle}>Select an Order</Text>
       <FlatList
         data={orders}
         renderItem={({ item }) => (
@@ -30,6 +31,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 25,
+    marginTop: 35,
+    color: '#333',
   },
   orderItem: {
     marginBottom: 20,

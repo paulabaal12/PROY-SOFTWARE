@@ -14,7 +14,7 @@ const HomeScreen = () => {
   ];
 
   const actions = [
-    { id: '1', title: 'Track Orders', icon: 'truck', screen: 'OrderTracking' },
+    { id: '1', title: 'Track Orders', icon: 'truck', screen: 'OrderSelection' },
     { id: '2', title: 'Contact Seller', icon: 'phone', screen: 'ContactSeller' },
     { id: '3', title: 'Contact Buyer', icon: 'phone-square', screen: 'ContactBuyer' },
     { id: '4', title: 'Order History', icon: 'history', screen: 'OrderHistory' },
@@ -22,16 +22,19 @@ const HomeScreen = () => {
   const handleSelectOrder = async (order) => {
     try {
       console.log(`Selected order ${order.id}`);
-  
-      // Simular una respuesta de validación sin conexión a la red
+      
       const placeholderResponse = {
-        available: true,  // Puedes cambiar esto a `false` para probar la otra ruta
+        available: true,
       };
   
-      // Simular la lógica de validación
       if (placeholderResponse.available) {
-        // Navegar a la pantalla de optimización de ruta
-        navigation.navigate('OrderTracking', { orderId: order.id });
+        // Navigate to the OrderDetailsScreen with order details
+        navigation.navigate('OrderDetails', { 
+          orderId: order.id,
+          customer: order.customer,
+          location: order.location,
+          orderDetails: order.orderDetails
+        });
       } else {
         alert('Order is no longer available');
       }
@@ -73,7 +76,7 @@ const HomeScreen = () => {
             style={styles.actionCard}
             onPress={() => navigation.navigate(item.screen)}
           >
-            <FontAwesome name={item.icon} size={40} color="#fcbf49" />
+            <FontAwesome name={item.icon} size={40} color="#1e90ff" />
             <Text style={styles.actionTitle}>{item.title}</Text>
           </TouchableOpacity>
         )}
@@ -88,7 +91,7 @@ const HomeScreen = () => {
           <FontAwesome name="home" size={24} color="#1e90ff" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('OrderTracking')}>
+        <TouchableOpacity style={styles.navBarItem} onPress={() => navigation.navigate('OrderSelection')}>
           <FontAwesome name="truck" size={24} color="#666" />
           <Text style={styles.navText}>Orders</Text>
         </TouchableOpacity>

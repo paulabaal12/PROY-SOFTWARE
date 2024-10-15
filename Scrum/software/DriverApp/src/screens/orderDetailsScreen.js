@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { FontAwesome } from '@expo/vector-icons';  // Correct import
 
 const OrderDetailsScreen = ({ navigation, route }) => {
-  const { orderId, customer, location, orderDetails } = route.params; // Obtener detalles del pedido desde los parámetros
-  const [currentLocation, setCurrentLocation] = useState(null); // Ubicación actual del repartidor
+  const { orderId, customer, location, orderDetails } = route.params;
+  const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Obtener ubicación actual del repartidor
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -35,8 +35,9 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {/* Mapa con la ruta */}
       <Text style={styles.headerText}>Order Details for Order ID: {orderId}</Text>
+
+      {/* Map Section */}
       <MapView
         style={styles.map}
         initialRegion={{
@@ -53,30 +54,30 @@ const OrderDetailsScreen = ({ navigation, route }) => {
           }}
           title="You are here"
         />
-        {/* Agregar marcador para la ubicación de entrega */}
         <Marker
           coordinate={{
-            latitude: 14.634915, // Coordenadas de ejemplo
-            longitude: -90.506882, // Coordenadas de ejemplo
+            latitude: 14.634915,
+            longitude: -90.506882,
           }}
           title={location}
           description="Delivery location"
         />
       </MapView>
 
-      {/* Detalles del pedido */}
+      {/* Details Section */}
       <View style={styles.orderDetails}>
-        <Text style={styles.detailText}>Customer: {customer}</Text>
-        <Text style={styles.detailText}>Location: {location}</Text>
-        <Text style={styles.detailText}>Order: {orderDetails}</Text>
+        <Text style={styles.detailText}><FontAwesome name="user" size={16} /> Customer: {customer}</Text>
+        <Text style={styles.detailText}><FontAwesome name="map-marker" size={16} /> Location: {location}</Text>
+        <Text style={styles.detailText}><FontAwesome name="truck-ramp-box"  size={16} /> Order: {orderDetails}</Text>
       </View>
 
-      {/* Botones de acción */}
+      {/* Buttons Section */}
       <View style={styles.actionButtons}>
         <TouchableOpacity 
           style={styles.button} 
           onPress={() => navigation.navigate('MapNavigation', { location })}
         >
+          <FontAwesome name="location-arrow" size={16} color="#fff" />
           <Text style={styles.buttonText}>Start Navigation</Text>
         </TouchableOpacity>
 
@@ -84,6 +85,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
           style={styles.button} 
           onPress={() => console.log("Contact Seller/Customer")}
         >
+          <FontAwesome name="phone" size={16} color="#fff" />
           <Text style={styles.buttonText}>Contact Seller</Text>
         </TouchableOpacity>
 
@@ -91,6 +93,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
           style={styles.button} 
           onPress={() => console.log("Confirm Pickup/Delivery")}
         >
+          <FontAwesome name="check" size={16} color="#fff" />
           <Text style={styles.buttonText}>Confirm Pickup</Text>
         </TouchableOpacity>
       </View>
@@ -102,38 +105,61 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop:50,
     textAlign: 'center',
+    color: '#333',
   },
   map: {
     width: '100%',
     height: 300,
     marginBottom: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   orderDetails: {
     marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   detailText: {
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 8,
+    color: '#333',
   },
   actionButtons: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-around',
+    alignItems: 'center',
+
+    marginTop: 20,
   },
   button: {
     backgroundColor: '#1e90ff',
-    padding: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginBottom:25,
     borderRadius: 8,
-    width: '30%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width:185,
+    height :65,
   },
   buttonText: {
     color: '#fff',
+    marginLeft: 8,
+    fontSize: 16,
     textAlign: 'center',
   },
   loadingContainer: {
