@@ -72,6 +72,15 @@ CREATE TABLE IF NOT EXISTS envios (
 	estado_envio VARCHAR(50) DEFAULT 'En tránsito'
 );
 
+CREATE TABLE IF NOT EXISTS metodos_pago (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    tipo_metodo VARCHAR(50) NOT NULL, -- Ej: PayPal, Transferencia, Pago contra entrega
+    detalles JSONB, -- Detalles del método (ej. datos bancarios, cuenta PayPal)
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+
 -- Sección 2: Constraints, aqui pueden agregar toda la estructura y relacion entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
 
