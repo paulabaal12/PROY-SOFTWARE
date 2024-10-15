@@ -24,6 +24,17 @@ const HomePage = () => {
     };
   }, []);
 
+  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
+  useEffect(() => {
+    if (!userId) {
+      console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
+      navigate('/login'); // Redirigir si no hay ID
+    } else {
+      fetchProducts(); // Si hay ID, carga los productos
+    }
+  }, [userId]);
+  
+
   const fetchProducts = () => {
     Meteor.call('productos.getAll', (error, productosData) => {
       if (error) {

@@ -1,64 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { useTracker } from 'meteor/react-meteor-data';
-import { Mongo } from 'meteor/mongo';
+import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; // Importar estilos
-
-const Productos = new Mongo.Collection('productos'); // Colección de productos
+import '../../style.css';
 
 const InventoryManagement = () => {
   const [productos, setProductos] = useState([]);
-  const [cartCount, setCartCount] = useState(0); // Estado del carrito
   const [notification, setNotification] = useState({ show: false, message: '' });
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [usuarioId, setUsuarioId] = useState(null);
+  const [nuevoProducto, setNuevoProducto] = useState({
+    nombre: '',
+    descripcion: '',
+    precio: 0,
+    categoria: '',
+    estado: '',
+    imagen_principal: null,
+    imagenes_adicionales: [],
+  });
 
-  // Obtener productos desde la colección usando Tracker
-  const productosData = useTracker(() => {
-    Meteor.subscribe('productos');
-    return Productos.find().fetch();
-  }, []);
+  const navigate = useNavigate();
+  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
 
   useEffect(() => {
-    setProductos(productosData);
-
-    // Simulamos la carga del número de productos en el carrito
-    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const totalItems = storedCartItems.reduce((acc, item) => acc + item.quantity, 0);
-    setCartCount(totalItems);
-  }, [productosData]);
-
-  const handleAddToCart = (producto) => {
-    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const existingProduct = cartItems.find((item) => item.id === producto.id);
-
-    if (existingProduct) {
-      cartItems = cartItems.map((item) =>
-        item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
+    if (!userId) {
+      console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
+      navigate('/login'); // Redirige si no hay ID
     } else {
-      cartItems.push({ ...producto, quantity: 1 });
+      console.log(`ID del usuario recuperado: ${userId}`);
+      fetchUserProductos(userId); // Carga los productos
+    }
+  }, [userId, navigate]);
+  
+
+
+  const fetchUserProductos = (id) => {
+    console.log(`Obteniendo productos para el usuario con ID: ${id}`);
+  
+    Meteor.call('productos.getByUser', parseInt(id), (err, res) => {
+      if (err) {
+        console.error('Error al obtener productos:', err);
+        alert(`Error al obtener productos: ${err.reason || err.message}`);
+      } else if (Array.isArray(res)) {
+        console.log('Productos obtenidos:', res);
+        setProductos(res);
+      } else {
+        console.warn('Respuesta inesperada:', res);
+        setProductos([]);
+      }
+    });
+  };
+  
+  
+  
+  const handleAddProduct = () => {
+    if (!usuarioId) {
+      console.error('Error: No se puede añadir producto sin un usuario autenticado.');
+      return;
     }
 
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    setNotification({ show: true, message: 'Producto añadido al carrito' });
-
-    setTimeout(() => setNotification({ show: false, message: '' }), 3000);
-    setCartCount(cartItems.reduce((acc, item) => acc + item.quantity, 0));
+    const productoConUsuario = { ...nuevoProducto, usuario_id: usuarioId };
+    Meteor.call('productos.insert', productoConUsuario, (err) => {
+      if (err) {
+        console.error('Error al añadir producto:', err);
+        alert(`Error al añadir producto: ${err.reason || err.message}`);
+      } else {
+        setNotification({ show: true, message: 'Producto añadido correctamente' });
+        setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+        setShowAddModal(false);
+        fetchUserProductos(usuarioId);
+      }
+    });
   };
 
-  const handleDeleteProduct = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      Productos.remove(id);
-      setProductos(productos.filter((producto) => producto.id !== id));
-      setNotification({ show: true, message: 'Producto eliminado' });
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setNuevoProducto((prev) => ({
+      ...prev,
+      [name]: name === 'imagen_principal' ? files[0] : Array.from(files),
+    }));
+  };
 
-      setTimeout(() => setNotification({ show: false, message: '' }), 3000);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoProducto((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="containerr">
-      <Header cartCount={cartCount} />
+      <Header cartCount={0} />
       <div className="inventory-page">
         <h1 className="titulo1">Gestión de Inventario</h1>
 
@@ -69,50 +101,64 @@ const InventoryManagement = () => {
           </div>
         )}
 
-        <button className="add-button">Añadir Nuevo Producto</button>
+        <button className="add-button" onClick={() => setShowAddModal(true)}>
+          Añadir Nuevo Producto
+        </button>
 
         {productos.length > 0 ? (
-          <div className="inventory-list">
+        <div className="inventory-grid">
             {productos.map((producto) => (
-              <div key={producto.id} className="inventory-item">
-                <div className="product-details">
-                  <img
-                    src={producto.imagen_principal || '/images/placeholder.png'}
-                    alt={producto.nombre}
-                    className="product-image"
-                  />
-                  <div>
-                    <h3 className="product-name">{producto.nombre}</h3>
-                    <p className="product-price">Q{producto.precio.toFixed(2)}</p>
-                    <p className="product-category"><strong>Categoría:</strong> {producto.categoria}</p>
-                    <p className="product-status"><strong>Estado:</strong> {producto.estado}</p>
-                  </div>
+            <div key={producto.id} className="inventory-card">
+                <img
+                src={producto.imagen_principal || '/images/placeholder.png'}
+                alt={producto.nombre}
+                className="product-image"
+                />
+                <div className="product-info">
+                <h3 className="product-name">{producto.nombre}</h3>
+                <p className="product-price">
+                    Q{typeof producto.precio === 'number' ? producto.precio.toFixed(2) : '0.00'}
+                </p>
+                <p className="product-category">
+                    <strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}
+                </p>
+                <p className="product-status">
+                    <strong>Estado:</strong> {producto.estado || 'Sin estado'}
+                </p>
                 </div>
-                <div className="product-actions">
-                  <button
-                    className="edit-button"
-                    onClick={() => alert(`Editar producto: ${producto.nombre}`)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteProduct(producto.id)}
-                  >
-                    Eliminar
-                  </button>
-                  <button
-                    className="button-add"
-                    onClick={() => handleAddToCart(producto)}
-                  >
-                    Añadir al Carrito
-                  </button>
-                </div>
-              </div>
+            </div>
             ))}
-          </div>
+        </div>
         ) : (
-          <p>No hay productos en el inventario.</p>
+        <p>No hay productos en el inventario.</p>
+        )}
+
+
+        {showAddModal && (
+          <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>Añadir Nuevo Producto</h2>
+              <form>
+                <label>Nombre:</label>
+                <input type="text" name="nombre" value={nuevoProducto.nombre} onChange={handleChange} />
+                <label>Descripción:</label>
+                <textarea name="descripcion" value={nuevoProducto.descripcion} onChange={handleChange} />
+                <label>Precio:</label>
+                <input type="number" name="precio" value={nuevoProducto.precio} onChange={handleChange} />
+                <label>Categoría:</label>
+                <input type="text" name="categoria" value={nuevoProducto.categoria} onChange={handleChange} />
+                <label>Estado:</label>
+                <input type="text" name="estado" value={nuevoProducto.estado} onChange={handleChange} />
+                <label>Imagen Principal:</label>
+                <input type="file" name="imagen_principal" onChange={handleFileChange} />
+                <label>Imágenes Adicionales:</label>
+                <input type="file" name="imagenes_adicionales" multiple onChange={handleFileChange} />
+
+                <button type="button" onClick={handleAddProduct} className="add-button">Guardar Producto</button>
+                <button type="button" onClick={() => setShowAddModal(false)} className="cancel-button">Cancelar</button>
+              </form>
+            </div>
+          </div>
         )}
       </div>
       <Footer />

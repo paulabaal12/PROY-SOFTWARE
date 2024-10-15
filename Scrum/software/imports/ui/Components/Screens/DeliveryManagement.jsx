@@ -1,81 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import { Meteor } from 'meteor/meteor';
-import '../../style.css';
-import '../../variables.css';
+import { useTracker } from 'meteor/react-meteor-data';
+import { Mongo } from 'meteor/mongo';
+import Header from '../Header';
+import Footer from '../Footer';
+import '../../style.css'; // Importar estilos
+
+const Envios = new Mongo.Collection('envios'); // Colección de envíos
 
 const DeliveryManagement = () => {
-    const [deliveries, setDeliveries] = useState([]);
-    const [selectedDeliveries, setSelectedDeliveries] = useState([]);
-    const [activeTab, setActiveTab] = useState('deliveries');
+  const [envios, setEnvios] = useState([]);
+  const [notification, setNotification] = useState({ show: false, message: '' });
+  const [cartCount, setCartCount] = useState(0); // Estado del carrito
 
-    useEffect(() => {
-        Meteor.call('pedidos.getAllWithAddresses', (error, result) => {
-            if (error) {
-                console.error('Error fetching deliveries:', error);
-            } else {
-                setDeliveries(result);
-            }
-        });
-    }, []);
+  // Tracker para obtener datos de la colección
+  const enviosData = useTracker(() => {
+    Meteor.subscribe('envios');
+    return Envios.find().fetch();
+  }, []);
 
-    const handleSelectDelivery = (id) => {
-        setSelectedDeliveries((prevSelected) =>
-            prevSelected.includes(id) ? prevSelected.filter(deliveryId => deliveryId !== id) : [...prevSelected, id]
-        );
-    };
+  useEffect(() => {
+    setEnvios(enviosData);
 
-    const handleConfirmDeliveries = () => {
-        alert(`Entregas seleccionadas: ${selectedDeliveries.join(', ')}`);
-    };
+    // Simular carga del carrito desde localStorage
+    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const totalItems = storedCartItems.reduce((acc, item) => acc + item.quantity, 0);
+    setCartCount(totalItems);
+  }, [enviosData]);
 
-    return (
-        <div className='delivery-page'>
-            <h2>Gestión de Entregas</h2>
+  const handleConfirmDelivery = (id) => {
+    if (window.confirm('¿Confirmar entrega de este envío?')) {
+      // Actualizar estado del envío
+      Envios.update(id, { $set: { estado_envio: 'Entregado' } });
+      setNotification({ show: true, message: 'Entrega confirmada' });
 
-            {/* Tabs */}
-            <div className='tabs'>
-                <button 
-                    className={`tab ${activeTab === 'deliveries' ? 'active' : ''}`} 
-                    onClick={() => setActiveTab('deliveries')}
-                >
-                    Entregas
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'chat' ? 'active' : ''}`} 
-                    onClick={() => setActiveTab('chat')}
-                >
-                    Chat
-                </button>
-            </div>
+      setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+    }
+  };
 
-            <div className='tab-content'>
-                {activeTab === 'deliveries' && (
-                    <div>
-                        <ul className='delivery-list'>
-                            {deliveries.map(delivery => (
-                                <li key={delivery.id_pedido} className='delivery-item'>
-                                    <input
-                                        type='checkbox'
-                                        checked={selectedDeliveries.includes(delivery.id_pedido)}
-                                        onChange={() => handleSelectDelivery(delivery.id_pedido)}
-                                    />
-                                    <span>{`Inicio: ${delivery.direccion_inicio} - Entrega: ${delivery.direccion_entrega}`}</span>
-                                </li>
-                            ))}
-                        </ul>
-                        <button onClick={handleConfirmDeliveries} className='confirm-button'>Confirmar Entregas</button>
-                    </div>
-                )}
-                {activeTab === 'chat' && (
-                    <div className='chat-container'>
-                        <h3>Chat</h3>
-                        <p></p>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+  const handleDeleteDelivery = (id) => {
+    if (window.confirm('¿Estás seguro de eliminar este envío?')) {
+      Envios.remove(id);
+      setEnvios(envios.filter((envio) => envio.id_envio !== id));
+      setNotification({ show: true, message: 'Envío eliminado' });
+
+      setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+    }
+  };
+
+  return (
+    <div className="containerr">
+      <Header cartCount={cartCount} />
+      <div className="delivery-page">
+        <h1 className="titulo1">Gestión de Entregas</h1>
+
+        {notification.show && (
+          <div className="notification">
+            <img src={'/images/delivery.png'} alt="Notificación" className="notification-icon" />
+            {notification.message}
+          </div>
+        )}
+
+        {envios.length > 0 ? (
+          <ul className="delivery-list">
+            {envios.map((envio) => (
+              <li key={envio.id_envio} className="delivery-item">
+                <div>
+                  <p><strong>ID del Envío:</strong> {envio.id_envio}</p>
+                  <p><strong>Proveedor:</strong> {envio.proveedor_envio}</p>
+                  <p><strong>Número de Rastreo:</strong> {envio.numero_rastreo}</p>
+                  <p><strong>Estado:</strong> {envio.estado_envio}</p>
+                  <p><strong>Fecha de Envío:</strong> {new Date(envio.fecha_envio).toLocaleString()}</p>
+                </div>
+                <div className="delivery-actions">
+                  <button
+                    className="confirm-button"
+                    onClick={() => handleConfirmDelivery(envio.id_envio)}
+                    disabled={envio.estado_envio === 'Entregado'}
+                  >
+                    Confirmar Entrega
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteDelivery(envio.id_envio)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No hay envíos registrados.</p>
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
 };
 
 export default DeliveryManagement;
-

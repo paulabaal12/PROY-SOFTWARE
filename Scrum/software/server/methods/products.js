@@ -4,32 +4,42 @@ import { pool } from '../PostgreSQL/db/conn';
 
 Meteor.methods({
   'productos.insert'(productoData) {
-    check(productoData, Object);
-    const { nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales } = productoData;
+  check(productoData, Object);
 
-    const nombreSanitizado = nombre || '';
-    const descripcionSanitizada = descripcion || '';
-    const precioSanitizado = precio || 0;
-    const categoriaSanitizada = categoria || '';
-    const estadoSanitizado = estado || '';
-    const imagenPrincipalSanitizada = imagen_principal || '';
-    const imagenesAdicionalesSanitizadas = imagenes_adicionales || [];
+  const { usuario_id, nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales } = productoData;
 
-    console.log('Datos del producto:', productoData);
+  const nombreSanitizado = nombre || '';
+  const descripcionSanitizada = descripcion || '';
+  const precioSanitizado = precio || 0;
+  const categoriaSanitizada = categoria || '';
+  const estadoSanitizado = estado || '';
+  const imagenPrincipalSanitizada = imagen_principal || '';
+  const imagenesAdicionalesSanitizadas = imagenes_adicionales || [];
 
-    pool.query(
-      'INSERT INTO productos (nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-      [nombreSanitizado, descripcionSanitizada, precioSanitizado, categoriaSanitizada, estadoSanitizado, imagenPrincipalSanitizada, imagenesAdicionalesSanitizadas],
-      (err) => {
-        if (err) {
-          console.error('Error al insertar producto:', err);
-          throw new Meteor.Error('database-error', 'Error al insertar producto en la base de datos');
-        }
-        console.log('Producto insertado correctamente en PostgreSQL');
-        return { success: true, message: 'Producto agregado correctamente' };
+  console.log('Datos del producto:', productoData);
+
+  pool.query(
+    'INSERT INTO productos (usuario_id, nombre, descripcion, precio, categoria, estado, imagen_principal, imagenes_adicionales) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+    [
+      usuario_id, 
+      nombreSanitizado, 
+      descripcionSanitizada, 
+      precioSanitizado, 
+      categoriaSanitizada, 
+      estadoSanitizado, 
+      imagenPrincipalSanitizada, 
+      imagenesAdicionalesSanitizadas
+    ],
+    (err) => {
+      if (err) {
+        console.error('Error al insertar producto:', err);
+        throw new Meteor.Error('database-error', 'Error al insertar producto en la base de datos');
       }
-    );
-  },
+      console.log('Producto insertado correctamente en PostgreSQL');
+      return { success: true, message: 'Producto agregado correctamente' };
+    }
+  );
+},
 
   'productos.getAll'() {
     return new Promise((resolve, reject) => {
@@ -131,6 +141,35 @@ Meteor.methods({
         }
       });
     });
-  }
+  },
+  
+
+
+  'productos.getByUser'(userId) {
+  check(userId, Number); // Verificamos que userId sea un número
+  console.log('Consultando productos para el usuario con ID:', userId);
+
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM productos WHERE usuario_id = $1';
+
+    pool.query(query, [userId], (err, result) => {
+      if (err) {
+        console.error('Error al obtener productos del usuario:', err);
+        reject(new Meteor.Error('database-error', 'Error al obtener productos del usuario en la base de datos'));
+      } else {
+        if (result.rows.length > 0) {
+          console.log('Productos encontrados:', result.rows);
+          resolve(result.rows);
+        } else {
+          console.log('No se encontraron productos para el usuario.');
+          resolve([]); // Devolver un array vacío si no hay productos
+        }
+      }
+    });
+  });
+}
+
+
+
 
 });
