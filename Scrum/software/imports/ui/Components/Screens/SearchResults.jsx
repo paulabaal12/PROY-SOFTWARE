@@ -1,10 +1,60 @@
+// imports/ui/Components/Screens/SearchResults.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Header from '../Header';
 import Footer from '../Footer';
-import '../../style.css'; 
-import '../../variables.css'; 
+import '../../style.css';
+import '../../variables.css';
+
+// Diccionario de sinónimos
+const sinonimos = {
+  // Articulos de papeleria
+  lapicero: ["boligrafo", "pluma", "esfero", "pen"],
+  marcador: ["resaltador", "rotulador", "marcador permanente"],
+  
+  // Dispositivos electronicos
+  celular: ["telefono", "movil", "smartphone"],
+  computadora: ["ordenador", "pc", "laptop", "computador"],
+  audifonos: ["auriculares", "cascos", "headphones"],
+  
+  // Discos y almacenamiento
+  cd: ["disco", "compact disc", "album", "musica"],
+  usb: ["memoria usb", "pendrive", "flash drive"],
+  
+  // Ropa
+  camiseta: ["playera", "remera", "polera", "t-shirt"],
+  jeans: ["pantalones", "pantalon", "pantalones de mezclilla"],
+  
+  // Zapatos
+  zapatillas: ["tenis", "deportivas", "sneakers"],
+  botas: ["botines", "zapatos altos"],
+  
+  // Tecnologia
+  tablet: ["tableta", "ipad", "dispositivo portatil"],
+  impresora: ["printer", "fotocopiadora", "impresora multifuncion"],
+  
+  // Muebles
+  sofa: ["sillon", "mueble", "couch"],
+
+  sillón: ["sillon", "mueble", "couch"],
+  cama: ["lecho", "cama matrimonial", "cama individual"],
+  
+  // Cocina y Hogar
+  nevera: ["refrigerador", "frigorifico", "heladera"],
+  microondas: ["horno de microondas", "micro"],
+  
+  // Otros
+  carro: ["coche", "auto", "vehiculo"],
+  bicicleta: ["bici", "cicla", "mountain bike"],
+  drone: ["dron", "vehiculo aereo no tripulado"],
+};
+
+// Función para eliminar tildes de una palabra
+const removerTildes = (texto) => {
+  return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
 
 const SearchResults = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -13,9 +63,21 @@ const SearchResults = () => {
   const searchQuery = new URLSearchParams(location.search).get('q');
 
   useEffect(() => {
+    const expandirConsulta = (query) => {
+      const normalizedQuery = removerTildes(query.toLowerCase());
+      const terms = [normalizedQuery];
+
+      if (sinonimos[normalizedQuery]) {
+        terms.push(...sinonimos[normalizedQuery].map(removerTildes));
+      }
+      return terms;
+    };
+
     const fetchSearchResults = () => {
       setLoading(true);
-      Meteor.call('productos.search', searchQuery, (error, results) => {
+      const expandedQueries = expandirConsulta(searchQuery);
+
+      Meteor.call('productos.search', expandedQueries, (error, results) => {
         if (error) {
           console.error('Error searching products:', error);
           setSearchResults([]);
