@@ -9,10 +9,12 @@ const ShoppingCartPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(() => {
     const savedCartItems = localStorage.getItem('cartItems');
-    return savedCartItems ? JSON.parse(savedCartItems).map(item => ({
-      ...item,
-      price: parseFloat(item.price)  // Ensure price is a float
-    })) : [];
+    return savedCartItems
+      ? JSON.parse(savedCartItems).map((item) => ({
+          ...item,
+          price: parseFloat(item.price),
+        }))
+      : [];
   });
 
   useEffect(() => {
@@ -20,64 +22,75 @@ const ShoppingCartPage = () => {
   }, [cartItems]);
 
   const handleRemove = (itemId) => {
-    const newCartItems = cartItems.filter(item => item.id !== itemId);
-    setCartItems(newCartItems);
+    setCartItems(cartItems.filter((item) => item.id !== itemId));
   };
 
   const handleChangeQuantity = (itemId, delta) => {
-    const newCartItems = cartItems.map(item => {
-      if (item.id === itemId) {
-        const newQuantity = item.quantity + delta;
-        return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
-      }
-      return item;
-    });
-    setCartItems(newCartItems);
+    const updatedCart = cartItems.map((item) =>
+      item.id === itemId
+        ? { ...item, quantity: Math.max(item.quantity + delta, 1) }
+        : item
+    );
+    setCartItems(updatedCart);
   };
 
   const handleCheckout = () => {
-    navigate('/payment-summary', { state: { cartItems } });
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shipping = 5;
+    const total = subtotal + shipping;
+  
+    // Aseguramos que los datos se pasen correctamente en la navegación
+    navigate('/payment-method', { state: { cartItems, total } });
   };
+  
 
-  const total = cartItems.reduce((acc, item) => acc + (item.price || 0) * item.quantity, 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const shipping = 5; // Asumimos que es gratis
+  const total = subtotal + shipping;
 
   return (
     <>
-      <div className="containerr">
-        <Header />
-      </div>
-      <div className="container1 shopping-cart">
-        <h1>Carrito de Compras</h1>
-        <div className="cart-items-container">
-          {cartItems.map(item => (
-            <div key={item.id} className="cart-item">
-              <img 
-                src={item.image} 
-                alt={item.name} 
-                className="cart-item-image" 
-                onError={(e) => e.target.src = '/path-to-placeholder-image/placeholder.png'} 
+      <Header />
+      <div className="cart-container">
+        <h1 className="cart-title">Carrito de compras</h1>
+        <div className="cart-content">
+          <div className="cart-items">
+            {cartItems.map((item) => (
+              <div key={item.id} className="cart-item">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="cart-item-image"
+                onError={(e) => (e.target.src = '/path-to-placeholder-image/placeholder.png')}
               />
-
-              <div className="cart-item-details">
-                <p className="cart-item-name">{item.name}</p>
-                <div className="cart-item-quantity">
-                  <button onClick={() => handleChangeQuantity(item.id, -1)} disabled={item.quantity <= 1}>-</button>
+              <div className="cart-item-info">
+                <h2 className="cart-item-name">{item.name}</h2>
+                <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                <div className="quantity-controls">
+                  <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>
                   <span>{item.quantity}</span>
                   <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
                 </div>
-                <p className="cart-item-price">Precio: ${item.price.toFixed(2)}</p>
-                <p className="cart-item-total">Total: ${(item.quantity * item.price).toFixed(2)}</p>
-                <button onClick={() => handleRemove(item.id)} className="remove-button">Eliminar</button>
+                <button onClick={() => handleRemove(item.id)} className="remove-item-button">
+                  🗑️ Eliminar
+                </button>
               </div>
-            </div>
-          ))}
+            </div>            
+            ))}
+          </div>
+
+          <div className="cart-summary">
+            <h2>Resumen de órden</h2>
+            <p>Subtotal: ${subtotal.toFixed(2)}</p>
+            <p>Envío: {shipping > 0 ? `$${shipping}` : 'Gratis'}</p>
+            <p className="total">Total: ${total.toFixed(2)}</p>
+            <button onClick={handleCheckout} className="checkout-button">
+              Ir a Pagar
+            </button>
+          </div>
         </div>
-        <div className="checkout">
-          <p>Total: ${total.toFixed(2)}</p>
-          <button onClick={handleCheckout} className="checkout-button">Proceder al Pago</button>
-        </div>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 };
