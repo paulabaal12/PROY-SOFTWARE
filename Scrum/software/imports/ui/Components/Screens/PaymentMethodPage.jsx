@@ -9,8 +9,17 @@ const PaymentMethodPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Comprobamos que `total` y `cartItems` existan y tengan valores adecuados
-  const { total, cartItems } = location.state || { total: 0, cartItems: [] };
+  // Obtenemos los datos del estado de navegación o establecemos valores predeterminados
+  const { total, cartItems, userId } = location.state || { total: 0, cartItems: [], userId: null };
+
+  // Si el userId no viene en la navegación, lo recuperamos del localStorage
+  const finalUserId = userId || localStorage.getItem('userId');
+
+  useEffect(() => {
+    console.log("User ID en PaymentMethodPage:", finalUserId); // Verificación en consola
+    console.log("Cart Items en PaymentMethodPage:", cartItems);
+    console.log("Total en PaymentMethodPage:", total);
+  }, [finalUserId, cartItems, total]);
 
   const [paymentType, setPaymentType] = useState('creditCard');
   const [cardDetails, setCardDetails] = useState({
@@ -32,7 +41,7 @@ const PaymentMethodPage = () => {
         onApprove: (data, actions) => {
           return actions.order.capture().then((details) => {
             const pedidoDetails = {
-              usuario_id: 1,
+              usuario_id: finalUserId, // Usamos el User ID dinámico
               total: total,
               detalles: JSON.stringify(
                 cartItems.map(item => ({
@@ -42,6 +51,7 @@ const PaymentMethodPage = () => {
                 }))
               ),
             };
+            console.log("Pedido Details:", pedidoDetails); // Verificación en consola
             Meteor.call('pedidos.insert', pedidoDetails, (error) => {
               if (!error) {
                 navigate('/thanks-for-shopping', { state: { details, cartItems } });
@@ -54,7 +64,7 @@ const PaymentMethodPage = () => {
         },
       }).render('#paypal-button-container');
     }
-  }, [paymentType, total, cartItems, navigate]);
+  }, [paymentType, total, cartItems, finalUserId, navigate]);
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -69,25 +79,34 @@ const PaymentMethodPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (paymentType === 'creditCard') {
-      const pedidoDetails = {
-        usuario_id: 1,
-        total: total,
-        detalles: JSON.stringify(
-          cartItems.map(item => ({
-            producto_id: item.id,
-            cantidad: item.quantity,
-            precio_unitario: item.price,
-          }))
-        ),
-      };
-      Meteor.call('pedidos.insert', pedidoDetails, (error) => {
-        if (!error) {
-          navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
-        }
-      });
-    }
+    
+    const userId = parseInt(localStorage.getItem('userId'), 10); // Verifica el ID
+  
+    const pedidoDetails = {
+      usuario_id: userId,
+      total: total,
+      detalles: JSON.stringify(
+        cartItems.map(item => ({
+          producto_id: item.id,
+          cantidad: item.quantity,
+          precio_unitario: item.price,
+        }))
+      ),
+    };
+  
+    console.log("Enviando pedido:", pedidoDetails);
+  
+    Meteor.call('pedidos.insert', pedidoDetails, (error) => {
+      if (error) {
+        console.error('Error al insertar el pedido:', error);
+      } else {
+        console.log('Pedido insertado correctamente');
+        navigate('/thanks-for-shopping', { state: { cardDetails, cartItems } });
+      }
+    });
   };
+  
+  
 
   return (
     <>

@@ -34,6 +34,7 @@ Meteor.methods({
   },
 
   'pedidos.insert'(pedidoData) {
+    console.log("Datos recibidos en el servidor:", pedidoData);
     check(pedidoData, {
       usuario_id: Number,
       total: Number,
@@ -68,5 +69,20 @@ Meteor.methods({
         }
       });
     });
-  }
+  },
+
+  'pedidos.getByUser'(userId) {
+    check(userId, Number); // Validamos el tipo de dato
+
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT * FROM pedidos WHERE usuario_id = $1', [userId], (err, result) => {
+        if (err) {
+          console.error('Error fetching orders for user:', err);
+          reject(new Meteor.Error('database-error', 'Error fetching user orders from the database'));
+        } else {
+          resolve(result.rows); // Retornamos los pedidos
+        }
+      });
+    });
+  },
 });
