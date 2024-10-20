@@ -31,19 +31,37 @@ const PedidosPage = () => {
     setCartCount(totalItems);
   }, []);
 
-  const handleVerDetalles = (pedido) => {
+  const handleVerDetalles = async (pedido) => {
     try {
-      // Verificamos si los detalles ya son un objeto o si vienen como cadena
-      const detalles = typeof pedido.detalles === 'string' 
-        ? JSON.parse(pedido.detalles) 
+      const detalles = typeof pedido.detalles === 'string'
+        ? JSON.parse(pedido.detalles)
         : pedido.detalles;
   
-      setSelectedPedido({ ...pedido, detalles });
+      // Consulta los detalles de los productos por ID
+      const productDetails = await Promise.all(
+        detalles.map(async (item) => {
+          return new Promise((resolve, reject) => {
+            Meteor.call('productos.getAll_id', item.producto_id, (error, result) => {
+              if (error) {
+                console.error(`Error al obtener el producto ${item.producto_id}:`, error);
+                reject(error);
+              } else {
+                resolve({ ...item, ...result[0] }); // Asegura que tomamos el primer resultado
+              }
+            });
+          });
+        })
+      );
+  
+      // Guarda los productos en el estado del pedido
+      setSelectedPedido({ ...pedido, detalles: productDetails });
       setModalVisible(true);
     } catch (error) {
-      console.error("Error al parsear los detalles del pedido:", error);
+      console.error("Error al obtener los detalles del pedido:", error);
     }
   };
+  
+  
   
 
   const handleCloseModal = () => {
@@ -88,17 +106,18 @@ const PedidosPage = () => {
             <p>Fecha: {new Date(selectedPedido.fecha).toLocaleString()}</p>
             <h3>Productos:</h3>
             <ul>
-              {selectedPedido.detalles.map((producto, index) => (
-                <li key={index}>
-                  Producto ID: {producto.producto_id}, 
-                  Cantidad: {producto.cantidad}, 
-                  Precio: Q{producto.precio_unitario}
-                </li>
-              ))}
-            </ul>
+            {selectedPedido.detalles.map((producto, index) => (
+              <li key={index} className="cart-item">
+                <img src={producto.imagen_principal} alt={producto.nombre} className="cart-item-image"/>
+                <h4 className="cart-item-name">{producto.nombre}</h4>
+                <p>Cantidad: {producto.cantidad}</p>
+                <p className="cart-item-price">Precio: Q{producto.precio_unitario}</p>
+              </li>
+            ))}
+            </ul><center>
             <button className="cerrar-modal-button" onClick={handleCloseModal}>
               Cerrar
-            </button>
+            </button></center>
           </div>
         </div>
       )}
