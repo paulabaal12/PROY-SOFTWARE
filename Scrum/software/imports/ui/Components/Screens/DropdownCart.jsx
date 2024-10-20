@@ -40,12 +40,15 @@ const DropdownCart = ({ onClose }) => {
     <div className="dropdown-cart" onClick={handleDropdownClick}>
       <div className="dropdown-cart-header">
         <h3 className="product-count">Carrito</h3>
-        <p>Total productos: <span className="product-count">{getTotalQuantity()}</span></p>
+        <p>
+          Total productos:{" "}
+          <span className="product-count">{getTotalQuantity()}</span>
+        </p>
       </div>
       <div className="dropdown-cart-content">
         {cartItems.length > 0 ? (
-          cartItems.map((item, index) => (
-            <div key={index} className="dropdown-cart-item">
+          cartItems.map((item) => (
+            <div key={item.id} className="dropdown-cart-item">
               <img
                 src={item.image}
                 alt={item.name}
@@ -54,13 +57,18 @@ const DropdownCart = ({ onClose }) => {
               />
               <div className="dropdown-cart-item-details">
                 <p className="item-name">{item.name}</p>
-                <p className="item-price">Precio: ${item.price.toFixed(2)}</p>
+                <p className="item-price">
+                  Precio: ${parseFloat(item.price).toFixed(2)}
+                </p>
                 <div className="quantity-controls">
                   <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>
                   <span className="item-quantity">{item.quantity}</span>
                   <button onClick={() => handleChangeQuantity(item.id, 1)}>+</button>
                 </div>
-                <button onClick={() => handleRemove(item.id)} className="remove-item-button">
+                <button
+                  onClick={() => handleRemove(item.id)}
+                  className="remove-item-button"
+                >
                   🗑️ Eliminar
                 </button>
               </div>

@@ -63,19 +63,31 @@ const PaymentMethodPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+  
+    // Convertir total a número para asegurar el tipo
+    const parsedTotal = parseFloat(total) || 0;
+  
+    // Convertir userId a número si es necesario
+    const parsedUserId = parseInt(finalUserId, 10);
+  
+    // Verificar y preparar los detalles del pedido
+    const detalles = JSON.stringify(
+      cartItems.map(item => ({
+        producto_id: item.id,
+        cantidad: item.quantity,
+        precio_unitario: parseFloat(item.price) || 0, // Asegura que sea un número
+      }))
+    );
+  
     const pedidoDetails = {
-      usuario_id: parseInt(finalUserId, 10),
-      total,
-      detalles: JSON.stringify(
-        cartItems.map(item => ({
-          producto_id: item.id,
-          cantidad: item.quantity,
-          precio_unitario: item.price,
-        }))
-      ),
-      metodo_pago: paymentType,
+      usuario_id: parsedUserId,
+      total: parsedTotal,
+      detalles,
     };
+  
     console.log("Enviando pedido:", pedidoDetails);
+  
+    // Llamada al método de Meteor
     Meteor.call('pedidos.insert', pedidoDetails, (error) => {
       if (error) {
         console.error('Error al insertar el pedido:', error);

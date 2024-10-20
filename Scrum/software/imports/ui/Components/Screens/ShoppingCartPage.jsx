@@ -37,7 +37,7 @@ const ShoppingCartPage = () => {
   };
 
   const handleCheckout = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const subtotal = cartItems.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * item.quantity, 0);
     const shipping = 5;
     const total = subtotal + shipping;
 
@@ -71,7 +71,7 @@ const ShoppingCartPage = () => {
                 />
                 <div className="cart-item-info">
                   <h2 className="cart-item-name">{item.name}</h2>
-                  <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                  <p className="cart-item-price">${parseFloat(item.price || 0).toFixed(2)}</p>
                   <div className="quantity-controls">
                     <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>
                     <span>{item.quantity}</span>
