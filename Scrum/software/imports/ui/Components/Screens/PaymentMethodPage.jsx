@@ -127,7 +127,7 @@ const PaymentMethodPage = () => {
             </label>
           </div>
 
-          {paymentType === 'paypal' && <div id="paypal-button-container"></div>}
+          {paymentType === 'paypal' && <div id="paypal-button-container"><p>Ópción de "Tarjeta de débito o crédito" manejada por PayPal.</p></div>}
 
           {paymentType === 'bankTransfer' && (
             <div className="bank-transfer-details">

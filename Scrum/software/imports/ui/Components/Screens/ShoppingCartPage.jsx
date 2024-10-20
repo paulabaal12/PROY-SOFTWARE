@@ -20,6 +20,11 @@ const ShoppingCartPage = () => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
+  
+  const getTotalQuantity = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+  
   const handleRemove = (itemId) => {
     setCartItems(cartItems.filter((item) => item.id !== itemId));
   };
@@ -52,7 +57,8 @@ const ShoppingCartPage = () => {
     <>
       <Header />
       <div className="cart-container">
-        <h1 className="cart-title">Carrito de compras</h1>
+        <h1>CARRITO DE COMPRAS</h1>
+        <p>Total productos: <span className="product-count">{getTotalQuantity()}</span></p>
         <div className="cart-content">
           <div className="cart-items">
             {cartItems.map((item) => (
