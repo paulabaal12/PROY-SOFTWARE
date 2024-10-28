@@ -9,14 +9,15 @@ import '../../variables.css';
 const ProductCatalog = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [priceRange, setPriceRange] = useState([2, 380]);
+  const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const categories = [
     "Hogar", "Electrónicos", "Libros", "Accesorio",
     "Juguetes", "Deportes", "Belleza", "Alimentos",
     "Automóviles", "Viajes", "Mascotas", "Salud",
-    "Jardín", "Herramientas", "Arte", "Música", "Videojuegos"
+    "Jardín", "Herramientas", "Arte", "Música", 
+    "Videojuegos", "Higiene"
   ];
 
   useEffect(() => {
@@ -72,7 +73,7 @@ const ProductCatalog = () => {
               <input
                 type="range"
                 min={0}
-                max={380}
+                max={100000000}
                 value={priceRange[1]}
                 onChange={(e) => handlePriceChange(e, [priceRange[0], Number(e.target.value)])}
                 className="product-catalog__price-slider"
