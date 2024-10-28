@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Tracker } from 'meteor/tracker';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -10,82 +9,139 @@ const InventoryManagement = () => {
   const [productos, setProductos] = useState([]);
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [showAddModal, setShowAddModal] = useState(false);
-  const [usuarioId, setUsuarioId] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre: '',
     descripcion: '',
-    precio: 0,
+    precio: '',
     categoria: '',
     estado: '',
-    imagen_principal: null,
-    imagenes_adicionales: [],
+    imagen_principal: '',
+    imagenes_adicionales: '',
   });
 
+  const categorias = [
+    { value: 'Hogar', label: 'Hogar' },
+    { value: 'Electrónicos', label: 'Electrónicos' },
+    { value: 'Ropa', label: 'Ropa' },
+    { value: 'Juguetes', label: 'Juguetes' },
+    { value: 'Deportes', label: 'Deportes' },
+  ];
+  
+  const estados = [
+    { value: 'Nuevo', label: 'Nuevo' },
+    { value: 'Usado', label: 'Usado' },
+  ];
+  
+
+
   const navigate = useNavigate();
-  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     if (!userId) {
-      console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
-      navigate('/login'); // Redirige si no hay ID
+      navigate('/login');
     } else {
-      console.log(`ID del usuario recuperado: ${userId}`);
-      fetchUserProductos(userId); // Carga los productos
+      fetchUserProductos(userId);
     }
   }, [userId, navigate]);
-  
-
 
   const fetchUserProductos = (id) => {
-    console.log(`Obteniendo productos para el usuario con ID: ${id}`);
-  
     Meteor.call('productos.getByUser', parseInt(id), (err, res) => {
       if (err) {
-        console.error('Error al obtener productos:', err);
         alert(`Error al obtener productos: ${err.reason || err.message}`);
       } else if (Array.isArray(res)) {
-        console.log('Productos obtenidos:', res);
         setProductos(res);
-      } else {
-        console.warn('Respuesta inesperada:', res);
-        setProductos([]);
       }
     });
   };
+
+  const handleAddOrUpdateProduct = () => {
+    const updatedProductData = {
+      usuario_id: parseInt(userId),
+      nombre: nuevoProducto.nombre || '',
+      descripcion: nuevoProducto.descripcion || '',
+      precio: parseFloat(nuevoProducto.precio) || 0,
+      categoria: nuevoProducto.categoria || '',
+      estado: nuevoProducto.estado || '',
+      imagen_principal: nuevoProducto.imagen_principal || '',
+      imagenes_adicionales: Array.isArray(nuevoProducto.imagenes_adicionales)
+        ? nuevoProducto.imagenes_adicionales
+        : (nuevoProducto.imagenes_adicionales ? nuevoProducto.imagenes_adicionales.split(',') : [])
+    };
   
-  
-  
-  const handleAddProduct = () => {
-    if (!usuarioId) {
-      console.error('Error: No se puede añadir producto sin un usuario autenticado.');
-      return;
+    if (editingProduct) {
+      // Llamada a handleUpdateProduct
+      handleUpdateProduct(editingProduct.id, updatedProductData);
+    } else {
+      // Inserta un nuevo producto
+      Meteor.call('productos.insert', updatedProductData, (err) => {
+        if (err) {
+          alert(`Error al añadir producto: ${err.reason || err.message}`);
+        } else {
+          setNotification({ show: true, message: 'Producto añadido correctamente' });
+          setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+          fetchUserProductos(userId);
+          handleCancelar();
+        }
+      });
     }
-
-    const productoConUsuario = { ...nuevoProducto, usuario_id: usuarioId };
-    Meteor.call('productos.insert', productoConUsuario, (err) => {
+  };
+  
+  const handleUpdateProduct = (id, updatedData) => {
+    Meteor.call('productos.update', id, updatedData, (err) => {
       if (err) {
-        console.error('Error al añadir producto:', err);
-        alert(`Error al añadir producto: ${err.reason || err.message}`);
+        alert(`Error al actualizar producto: ${err.reason || err.message}`);
       } else {
-        setNotification({ show: true, message: 'Producto añadido correctamente' });
+        setNotification({ show: true, message: 'Producto actualizado correctamente' });
         setTimeout(() => setNotification({ show: false, message: '' }), 3000);
-        setShowAddModal(false);
-        fetchUserProductos(usuarioId);
+        fetchUserProductos(userId);
+        handleCancelar();
       }
     });
-  };
+  }
+  
+  
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setNuevoProducto((prev) => ({
-      ...prev,
-      [name]: name === 'imagen_principal' ? files[0] : Array.from(files),
-    }));
+  const handleDeleteProduct = (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      Meteor.call('productos.delete', id, (err) => {  // Aquí cambiamos 'productos.remove' a 'productos.delete'
+        if (err) {
+          alert(`Error al eliminar producto: ${err.reason || err.message}`);
+        } else {
+          setNotification({ show: true, message: 'Producto eliminado correctamente' });
+          setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+          fetchUserProductos(userId);  // Refresca la lista de productos
+        }
+      });
+    }
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNuevoProducto((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditProduct = (producto) => {
+    setNuevoProducto({ ...producto });
+    setEditingProduct(producto);
+    setShowAddModal(true);
+  };
+  
+
+  const handleCancelar = () => {
+    setShowAddModal(false);
+    setEditingProduct(null);
+    setNuevoProducto({
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      categoria: '',
+      estado: '',
+      imagen_principal: '',
+      imagenes_adicionales: '',
+    });
   };
 
   return (
@@ -106,62 +162,140 @@ const InventoryManagement = () => {
         </button>
 
         {productos.length > 0 ? (
-        <div className="inventory-grid">
+          <div className="inventory-grid">
             {productos.map((producto) => (
-            <div key={producto.id} className="inventory-card">
-                <img
+              <div key={producto.id} className="inventory-card">
+              <img
                 src={producto.imagen_principal || '/images/placeholder.png'}
                 alt={producto.nombre}
                 className="product-image"
-                />
-                <div className="product-info">
+              />
+              <div className="product-info">
                 <h3 className="product-name">{producto.nombre}</h3>
                 <p className="product-price">
-                    Q{typeof producto.precio === 'number' ? producto.precio.toFixed(2) : '0.00'}
+                  <strong>Precio: </strong> Q{parseFloat(producto.precio).toFixed(2)}
                 </p>
                 <p className="product-category">
-                    <strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}
+                  <strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}
                 </p>
                 <p className="product-status">
-                    <strong>Estado:</strong> {producto.estado || 'Sin estado'}
+                  <strong>Estado:</strong> {producto.estado || 'Sin estado'}
                 </p>
+            
+                <div className="button-group">
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEditProduct(producto)}
+                  >
+                    Modificar
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteProduct(producto.id)}
+                  >
+                    Eliminar
+                  </button>
                 </div>
-            </div>
+              </div>
+            </div>            
             ))}
-        </div>
+          </div>
         ) : (
-        <p>No hay productos en el inventario.</p>
+          <p>No hay productos en el inventario.</p>
         )}
 
-
         {showAddModal && (
-          <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-overlay" onClick={handleCancelar}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <h2>Añadir Nuevo Producto</h2>
+              <h2>{editingProduct ? 'Modificar Producto' : 'Añadir Nuevo Producto'}</h2>
               <form>
                 <label>Nombre:</label>
-                <input type="text" name="nombre" value={nuevoProducto.nombre} onChange={handleChange} />
-                <label>Descripción:</label>
-                <textarea name="descripcion" value={nuevoProducto.descripcion} onChange={handleChange} />
-                <label>Precio:</label>
-                <input type="number" name="precio" value={nuevoProducto.precio} onChange={handleChange} />
-                <label>Categoría:</label>
-                <input type="text" name="categoria" value={nuevoProducto.categoria} onChange={handleChange} />
-                <label>Estado:</label>
-                <input type="text" name="estado" value={nuevoProducto.estado} onChange={handleChange} />
-                <label>Imagen Principal:</label>
-                <input type="file" name="imagen_principal" onChange={handleFileChange} />
-                <label>Imágenes Adicionales:</label>
-                <input type="file" name="imagenes_adicionales" multiple onChange={handleFileChange} />
+                <input 
+                  type="text" 
+                  name="nombre" 
+                  value={nuevoProducto.nombre} 
+                  onChange={handleChange} 
+                />
 
-                <button type="button" onClick={handleAddProduct} className="add-button">Guardar Producto</button>
-                <button type="button" onClick={() => setShowAddModal(false)} className="cancel-button">Cancelar</button>
+                <label>Descripción:</label>
+                <textarea 
+                  name="descripcion" 
+                  value={nuevoProducto.descripcion} 
+                  onChange={handleChange} 
+                />
+
+                <label>Precio:</label>
+                <input 
+                  type="number" 
+                  name="precio" 
+                  value={nuevoProducto.precio} 
+                  onChange={handleChange} 
+                />
+
+                <label>Categoría:</label>
+                <select 
+                  name="categoria" 
+                  value={nuevoProducto.categoria} 
+                  onChange={handleChange}
+                >
+                  <option value="">Seleccionar categoría</option>
+                  {categorias.map((cat) => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+
+                <label>Estado:</label>
+                <select 
+                  name="estado" 
+                  value={nuevoProducto.estado} 
+                  onChange={handleChange}
+                >
+                  <option value="">Seleccionar estado</option>
+                  {estados.map((estado) => (
+                    <option key={estado.value} value={estado.value}>
+                      {estado.label}
+                    </option>
+                  ))}
+                </select>
+
+                <label>Imagen Principal (URL):</label>
+                <input 
+                  type="text" 
+                  name="imagen_principal" 
+                  value={nuevoProducto.imagen_principal} 
+                  onChange={handleChange} 
+                />
+
+                <label>Imágenes Adicionales (URLs separadas por comas):</label>
+                <input 
+                  type="text" 
+                  name="imagenes_adicionales" 
+                  value={nuevoProducto.imagenes_adicionales} 
+                  onChange={handleChange} 
+                />
+
+                <button 
+                  type="button" 
+                  onClick={handleAddOrUpdateProduct} 
+                  className="add-button"
+                >
+                  {editingProduct ? 'Actualizar Producto' : 'Guardar Producto'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={handleCancelar} 
+                  className="cancel-button"
+                >
+                  Cancelar
+                </button>
               </form>
+
             </div>
           </div>
         )}
       </div>
-      <Footer />
     </div>
   );
 };
