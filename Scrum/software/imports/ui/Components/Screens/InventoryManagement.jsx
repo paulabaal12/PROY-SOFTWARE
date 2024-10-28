@@ -7,6 +7,8 @@ import '../../style.css';
 
 const InventoryManagement = () => {
   const [productos, setProductos] = useState([]);
+  const [pedidos, setPedidos] = useState([]); // Estado para almacenar los pedidos
+  const [showPedidos, setShowPedidos] = useState(false); 
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -54,6 +56,46 @@ const InventoryManagement = () => {
         setProductos(res);
       }
     });
+  };
+
+
+  const fetchPedidos = () => {
+    Meteor.call('pedidos.getByUser', parseInt(userId), (err, pedidosRes) => {
+      if (err) {
+        alert(`Error al obtener pedidos: ${err.reason || err.message}`);
+      } else {
+        // Asegúrate de que los IDs sean números y únicos
+        const productIds = pedidosRes
+        .map(pedido => Number(pedido.producto_id))  // Asegura que los IDs sean números
+        .filter(id => !isNaN(id));  // Filtra cualquier valor no numérico
+
+  
+        // Llamada para obtener los productos por sus IDs
+        Meteor.call('productos.getByIds', productIds, (error, productosRes) => {
+          if (error) {
+            alert(`Error al obtener productos: ${error.reason || error.message}`);
+          } else {
+            // Combina los pedidos con los productos
+            const pedidosConNombres = pedidosRes.map(pedido => {
+              const producto = productosRes.find(prod => prod.id === pedido.producto_id);
+              return {
+                ...pedido,
+                productoNombre: producto ? producto.nombre : 'Producto desconocido',
+              };
+            });
+  
+            setPedidos(pedidosConNombres);
+            setShowPedidos(true);
+          }
+        });
+      }
+    });
+  };
+  
+  
+
+  const handleVolver = () => {
+    setShowPedidos(false);
   };
 
   const handleAddOrUpdateProduct = () => {
@@ -145,26 +187,40 @@ const InventoryManagement = () => {
   };
 
   return (
-    <div className="containerr">
-      <Header cartCount={0} />
-      <div className="inventory-page">
-        <h1 className="titulo1">Gestión de Inventario</h1>
+<div className="containerr">
+  <Header cartCount={0} />
+  <div className="inventory-page">
+    <button className="add-button" onClick={() => setShowAddModal(true)}>
+      Añadir Nuevo Producto
+    </button>
 
-        {notification.show && (
-          <div className="notification">
-            <img src={'/images/carrito.png'} alt="Notificación" className="notification-icon" />
-            {notification.message}
-          </div>
+    <button className="order-button" onClick={fetchPedidos}>
+      Mostrar Pedidos
+    </button>
+
+    {showPedidos ? (
+      <div className="pedidos-grid">
+        <h2>Mis Pedidos</h2>
+        {pedidos.length > 0 ? (
+          pedidos.map((pedido, index) => (
+            <div key={`pedido-${pedido.id}-${index}`} className="pedido-card">
+              <p><strong>Producto:</strong> {pedido.productoNombre || 'Producto desconocido'}</p>
+              <p><strong>Cantidad:</strong> {pedido.cantidad || 1}</p>
+              <p><strong>Estado:</strong> {pedido.estado || 'Pendiente'}</p>
+            </div>
+          ))
+        ) : (
+          <p>No tienes pedidos.</p>
         )}
-
-        <button className="add-button" onClick={() => setShowAddModal(true)}>
-          Añadir Nuevo Producto
+        <button className="volver-button" onClick={handleVolver}>
+          Volver a Productos
         </button>
-
-        {productos.length > 0 ? (
-          <div className="inventory-grid">
-            {productos.map((producto) => (
-              <div key={producto.id} className="inventory-card">
+      </div>
+    ) : (
+      productos.length > 0 ? (
+        <div className="inventory-grid">
+          {productos.map((producto) => (
+            <div key={`producto-${producto.id}`} className="inventory-card">
               <img
                 src={producto.imagen_principal || '/images/placeholder.png'}
                 alt={producto.nombre}
@@ -173,7 +229,7 @@ const InventoryManagement = () => {
               <div className="product-info">
                 <h3 className="product-name">{producto.nombre}</h3>
                 <p className="product-price">
-                  <strong>Precio: </strong> Q{parseFloat(producto.precio).toFixed(2)}
+                  <strong>Precio:</strong> Q{parseFloat(producto.precio).toFixed(2)}
                 </p>
                 <p className="product-category">
                   <strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}
@@ -181,28 +237,14 @@ const InventoryManagement = () => {
                 <p className="product-status">
                   <strong>Estado:</strong> {producto.estado || 'Sin estado'}
                 </p>
-            
-                <div className="button-group">
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditProduct(producto)}
-                  >
-                    Modificar
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteProduct(producto.id)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
               </div>
-            </div>            
-            ))}
-          </div>
-        ) : (
-          <p>No hay productos en el inventario.</p>
-        )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No hay productos en el inventario.</p>
+      )
+    )}
 
         {showAddModal && (
           <div className="modal-overlay" onClick={handleCancelar}>

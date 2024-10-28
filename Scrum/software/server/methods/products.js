@@ -69,6 +69,23 @@ Meteor.methods({
     );
   },
 
+  'productos.getByIds'(productIds) {
+    check(productIds, [Number]); // Asegúrate de que sean números
+
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM productos WHERE id = ANY($1::int[])`;
+      pool.query(query, [productIds], (err, result) => {
+        if (err) {
+          console.error('Error al obtener productos:', err);
+          reject(new Meteor.Error('database-error', 'Error al obtener productos'));
+        } else {
+          console.log('Productos devueltos:', result.rows);
+          resolve(result.rows);
+        }
+      });
+    });
+  },
+
   'productos.delete'(productoId) {
     check(productoId, Number);
 

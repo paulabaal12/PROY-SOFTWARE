@@ -3423,7 +3423,7 @@ form {
   margin-bottom: 20px;
   color: #444;
 }
-.inventory-grid {
+.pedidos-grid, .inventory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 3 columnas */
   gap: 20px;
@@ -3433,13 +3433,13 @@ form {
 }
 
 @media (max-width: 900px) {
-  .inventory-grid {
+  .pedidos-grid, .inventory-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
   }
 }
 
 @media (max-width: 600px) {
-  .inventory-grid {
+  .pedidos-grid, .inventory-grid {
     grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
   }
 }
