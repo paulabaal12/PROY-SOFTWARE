@@ -3376,24 +3376,6 @@ form {
   gap: 15px;
 }
 
-/* Notificación */
-.notification {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #3498db;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
-.notification-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-}
 
 /* Modal */
 .modal-overlay {

@@ -3,7 +3,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { pool } from '../PostgreSQL/db/conn';
-import Fuse from 'fuse.js';
 
 // Diccionario de sinónimos
 const sinonimos = {
