@@ -64,7 +64,7 @@ const Header = ({ cartCount, currency }) => {
             <li><Link to="/pedidos" onClick={() => setShowMenu(false)}>Pedidos</Link></li>
           </ul>
         </nav>
-        <form onSubmit={handleSearchSubmit} className="search-form">
+        <form onSubmit={handleSearchSubmit} className="sb-example-1">
           <div className="search">
             <input
               type="text"
@@ -74,10 +74,10 @@ const Header = ({ cartCount, currency }) => {
               onChange={handleSearchChange}
             />
             <button type="submit" className="searchButton">
-              <img src='/images/lupa.png' alt="Lupa" width="30" height="30" />
+              <img src='/images/lupa.png' alt="Lupa" width="25" height="25"  />
             </button>
           </div>
-        </form>
+          </form>
         <div className="user-cart">
           <Link to="/user" className="user-name">{userName}</Link>
           <div className="cart-icon" onClick={toggleDropdown}>

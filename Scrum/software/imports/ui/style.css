@@ -89,45 +89,6 @@ button:hover {
   font-weight: bold;
 }
 
-.search-form {
-  flex-grow: 1;
-  max-width: 400px;
-  margin: 0 20px;
-}
-
-.search {
-  width: 100%;
-  position: relative;
-  display: flex;
-}
-
-.searchTerm {
-  width: 100%;
-  border: 3px solid #004479;
-  border-right: none;
-  padding: 5px;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-  font-size: 16px;
-  color: #000000;
-}
-
-.searchButton {
-  width: 50px;
-  height: 40px;
-  border: 1px solid #004479;
-  background: #004479;
-  text-align: center;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .header {
   background-color: var(--primary-color);
   color: #fff;
@@ -169,45 +130,6 @@ button:hover {
   text-decoration: none;
   color: inherit;
   font-weight: bold;
-}
-
-.search-form {
-  flex-grow: 1;
-  max-width: 400px;
-  margin: 0 20px;
-}
-
-.search {
-  width: 100%;
-  position: relative;
-  display: flex;
-}
-
-.searchTerm {
-  width: 100%;
-  border: 3px solid #004479;
-  border-right: none;
-  padding: 5px;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-  font-size: 16px;
-  color: #000000;
-}
-
-.searchButton {
-  width: 50px;
-  height: 40px;
-  border: 1px solid #004479;
-  background: #004479;
-  text-align: center;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .user-cart {
@@ -319,13 +241,6 @@ button:hover {
     display: block;
   }
 
-  .search-form {
-    order: 3;
-    margin: 10px 0;
-    width: 100%;
-    max-width: none;
-  }
-
   .user-cart {
     order: 2;
     margin-left: auto;
@@ -343,10 +258,6 @@ button:hover {
     margin-right: 15px;
   }
 
-  .search-form {
-    order: 4;
-    margin: 10px 0;
-  }
 
   .user-cart {
     flex-wrap: wrap;
@@ -682,6 +593,54 @@ button:hover {
     width: auto;
     margin-right: 18px;
   }
+}
+
+.sb-example-1 .search {
+  width: 400px;
+  position: relative;
+  display: flex;
+}
+
+.sb-example-1 .searchTerm {
+  flex: 1;
+  border: 3px solid #004479;
+  border-right: none;
+  padding: 10px;
+  border-radius: 5px 0 0 5px;
+  align-items: center; 
+  justify-content: center;
+  outline: none;
+  color: #9DBFAF;
+  font-size: 16px;
+}
+
+.sb-example-1 .searchTerm:focus {
+  color: #004479;
+}
+
+.sb-example-1 .searchButton {
+  width: 53px;
+  height: 43.2px;
+  font-size: large;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  border: 3px solid #004479;
+  background: #004479;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.sb-example-1 .searchButton img {
+  display: block;
+  margin: auto;
+  margin-left: -6px;
+  max-width: 40px;
+  max-height: 40px;
+  margin-top: -3px;
 }
 
 .titulo-producto {
@@ -1958,11 +1917,6 @@ align-items:center;
   padding: 2rem;
 }
 
-.search-title1 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
-}
 
 .loading-message1, .no-results-message1 {
   text-align: center;
@@ -1970,11 +1924,6 @@ align-items:center;
   color: #666;
 }
 
-.search-results-grid1 {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
-}
 
 .product-card1 {
   border: 1px solid #ddd;
@@ -2024,10 +1973,6 @@ align-items:center;
 }
 
 @media (max-width: 768px) {
-  .search-results-grid1 {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
 
   .product-card1 {
     padding: 0.5rem;
@@ -2040,39 +1985,6 @@ align-items:center;
   .product-name1 {
     font-size: 1rem;
   }
-}
-
-.sb-example-1 .search {
-  width: 400px;
-  position: relative;
-  display: flex;
-}
-.sb-example-1 .searchTerm {
-  width: 100%;
-  border: 3px solid #004479;
-  border-right: none;
-  padding: 5px;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-  font-size: large;
-  color: #000000;
-}
-.sb-example-1 .searchTerm:focus{
-  color: #000000;
-  font-size: large;
-}
-.sb-example-1 .searchButton {
-  width: 60px;
-  height: 50px;
-  font-size: large;
-  align-items: center;
-  border: 1px solid #004479;
-  background: #004479;
-  text-align: center;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
 }
 
 .google-login-container {
