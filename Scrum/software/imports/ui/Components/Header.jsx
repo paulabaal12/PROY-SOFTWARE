@@ -1,20 +1,32 @@
-// Header.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor'; // Importamos Meteor
 import DropdownCart from './Screens/DropdownCart';
 import '../style.css';
 import '../variables.css';
 
 const Header = ({ cartCount, onCurrencyChange }) => {
-  const userName = localStorage.getItem('userName') || 'Usuario';
+  const [userName, setUserName] = useState('Usuario'); // Estado para el nombre del usuario
   const [showDropdown, setShowDropdown] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showMenu, setShowMenu] = useState(false);
-  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ'); // Inicializamos con la moneda guardada
-
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario del localStorage
+    if (userId) {
+      // Realizar la llamada a la base de datos para obtener el nombre
+      Meteor.call('usuarios.getNombre', parseInt(userId), (error, result) => {
+        if (error) {
+          console.error('Error al obtener el nombre del usuario:', error);
+        } else if (result) {
+          setUserName(result); // Establecer el nombre del usuario en el estado
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -90,7 +102,12 @@ const Header = ({ cartCount, onCurrencyChange }) => {
         <div className="user-cart">
           <Link to="/user" className="user-name button2">{userName}</Link>
           <div className="cart-icon" onClick={toggleDropdown}>
-            <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Carrito de compras" width="45" height="45" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png"
+              alt="Carrito de compras"
+              width="45"
+              height="45"
+            />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
             {showDropdown && <DropdownCart cartItems={cartItems} onClose={closeDropdown} currency={currency} />}
           </div>

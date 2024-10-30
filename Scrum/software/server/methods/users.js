@@ -117,6 +117,21 @@ Meteor.methods({
 
 
 
+  'usuarios.getNombre'(userId) {
+    check(userId, Number); // Validar el tipo de dato
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT name FROM usuarios WHERE id = $1', [userId], (err, result) => {
+        if (err) {
+          console.error('Error al obtener el nombre del usuario:', err);
+          reject(new Meteor.Error('database-error', 'Error al obtener el nombre del usuario'));
+        } else if (result.rows.length > 0) {
+          resolve(result.rows[0].name); // Devolver el nombre del usuario
+        } else {
+          resolve('Usuario'); // Valor por defecto si no se encuentra
+        }
+      });
+    });
+  },
 
 
   
