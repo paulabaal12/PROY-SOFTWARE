@@ -2418,8 +2418,8 @@ p {
 }
 .product-details-container {
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
+  flex-direction: column;
+  width: 60%;
 }
 
 
@@ -2433,9 +2433,9 @@ p {
 
 .product-centered {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
+  flex-direction: column;
+  gap: 40px;
+  margin-top: 20px;
 }
 
 .product-details-container {
@@ -3407,4 +3407,68 @@ form {
 
 .delete-button:hover {
   background-color: #c82333;
+}
+
+.reviews-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  margin: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calificacion {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.calificacion p {
+  margin: 5px 0;
+}
+
+.calificacion strong {
+  color: #333;
+}
+
+
+.rating-section {
+  margin-top: 20px;
+}
+
+.rating-section textarea {
+  width: 80%;
+  height: 80px;
+  margin-top: 10px;
+  resize: none;
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.rating-section button {
+  background-color: #17a2b8;
+  color: white;
+  margin-top: 10px;
+}
+
+.rating-section button:hover {
+  background-color: #138496;
+}
+
+.rating-section .dv-star-rating {
+  font-size: 2.5rem; /* Ajusta este valor para cambiar el tamaño */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.rating-section .dv-star-rating-star {
+  color: gold; /* Color dorado para las estrellas */
+  transition: transform 0.2s;
+}
+
+.rating-section .dv-star-rating-star:hover {
+  transform: scale(1.2); /* Efecto al pasar el ratón por encima */
+  cursor: pointer;
 }

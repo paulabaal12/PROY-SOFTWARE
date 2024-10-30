@@ -37,6 +37,7 @@
     "react-native-localize": "^3.2.1",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.26.2",
+    "react-star-rating-component": "^1.4.1",
     "recharts": "^2.12.7",
     "simpl-schema": "^3.4.6",
     "speakeasy": "^2.0.0"

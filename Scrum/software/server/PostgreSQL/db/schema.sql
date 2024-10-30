@@ -77,6 +77,25 @@ CREATE TABLE IF NOT EXISTS metodos_pago (
     detalles JSONB -- Detalles del método (ej. datos bancarios, cuenta PayPal)
 );
 
+
+
+
+CREATE TABLE IF NOT EXISTS calificaciones (
+    id SERIAL PRIMARY KEY,
+    producto_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    calificacion INT CHECK (calificacion BETWEEN 1 AND 5),
+    comentario TEXT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (producto_id) REFERENCES productos (id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
+);
+
+
+
+
+
+
 -- Sección 2: Constraints, aquí pueden agregar toda la estructura y relación entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
 

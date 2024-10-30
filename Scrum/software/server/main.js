@@ -12,6 +12,7 @@ import '../server/MongoDB/Methods/feedbackMethods';
 import '../server/MongoDB/chat';
 import '../server/MongoDB/collections';
 import './methods/paymentMethods';
+import './methods/calificaciones';
 import dotenv from 'dotenv';
 
 dotenv.config(); // Cargar las variables de entorno
