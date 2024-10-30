@@ -9,8 +9,25 @@ const PaymentMethodPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { total, cartItems, userId } = location.state || { total: 0, cartItems: [], userId: null };
+  // Desestructuramos el estado recibido desde ShoppingCartPage.
+  const { total, cartItems, userId, cartCount } = location.state || { 
+    total: 0, 
+    cartItems: [], 
+    userId: null, 
+    cartCount: 0 
+  };
+
   const finalUserId = userId || localStorage.getItem('userId');
+  
+  // Estados para tipo de pago y moneda.
+  const [paymentType, setPaymentType] = useState('paypal');
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
+  const [convertedTotal, setConvertedTotal] = useState('');
+
+  // Se ejecuta al inicializar o al cambiar la moneda/total.
+  useEffect(() => {
+    setConvertedTotal(convertPrice(total));
+  }, [currency, total]);
 
   useEffect(() => {
     console.log("User ID en PaymentMethodPage:", finalUserId);
@@ -18,9 +35,7 @@ const PaymentMethodPage = () => {
     console.log("Total en PaymentMethodPage:", total);
   }, [finalUserId, cartItems, total]);
 
-  const [paymentType, setPaymentType] = useState('paypal');
-  const [bankReceipt, setBankReceipt] = useState(null);
-
+  // Lógica de PayPal para la integración del botón.
   useEffect(() => {
     if (paymentType === 'paypal' && window.paypal) {
       window.paypal.Buttons({
@@ -57,72 +72,75 @@ const PaymentMethodPage = () => {
     }
   }, [paymentType, total, cartItems, finalUserId, navigate]);
 
+  // Maneja el cambio del tipo de pago.
   const handlePaymentTypeChange = (event) => setPaymentType(event.target.value);
 
+  // Maneja el cambio del archivo para transferencia bancaria.
   const handleFileChange = (event) => setBankReceipt(event.target.files[0]);
 
-
+  // Cambia la moneda seleccionada y la guarda en localStorage.
   const handleCurrencyChange = (newCurrency) => {
-    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+    setCurrency(newCurrency);
+    localStorage.setItem('currency', newCurrency);
   };
 
+  // Convierte el precio basado en la moneda actual.
   const convertPrice = (precio) => {
-    if (isNaN(precio)) {
+    const numericPrice = parseFloat(precio); // Aseguramos que sea un número
+  
+    if (isNaN(numericPrice)) {
       console.warn(`Precio inválido: ${precio}`);
-      precio = 0; // Asignar un valor por defecto si no es un número válido
+      return 'Q 0.00'; // Devolvemos un valor por defecto
     }
   
-    const currency = localStorage.getItem('currency') || 'GT';
     let convertedPrice, symbol;
+    const currency = localStorage.getItem('currency') || 'GTQ';
   
     switch (currency) {
       case 'USD':
-        convertedPrice = (precio / 8).toFixed(2);
+        convertedPrice = (numericPrice / 8).toFixed(2);
         symbol = '$';
         break;
       case 'EUR':
-        convertedPrice = (precio / 9).toFixed(2);
+        convertedPrice = (numericPrice / 9).toFixed(2);
         symbol = '€';
         break;
       case 'GBP':
-        convertedPrice = (precio / 11).toFixed(2);
+        convertedPrice = (numericPrice / 11).toFixed(2);
         symbol = '£';
         break;
       default:
-        convertedPrice = precio.toFixed(2); // Quetzales por defecto
+        convertedPrice = numericPrice.toFixed(2); // Por defecto en Quetzales
         symbol = 'Q';
     }
   
     return `${symbol} ${convertedPrice}`;
   };
+  
 
+  // Envía los detalles del pedido al servidor.
   const handleSubmit = (event) => {
     event.preventDefault();
-  
-    // Convertir total a número para asegurar el tipo
+
     const parsedTotal = parseFloat(total) || 0;
-  
-    // Convertir userId a número si es necesario
     const parsedUserId = parseInt(finalUserId, 10);
-  
-    // Verificar y preparar los detalles del pedido
+
     const detalles = JSON.stringify(
       cartItems.map(item => ({
         producto_id: item.id,
         cantidad: item.quantity,
-        precio_unitario: parseFloat(item.price) || 0, // Asegura que sea un número
+        precio_unitario: parseFloat(item.price) || 0,
       }))
     );
-  
+
     const pedidoDetails = {
       usuario_id: parsedUserId,
       total: parsedTotal,
       detalles,
     };
-  
+
     console.log("Enviando pedido:", pedidoDetails);
-  
-    // Llamada al método de Meteor
+
     Meteor.call('pedidos.insert', pedidoDetails, (error) => {
       if (error) {
         console.error('Error al insertar el pedido:', error);
@@ -135,7 +153,7 @@ const PaymentMethodPage = () => {
 
   return (
     <>
-      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange}  />
+      <Header cartCount={cartCount} onCurrencyChange={handleCurrencyChange} />
       <div className="container payment-method-page">
         <h1>Seleccione su Método de Pago</h1>
         <form onSubmit={handleSubmit}>
@@ -174,7 +192,11 @@ const PaymentMethodPage = () => {
             </label>
           </div>
 
-          {paymentType === 'paypal' && <div id="paypal-button-container"><p>Ópción de "Tarjeta de débito o crédito" manejada por PayPal.</p></div>}
+          {paymentType === 'paypal' && (
+            <div id="paypal-button-container">
+              <p>Opción de "Tarjeta de débito o crédito" manejada por PayPal.</p>
+            </div>
+          )}
 
           {paymentType === 'bankTransfer' && (
             <div className="bank-transfer-details">
@@ -197,7 +219,7 @@ const PaymentMethodPage = () => {
           )}
 
           <div className="total-payment">
-            <p>Total a Pagar: Q{total ? total.toFixed(2) : '0.00'}</p>
+            <p>Total a Pagar: {convertedTotal}</p>
           </div>
 
           <button type="submit">Confirmar Pago</button>

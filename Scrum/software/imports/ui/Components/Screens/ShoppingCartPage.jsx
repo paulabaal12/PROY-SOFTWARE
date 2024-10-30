@@ -7,62 +7,32 @@ import '../../variables.css';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem('userId'); // Recuperamos el userId del localStorage
-
-  console.log('User ID en ShoppingCartPage:', userId); // Verificar si el userId está disponible
+  const userId = localStorage.getItem('userId'); 
 
   const [cartItems, setCartItems] = useState(() => {
     const savedCartItems = localStorage.getItem('cartItems');
     return savedCartItems ? JSON.parse(savedCartItems) : [];
   });
 
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
+  const [cartCount, setCartCount] = useState(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  
-  const getTotalQuantity = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
-  };
-  
-  const handleRemove = (itemId) => {
-    setCartItems(cartItems.filter((item) => item.id !== itemId));
-  };
-
-  const handleChangeQuantity = (itemId, delta) => {
-    const updatedCart = cartItems.map((item) =>
-      item.id === itemId ? { ...item, quantity: Math.max(item.quantity + delta, 1) } : item
-    );
-    setCartItems(updatedCart);
-  };
-
-  const handleCheckout = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * item.quantity, 0);
-    const shipping = 5;
-    const total = subtotal + shipping;
-
-    console.log('Cart Items:', cartItems); // Verificar los productos en el carrito
-    console.log('Total:', total); // Verificar el total
-    console.log('User ID en Checkout:', userId); // Verificar que el userId se pase
-
-    // Aseguramos que los datos se pasen correctamente en la navegación
-    navigate('/payment-method', { state: { cartItems, total, userId } });
-  };
-
-  
   const handleCurrencyChange = (newCurrency) => {
-    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+    setCurrency(newCurrency);
+    localStorage.setItem('currency', newCurrency); // Guarda la moneda seleccionada
   };
 
   const convertPrice = (precio) => {
     if (isNaN(precio)) {
       console.warn(`Precio inválido: ${precio}`);
-      precio = 0; // Asignar un valor por defecto si no es un número válido
+      precio = 0;
     }
-  
-    const currency = localStorage.getItem('currency') || 'GT';
+
     let convertedPrice, symbol;
-  
     switch (currency) {
       case 'USD':
         convertedPrice = (precio / 8).toFixed(2);
@@ -77,20 +47,49 @@ const ShoppingCartPage = () => {
         symbol = '£';
         break;
       default:
-        convertedPrice = precio.toFixed(2); // Quetzales por defecto
+        convertedPrice = precio.toFixed(2);
         symbol = 'Q';
     }
-  
+
     return `${symbol} ${convertedPrice}`;
   };
 
+  const getTotalQuantity = () => cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const handleRemove = (itemId) => {
+    setCartItems(cartItems.filter((item) => item.id !== itemId));
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+  };
+
+  const handleChangeQuantity = (itemId, delta) => {
+    const updatedCart = cartItems.map((item) =>
+      item.id === itemId ? { ...item, quantity: Math.max(item.quantity + delta, 1) } : item
+    );
+    setCartItems(updatedCart);
+  };
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 5; 
+  const shipping = 45; 
   const total = subtotal + shipping;
+
+  const handleCheckout = () => {
+    // Aseguramos que el total se envíe como número
+    const parsedTotal = parseFloat(total);
+  
+    navigate('/payment-method', { 
+      state: { 
+        cartItems, 
+        total: parsedTotal, 
+        userId, 
+        cartCount 
+      } 
+    });
+  };
+  
 
   return (
     <>
-      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange}  />
+      <Header cartCount={cartCount} onCurrencyChange={handleCurrencyChange} />
       <div className="cart-container">
         <h1>CARRITO DE COMPRAS</h1>
         <p>Total productos: <span className="product-count">{getTotalQuantity()}</span></p>
@@ -106,7 +105,9 @@ const ShoppingCartPage = () => {
                 />
                 <div className="cart-item-info">
                   <h2 className="cart-item-name">{item.name}</h2>
-                  <p className="cart-item-price">${parseFloat(item.price || 0).toFixed(2)}</p>
+                  <p className="cart-item-price">
+                    Precio unitario: {convertPrice(item.price)}
+                  </p>
                   <div className="quantity-controls">
                     <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>
                     <span>{item.quantity}</span>
@@ -122,9 +123,9 @@ const ShoppingCartPage = () => {
 
           <div className="cart-summary">
             <h2>Resumen de orden</h2>
-            <p>Subtotal: ${subtotal.toFixed(2)}</p>
-            <p>Envío: {shipping > 0 ? `$${shipping}` : 'Gratis'}</p>
-            <p className="total">Total: ${total.toFixed(2)}</p>
+            <p>Subtotal: {convertPrice(subtotal)}</p>
+            <p>Envío: {shipping > 0 ? convertPrice(shipping) : 'Gratis'}</p>
+            <p className="total">Total: {convertPrice(total)}</p>
             <button onClick={handleCheckout} className="checkout-button">
               Ir a Pagar
             </button>
