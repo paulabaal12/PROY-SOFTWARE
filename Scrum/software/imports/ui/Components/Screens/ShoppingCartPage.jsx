@@ -49,13 +49,48 @@ const ShoppingCartPage = () => {
     navigate('/payment-method', { state: { cartItems, total, userId } });
   };
 
+  
+  const handleCurrencyChange = (newCurrency) => {
+    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+  };
+
+  const convertPrice = (precio) => {
+    if (isNaN(precio)) {
+      console.warn(`Precio inválido: ${precio}`);
+      precio = 0; // Asignar un valor por defecto si no es un número válido
+    }
+  
+    const currency = localStorage.getItem('currency') || 'GT';
+    let convertedPrice, symbol;
+  
+    switch (currency) {
+      case 'USD':
+        convertedPrice = (precio / 8).toFixed(2);
+        symbol = '$';
+        break;
+      case 'EUR':
+        convertedPrice = (precio / 9).toFixed(2);
+        symbol = '€';
+        break;
+      case 'GBP':
+        convertedPrice = (precio / 11).toFixed(2);
+        symbol = '£';
+        break;
+      default:
+        convertedPrice = precio.toFixed(2); // Quetzales por defecto
+        symbol = 'Q';
+    }
+  
+    return `${symbol} ${convertedPrice}`;
+  };
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = 5; 
   const total = subtotal + shipping;
 
   return (
     <>
-      <Header />
+      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange}  />
       <div className="cart-container">
         <h1>CARRITO DE COMPRAS</h1>
         <p>Total productos: <span className="product-count">{getTotalQuantity()}</span></p>

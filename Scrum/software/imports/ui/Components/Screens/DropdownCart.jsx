@@ -4,6 +4,7 @@ import '../../style.css';
 
 const DropdownCart = ({ onClose }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
 
   // Cargar los productos del localStorage al iniciar
   useEffect(() => {
@@ -11,7 +12,41 @@ const DropdownCart = ({ onClose }) => {
     setCartItems(storedCart);
   }, []);
 
-  // Actualiza el estado y localStorage con los nuevos datos del carrito
+  useEffect(() => {
+    const handleCurrencyChange = () => {
+      setCurrency(localStorage.getItem('currency') || 'GTQ');
+    };
+
+    window.addEventListener('storage', handleCurrencyChange);
+    return () => {
+      window.removeEventListener('storage', handleCurrencyChange);
+    };
+  }, []);
+
+  const convertPrice = (precio) => {
+    const numericPrice = parseFloat(precio) || 0; // Asegura que siempre sea un número
+
+    let convertedPrice, symbol;
+    switch (currency) {
+      case 'USD':
+        convertedPrice = (numericPrice / 8).toFixed(2);
+        symbol = '$';
+        break;
+      case 'EUR':
+        convertedPrice = (numericPrice / 9).toFixed(2);
+        symbol = '€';
+        break;
+      case 'GBP':
+        convertedPrice = (numericPrice / 11).toFixed(2);
+        symbol = '£';
+        break;
+      default:
+        convertedPrice = numericPrice.toFixed(2); // Quetzales por defecto
+        symbol = 'Q';
+    }
+    return `${symbol} ${convertedPrice}`;
+  };
+
   const updateCartItems = (newItems) => {
     setCartItems(newItems);
     localStorage.setItem('cartItems', JSON.stringify(newItems));
@@ -32,8 +67,13 @@ const DropdownCart = ({ onClose }) => {
   const getTotalQuantity = () =>
     cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  const getTotalPrice = () =>
+    cartItems.reduce((total, item) => 
+      total + (parseFloat(item.price) || 0) * item.quantity, 0
+    );
+
   const handleDropdownClick = (event) => {
-    event.stopPropagation(); // Detener cierre del dropdown al hacer clic dentro.
+    event.stopPropagation(); // Evita que se cierre el dropdown al hacer clic dentro.
   };
 
   return (
@@ -41,8 +81,10 @@ const DropdownCart = ({ onClose }) => {
       <div className="dropdown-cart-header">
         <h3 className="product-count">Carrito</h3>
         <p>
-          Total productos:{" "}
-          <span className="product-count">{getTotalQuantity()}</span>
+          Total productos: <span className="product-count">{getTotalQuantity()}</span>
+        </p>
+        <p>
+          Precio total: <span>{convertPrice(getTotalPrice())}</span>
         </p>
       </div>
       <div className="dropdown-cart-content">
@@ -58,7 +100,7 @@ const DropdownCart = ({ onClose }) => {
               <div className="dropdown-cart-item-details">
                 <p className="item-name">{item.name}</p>
                 <p className="item-price">
-                  Precio: ${parseFloat(item.price).toFixed(2)}
+                  Precio unitario: {convertPrice(item.price || 0)}
                 </p>
                 <div className="quantity-controls">
                   <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>

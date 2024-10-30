@@ -11,6 +11,7 @@ const ProductoDetalles = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ show: false, message: '' });
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const [cartCount, setCartCount] = useState(0);
   const [favoriteProducts, setFavoriteProducts] = useState(
     JSON.parse(localStorage.getItem('favoriteProducts')) || []
@@ -67,6 +68,44 @@ const ProductoDetalles = () => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
   };
 
+  
+  const handleCurrencyChange = (newCurrency) => {
+    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+  };
+
+  const convertPrice = (precio) => {
+    let numericPrice = parseFloat(precio); // Asegúrate de convertir a número
+  
+    if (isNaN(numericPrice)) {
+      console.warn(`Precio inválido: ${precio}`);
+      numericPrice = 0; // Asignar valor por defecto si no es válido
+    }
+  
+    const currency = localStorage.getItem('currency') || 'GT';
+    let convertedPrice, symbol;
+  
+    switch (currency) {
+      case 'USD':
+        convertedPrice = (numericPrice / 8).toFixed(2);
+        symbol = '$';
+        break;
+      case 'EUR':
+        convertedPrice = (numericPrice / 9).toFixed(2);
+        symbol = '€';
+        break;
+      case 'GBP':
+        convertedPrice = (numericPrice / 11).toFixed(2);
+        symbol = '£';
+        break;
+      default:
+        convertedPrice = numericPrice.toFixed(2); // Quetzales por defecto
+        symbol = 'Q';
+    }
+  
+    return `${symbol} ${convertedPrice}`;
+  };
+  
+
   const handleFavoriteToggle = () => {
     const isFavorite = favoriteProducts.some(p => p.id === producto.id);
     const newFavorites = isFavorite
@@ -91,7 +130,7 @@ const ProductoDetalles = () => {
 
   return (
     <div className="containerr">
-      <Header cartCount={cartCount} />
+      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange} />
       {notification.show && <div className="notification">{notification.message}</div>}
       <button onClick={() => navigate(-1)} className="back-button">← Volver</button>
 
@@ -105,7 +144,7 @@ const ProductoDetalles = () => {
           <div className="details-container">
             <h2 className="titulo-producto">{producto.nombre}</h2>
             <p>Descripción: {producto.descripcion}</p>
-            <p className="titulo-precio">Precio: ${producto.precio}</p>
+            <p className="titulo-precio">Precio: {convertPrice(producto.precio)}</p>
             <p>Categoría: {producto.categoria}</p>
             <p>Estado: {producto.estado}</p>
             <button className="button-agregar" onClick={handleAddToCart}>Agregar al carrito</button>

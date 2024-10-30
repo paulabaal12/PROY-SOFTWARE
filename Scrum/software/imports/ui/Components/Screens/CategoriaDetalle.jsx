@@ -8,6 +8,7 @@ import '../../style.css';
 const CategoriaDetalle = () => {
   const { nombre } = useParams();
   const [productos, setProductos] = useState([]);
+  const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const [filtros, setFiltros] = useState({
     precioMin: 0,
     precioMax: 1000000,
@@ -67,6 +68,57 @@ const CategoriaDetalle = () => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0)); // Actualiza el contador
   };
 
+  const handleCurrencyChange = (newCurrency) => {
+    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+  };
+
+  const convertPrice = (precio) => {
+    let numericPrice = parseFloat(precio); // Asegúrate de convertir a número
+  
+    if (isNaN(numericPrice)) {
+      console.warn(`Precio inválido: ${precio}`);
+      numericPrice = 0; // Asignar valor por defecto si no es válido
+    }
+  
+    const currency = localStorage.getItem('currency') || 'GT';
+    let convertedPrice, symbol;
+  
+    switch (currency) {
+      case 'USD':
+        convertedPrice = (numericPrice / 8).toFixed(2);
+        symbol = '$';
+        break;
+      case 'EUR':
+        convertedPrice = (numericPrice / 9).toFixed(2);
+        symbol = '€';
+        break;
+      case 'GBP':
+        convertedPrice = (numericPrice / 11).toFixed(2);
+        symbol = '£';
+        break;
+      default:
+        convertedPrice = numericPrice.toFixed(2); // Quetzales por defecto
+        symbol = 'Q';
+    }
+  
+    return `${symbol} ${convertedPrice}`;
+  };
+
+  const getCurrencySymbol = () => {
+    const currency = localStorage.getItem('currency') || 'GTQ';
+    switch (currency) {
+      case 'USD':
+        return '$';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      default:
+        return 'Q'; // Quetzal como moneda por defecto
+    }
+  };
+  
+
   const handleMoreInfoClick = (productoId) => {
     navigate(`/productos/${productoId}`);
   };
@@ -81,7 +133,7 @@ const CategoriaDetalle = () => {
 
   return (
     <div>
-      <Header />
+      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange} />
       {notification.show && <div className="notification">{notification.message}</div>}
       <div className="categoria-detalle-container">
         <h1>{nombre}</h1>
@@ -90,7 +142,7 @@ const CategoriaDetalle = () => {
             <h2 className="product-catalog__filter-title">Filtros</h2>
             <div className="product-catalog__price-filter">
               <h3>Precio</h3>
-              <p>${filtros.precioMin} - ${filtros.precioMax}</p>
+              <p>{getCurrencySymbol()}{filtros.precioMin} - {getCurrencySymbol()}{filtros.precioMax}</p>
               <input
                 type="range"
                 min={0}
@@ -110,7 +162,7 @@ const CategoriaDetalle = () => {
                 <div key={producto.id} className="product-container">
                   <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
                   <h3 className='titulo-producto'>{producto.nombre}</h3>
-                  <p className='titulo-precio'>Precio: ${producto.precio}</p>
+                  <p className='titulo-precio'>Precio: {convertPrice(producto.precio)}</p>
                   <div className="product-buttons">
                     <button className="button-add" onClick={() => handleAddToCart(producto)}>
                       Agregar al carrito
