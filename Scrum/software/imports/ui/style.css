@@ -3472,3 +3472,10 @@ form {
   transform: scale(1.2); /* Efecto al pasar el ratón por encima */
   cursor: pointer;
 }
+
+
+.inputCouponSection {
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 5px;
+}

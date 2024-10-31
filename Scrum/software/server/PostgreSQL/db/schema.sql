@@ -93,6 +93,14 @@ CREATE TABLE IF NOT EXISTS calificaciones (
 
 
 
+CREATE TABLE cupones (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(50) NOT NULL UNIQUE,     
+    descuento DECIMAL(5, 2) NOT NULL,       
+    producto_id INT NOT NULL,               
+    fecha_expiracion DATE NOT NULL,         
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+);
 
 
 

@@ -7,7 +7,7 @@ import '../../variables.css';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem('userId'); 
+  const userId = localStorage.getItem('userId');
 
   const [cartItems, setCartItems] = useState(() => {
     const savedCartItems = localStorage.getItem('cartItems');
@@ -16,38 +16,51 @@ const ShoppingCartPage = () => {
 
   const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const [cartCount, setCartCount] = useState(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+  const [codigoCupon, setCodigoCupon] = useState('');
+  const [descuento, setDescuento] = useState(0);
+  const [mensajeCupon, setMensajeCupon] = useState('');
+  const [productosConDescuento, setProductosConDescuento] = useState([]);
 
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
+  const limpiarDescuento = () => {
+    setProductosConDescuento([]);
+    setDescuento(0);
+    setCodigoCupon('');
+    setMensajeCupon('');
+  };
+
   const handleCurrencyChange = (newCurrency) => {
     setCurrency(newCurrency);
-    localStorage.setItem('currency', newCurrency); // Guarda la moneda seleccionada
+    localStorage.setItem('currency', newCurrency);
   };
 
   const convertPrice = (precio) => {
-    if (isNaN(precio)) {
+    // Asegurarse de que `precio` sea un número válido
+    const numericPrice = parseFloat(precio);
+    if (isNaN(numericPrice)) {
       console.warn(`Precio inválido: ${precio}`);
-      precio = 0;
+      return 'Q 0.00';
     }
 
     let convertedPrice, symbol;
     switch (currency) {
       case 'USD':
-        convertedPrice = (precio / 8).toFixed(2);
+        convertedPrice = (numericPrice / 8).toFixed(2);
         symbol = '$';
         break;
       case 'EUR':
-        convertedPrice = (precio / 9).toFixed(2);
+        convertedPrice = (numericPrice / 9).toFixed(2);
         symbol = '€';
         break;
       case 'GBP':
-        convertedPrice = (precio / 11).toFixed(2);
+        convertedPrice = (numericPrice / 11).toFixed(2);
         symbol = '£';
         break;
       default:
-        convertedPrice = precio.toFixed(2);
+        convertedPrice = numericPrice.toFixed(2);
         symbol = 'Q';
     }
 
@@ -68,24 +81,49 @@ const ShoppingCartPage = () => {
     setCartItems(updatedCart);
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 45; 
-  const total = subtotal + shipping;
-
-  const handleCheckout = () => {
-    // Aseguramos que el total se envíe como número
-    const parsedTotal = parseFloat(total);
-  
-    navigate('/payment-method', { 
-      state: { 
-        cartItems, 
-        total: parsedTotal, 
-        userId, 
-        cartCount 
-      } 
+  const handleApplyCupon = () => {
+    Meteor.call('cupones.validate', codigoCupon, (error, result) => {
+      if (error) {
+        setMensajeCupon('Cupón inválido o expirado.');
+        limpiarDescuento();
+      } else {
+        setDescuento(parseFloat(result.descuento));
+        setProductosConDescuento([result.producto_id]);
+        setMensajeCupon(`Cupón aplicado: ${result.descuento}% de descuento.`);
+      }
     });
   };
   
+  
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const discountTotal = cartItems.reduce((acc, item) => {
+    if (productosConDescuento.includes(item.id)) {
+      return acc + item.price * item.quantity * (descuento / 100);
+    }
+    return acc;
+  }, 0);
+  
+
+
+// Calcula el total final, restando el descuento total y sumando el costo de envío
+const envio = 45;
+const total = subtotal - discountTotal + envio;
+
+
+  const handleCheckout = () => {
+    const parsedTotal = parseFloat(total);
+    navigate('/payment-method', {
+      state: {
+        cartItems,
+        total: parsedTotal,
+        userId,
+        cartCount,
+        descuento,
+        productosConDescuento,
+      },
+    });
+  };
 
   return (
     <>
@@ -101,13 +139,10 @@ const ShoppingCartPage = () => {
                   src={item.image}
                   alt={item.name}
                   className="cart-item-image"
-                  onError={(e) => (e.target.src = '/path-to-placeholder-image/placeholder.png')}
                 />
                 <div className="cart-item-info">
                   <h2 className="cart-item-name">{item.name}</h2>
-                  <p className="cart-item-price">
-                    Precio unitario: {convertPrice(item.price)}
-                  </p>
+                  <p className="cart-item-price">Precio unitario: {convertPrice(item.price)}</p>
                   <div className="quantity-controls">
                     <button onClick={() => handleChangeQuantity(item.id, -1)}>-</button>
                     <span>{item.quantity}</span>
@@ -124,11 +159,21 @@ const ShoppingCartPage = () => {
           <div className="cart-summary">
             <h2>Resumen de orden</h2>
             <p>Subtotal: {convertPrice(subtotal)}</p>
-            <p>Envío: {shipping > 0 ? convertPrice(shipping) : 'Gratis'}</p>
+            <p>Descuento: {discountTotal > 0 ? `- ${convertPrice(discountTotal)} (${descuento}% aplicado)` : 'No hay descuento'}</p>
+            <p>Envío: {convertPrice(45)}</p>
+            <div className="coupon-section">
+              <input 
+                type="text" 
+                className="inputCouponSection"
+                placeholder="Ingresa el código de cupón" 
+                value={codigoCupon}
+                onChange={(e) => setCodigoCupon(e.target.value)}
+              />
+              <button onClick={handleApplyCupon}>Aplicar Cupón</button>
+              {mensajeCupon && <p>{mensajeCupon}</p>}
+            </div>
             <p className="total">Total: {convertPrice(total)}</p>
-            <button onClick={handleCheckout} className="checkout-button">
-              Ir a Pagar
-            </button>
+            <button onClick={handleCheckout} className="checkout-button">Ir a Pagar</button>
           </div>
         </div>
       </div>

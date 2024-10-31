@@ -25,31 +25,32 @@ const HomePage = () => {
     };
   }, []);
 
-  const userId = localStorage.getItem('userId'); // Recupera el ID del usuario
+  const userId = localStorage.getItem('userId');
   useEffect(() => {
     if (!userId) {
       console.warn('No se encontró un ID de usuario. Redirigiendo al login.');
-      navigate('/login'); // Redirigir si no hay ID
+      navigate('/login');
     } else {
-      fetchProducts(); // Si hay ID, carga los productos
+      fetchProducts();
     }
   }, [userId]);
-  
-  
 
+  useEffect(() => {
+    localStorage.removeItem('descuento');
+    localStorage.removeItem('productosConDescuento');
+  }, []);
+  
   const handleCurrencyChange = (newCurrency) => {
-    setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
+    setCurrency(newCurrency);
   };
 
   const convertPrice = (precio) => {
     if (isNaN(precio)) {
       console.warn(`Precio inválido: ${precio}`);
-      precio = 0; // Asignar un valor por defecto si no es un número válido
+      precio = 0;
     }
-  
-    const currency = localStorage.getItem('currency') || 'GT';
+
     let convertedPrice, symbol;
-  
     switch (currency) {
       case 'USD':
         convertedPrice = (precio / 8).toFixed(2);
@@ -64,13 +65,12 @@ const HomePage = () => {
         symbol = '£';
         break;
       default:
-        convertedPrice = precio.toFixed(2); // Quetzales por defecto
+        convertedPrice = precio.toFixed(2);
         symbol = 'Q';
     }
-  
+
     return `${symbol} ${convertedPrice}`;
   };
-  
 
   const fetchProducts = () => {
     Meteor.call('productos.getAll', (error, productosData) => {
@@ -99,15 +99,7 @@ const HomePage = () => {
   const handleAddToCart = (product) => {
     if (!product || !product.precio) {
       console.warn('Producto inválido o sin precio:', product);
-      return; // Evita agregar un producto sin precio
-    }
-  
-    // Limpiar el precio: Extraer solo la parte numérica
-    const cleanedPrice = parseFloat(product.precio.replace(/[^0-9.-]+/g, ''));
-  
-    if (isNaN(cleanedPrice)) {
-      console.warn('Precio inválido después de limpiar:', product.precio);
-      return; // Evita agregar si el precio sigue siendo inválido
+      return;
     }
   
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -123,7 +115,7 @@ const HomePage = () => {
       cartItems.push({
         id: product.id,
         name: product.nombre,
-        price: cleanedPrice, // Guardamos el precio limpio como número
+        price: parseFloat(product.precio), // Utiliza el precio como número
         quantity: 1,
         image: product.imagen_principal || '/path-to-placeholder-image.png',
       });
@@ -136,9 +128,6 @@ const HomePage = () => {
     }, 3000);
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
   };
-  
-  
-  
 
   const handleMoreInfoClick = (productoId) => {
     navigate(`/productos/${productoId}`);
@@ -157,8 +146,6 @@ const HomePage = () => {
     navigate('/productos');
   };
 
-  
-
   return (
     <div className="container3">
       <Header cartCount={cartCount} onCurrencyChange={handleCurrencyChange} />
@@ -174,7 +161,7 @@ const HomePage = () => {
           <span className="arrow-icon">&gt;</span>
         </div>
         <ProductList 
-          products={products.map(product => ({ ...product, precio: convertPrice(Number(product.precio))}))} 
+          products={products} // Sin aplicar `convertPrice`
           onAddToCart={(product) => handleAddToCart(product)} 
           onMoreInfo={handleMoreInfoClick}
           onFavoriteToggle={handleFavoriteToggle}
