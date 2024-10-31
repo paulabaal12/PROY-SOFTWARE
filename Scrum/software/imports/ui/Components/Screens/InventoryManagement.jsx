@@ -8,10 +8,15 @@ import '../../style.css';
 const InventoryManagement = () => {
   const [productos, setProductos] = useState([]);
   const [pedidos, setPedidos] = useState([]); // Estado para almacenar los pedidos
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
   const [showPedidos, setShowPedidos] = useState(false); 
   const [notification, setNotification] = useState({ show: false, message: '' });
+  const [showAddCouponModal, setShowAddCouponModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [expirationDate, setExpirationDate] = useState('');
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre: '',
     descripcion: '',
@@ -36,6 +41,42 @@ const InventoryManagement = () => {
   ];
   
 
+  const openAddCouponModal = (productId) => {
+    setSelectedProductId(productId);
+    setShowAddCouponModal(true);
+  };
+
+  const handleApplyCoupon = () => {
+    if (selectedProductId) {
+      const couponData = {
+        codigo: couponCode,
+        descuento: discountPercentage,
+        producto_id: selectedProductId,
+        fecha_expiracion: expirationDate, // Asegúrate de que expirationDate tenga un valor válido
+      };
+  
+      Meteor.call('cupones.apply', couponData, (err, result) => {
+        if (err) {
+          console.error("Error al aplicar cupón:", err.message); // Log detallado del error
+          setNotification({ show: true, message: `Error al aplicar cupón: ${err.reason || 'Intenta de nuevo'}` });
+        } else {
+          setNotification({ show: true, message: `Cupón aplicado: ${discountPercentage}% de descuento` });
+          fetchUserProductos(userId);
+        }
+        setTimeout(() => setNotification({ show: false, message: '' }), 3000);
+        closeAddCouponModal();
+      });
+    }
+  };
+  
+  
+  
+
+  const closeAddCouponModal = () => {
+    setShowAddCouponModal(false);
+    setCouponCode('');
+    setDiscountPercentage(0);
+  };
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
@@ -189,6 +230,8 @@ const InventoryManagement = () => {
   return (
 <div className="containerr">
   <Header cartCount={0} />
+  {notification.show && <div className="notification">{notification.message}</div>} {/* Notificación amigable */}
+
   <div className="inventory-page">
     <button className="add-button" onClick={() => setShowAddModal(true)}>
       Añadir Nuevo Producto
@@ -220,31 +263,67 @@ const InventoryManagement = () => {
       productos.length > 0 ? (
         <div className="inventory-grid">
           {productos.map((producto) => (
-            <div key={`producto-${producto.id}`} className="inventory-card">
-              <img
-                src={producto.imagen_principal || '/images/placeholder.png'}
-                alt={producto.nombre}
-                className="product-image"
-              />
-              <div className="product-info">
-                <h3 className="product-name">{producto.nombre}</h3>
-                <p className="product-price">
-                  <strong>Precio:</strong> Q{parseFloat(producto.precio).toFixed(2)}
-                </p>
-                <p className="product-category">
-                  <strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}
-                </p>
-                <p className="product-status">
-                  <strong>Estado:</strong> {producto.estado || 'Sin estado'}
-                </p>
-              </div>
-            </div>
-          ))}
+      <div key={`producto-${producto.id}`} className="inventory-card">
+        <img
+          src={producto.imagen_principal || '/images/placeholder.png'}
+          alt={producto.nombre}
+          className="product-image"
+        />
+        <div className="product-info">
+          <h3 className="product-name">{producto.nombre}</h3>
+          <p className="product-price"><strong>Precio:</strong> Q{parseFloat(producto.precio).toFixed(2)}</p>
+          <p className="product-category"><strong>Categoría:</strong> {producto.categoria || 'Sin categoría'}</p>
+          <p className="product-status"><strong>Estado:</strong> {producto.estado || 'Sin estado'}</p>
+          
+          {/* Campo para ingresar el cupón */}
+          <button onClick={() => openAddCouponModal(producto.id)}>Añadir Cupón</button>
+          {/* Botones para modificar y eliminar */}
+          <button onClick={() => handleEditProduct(producto)}>Modificar</button>
+          <button onClick={() => handleDeleteProduct(producto.id)}>Eliminar</button>
+        </div>
+      </div>
+    ))}
         </div>
       ) : (
         <p>No hay productos en el inventario.</p>
       )
     )}
+
+{/* Modal para añadir cupón */}
+{showAddCouponModal && (
+  <div className="modal-overlay" onClick={closeAddCouponModal}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <h2>Añadir Cupón</h2>
+      <form>
+        <label>Código de cupón:</label>
+        <input
+          type="text"
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+          placeholder="Código de cupón"
+        />
+        <label>Porcentaje de descuento:</label>
+        <input
+          type="number"
+          value={discountPercentage}
+          onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
+          placeholder="Porcentaje de descuento"
+        />
+        <label>Fecha de expiración:</label>
+        <input
+          className="fecha-input-coupon"
+          type="date"
+          value={expirationDate}
+          onChange={(e) => setExpirationDate(e.target.value)}
+        />
+        <button type="button" onClick={handleApplyCoupon}>Aplicar Cupón</button>
+        <button type="button" onClick={closeAddCouponModal}>Cancelar</button>
+      </form>
+    </div>
+  </div>
+)}
+
+
 
         {showAddModal && (
           <div className="modal-overlay" onClick={handleCancelar}>

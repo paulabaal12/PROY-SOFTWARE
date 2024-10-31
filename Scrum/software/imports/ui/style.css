@@ -3479,3 +3479,14 @@ form {
   border-radius: 10px;
   margin-right: 5px;
 }
+
+
+.fecha-input-coupon{
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
