@@ -51,7 +51,10 @@ CREATE TABLE IF NOT EXISTS pedidos (
     direccion_id INT,
     costo_envio DECIMAL(10,2),
     tiempo_estimado_entrega TIMESTAMP,
-    estado_envio VARCHAR DEFAULT 'En proceso...'
+    estado_envio VARCHAR DEFAULT 'En proceso...',
+    devolucion BOOLEAN DEFAULT false,
+    opcion_envio VARCHAR(50)
+
 );
 
 CREATE TABLE IF NOT EXISTS direcciones (

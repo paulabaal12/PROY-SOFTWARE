@@ -85,4 +85,17 @@ Meteor.methods({
       });
     });
   },
+  'pedidos.marcarDevolucion': async function (pedidoId) {
+    // Suponiendo que tienes una conexión con PostgreSQL configurada
+    const query = 'UPDATE pedidos SET devolucion = true WHERE id_pedido = $1';
+    const values = [pedidoId];
+    
+    try {
+      await pool.query(query, values); // pool es la conexión a PostgreSQL
+      return { success: true };
+    } catch (error) {
+      throw new Meteor.Error('update-failed', 'No se pudo actualizar el pedido.');
+    }
+  },
+  
 });

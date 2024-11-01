@@ -8,6 +8,7 @@ const PedidosPage = () => {
   const [pedidosUsuario, setPedidosUsuario] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [devolucionMensaje, setDevolucionMensaje] = useState(''); // Estado para el mensaje de devolución
 
   const userId = parseInt(localStorage.getItem('userId'), 10);
   console.log("User ID en PedidosPage:", userId);
@@ -36,8 +37,7 @@ const PedidosPage = () => {
       const detalles = typeof pedido.detalles === 'string'
         ? JSON.parse(pedido.detalles)
         : pedido.detalles;
-  
-      // Consulta los detalles de los productos por ID
+
       const productDetails = await Promise.all(
         detalles.map(async (item) => {
           return new Promise((resolve, reject) => {
@@ -46,23 +46,31 @@ const PedidosPage = () => {
                 console.error(`Error al obtener el producto ${item.producto_id}:`, error);
                 reject(error);
               } else {
-                resolve({ ...item, ...result[0] }); // Asegura que tomamos el primer resultado
+                resolve({ ...item, ...result[0] });
               }
             });
           });
         })
       );
-  
-      // Guarda los productos en el estado del pedido
+
       setSelectedPedido({ ...pedido, detalles: productDetails });
       setModalVisible(true);
     } catch (error) {
       console.error("Error al obtener los detalles del pedido:", error);
     }
   };
-  
-  
-  
+
+  const handleDevolucion = (pedidoId) => {
+    Meteor.call('pedidos.marcarDevolucion', pedidoId, (error, result) => {
+      if (error) {
+        console.error('Error al marcar devolución:', error);
+      } else {
+        console.log('Pedido marcado para devolución:', result);
+        setDevolucionMensaje("Producto Cancelado, el cliente ha declarado devolución"); // Actualiza el mensaje
+        setTimeout(() => setDevolucionMensaje(''), 5000); // Oculta el mensaje después de 5 segundos
+      }
+    });
+  };
 
   const handleCloseModal = () => {
     setModalVisible(false);
@@ -73,6 +81,9 @@ const PedidosPage = () => {
       <Header cartCount={cartCount} />
       <main className="pedidos-container">
         <h1>Tus Pedidos</h1>
+        {devolucionMensaje && ( // Muestra el mensaje si existe
+          <div className="devolucion-mensaje">{devolucionMensaje}</div>
+        )}
         {pedidosUsuario.length > 0 ? (
           <ul className="pedido-list">
             {pedidosUsuario.map((pedido) => (
@@ -87,6 +98,13 @@ const PedidosPage = () => {
                     onClick={() => handleVerDetalles(pedido)}
                   >
                     Ver Detalles
+                  </button>
+
+                  <button
+                    className="ver-detalles-button"
+                    onClick={() => handleDevolucion(pedido.id_pedido)}
+                  >
+                    Devolución
                   </button>
                 </div>
               </li>
@@ -106,18 +124,20 @@ const PedidosPage = () => {
             <p>Fecha: {new Date(selectedPedido.fecha).toLocaleString()}</p>
             <h3>Productos:</h3>
             <ul>
-            {selectedPedido.detalles.map((producto, index) => (
-              <li key={index} className="cart-item">
-                <img src={producto.imagen_principal} alt={producto.nombre} className="cart-item-image"/>
-                <h4 className="cart-item-name">{producto.nombre}</h4>
-                <p>Cantidad: {producto.cantidad}</p>
-                <p className="cart-item-price">Precio: Q{producto.precio_unitario}</p>
-              </li>
-            ))}
-            </ul><center>
-            <button className="cerrar-modal-button" onClick={handleCloseModal}>
-              Cerrar
-            </button></center>
+              {selectedPedido.detalles.map((producto, index) => (
+                <li key={index} className="cart-item">
+                  <img src={producto.imagen_principal} alt={producto.nombre} className="cart-item-image"/>
+                  <h4 className="cart-item-name">{producto.nombre}</h4>
+                  <p>Cantidad: {producto.cantidad}</p>
+                  <p className="cart-item-price">Precio: Q{producto.precio_unitario}</p>
+                </li>
+              ))}
+            </ul>
+            <center>
+              <button className="cerrar-modal-button" onClick={handleCloseModal}>
+                Cerrar
+              </button>
+            </center>
           </div>
         </div>
       )}
