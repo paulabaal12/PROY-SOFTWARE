@@ -154,8 +154,6 @@ const LoginPage = ({ onLoginSuccess }) => {
           <button onClick={() => navigate('/register')} className="btn1 centered">Regístrate</button>
         </div>
         <center>
-        <h1>--------- ó ---------</h1>
-        {/* Botón de inicio de sesión con Google */}
         <button onClick={handleGoogleLogin} className="google-login-container">
           <div className="logo-google-login">
             <img src="images/google-logo.png" alt="Google Logo" />
