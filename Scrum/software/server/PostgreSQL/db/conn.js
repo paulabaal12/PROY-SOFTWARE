@@ -4,9 +4,9 @@ import { Meteor } from 'meteor/meteor';
 const pgConfig = Meteor.settings.postgres || {
   host: 'localhost',
   port: 5432,
-  database: 'soft',
-  user: 'postgres',
-  password: '1234'
+  database: 'data_base',
+  user: 'user',
+  password: 'password'
 };
 
 export const pool = new Pool(pgConfig);
