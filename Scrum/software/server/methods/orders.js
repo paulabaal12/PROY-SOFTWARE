@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor';
+import { Meteor } from 'meteor/meteor'; 
 import { check } from 'meteor/check';
 import { pool } from '../PostgreSQL/db/conn';
 
@@ -35,15 +35,19 @@ Meteor.methods({
 
   'pedidos.insert'(pedidoData) {
     console.log("Datos recibidos en el servidor:", pedidoData);
+
+    // Validación de los datos de entrada
     check(pedidoData, {
       usuario_id: Number,
       total: Number,
-      detalles: String
+      detalles: String,
+      opcion_envio: String // Verifica que opcion_envio sea de tipo String
     });
 
+    // Consulta para insertar en la tabla 'pedidos', incluyendo 'opcion_envio'
     pool.query(
-      'INSERT INTO pedidos (usuario_id, total, detalles) VALUES ($1, $2, $3)',
-      [pedidoData.usuario_id, pedidoData.total, pedidoData.detalles],
+      'INSERT INTO pedidos (usuario_id, total, detalles, opcion_envio) VALUES ($1, $2, $3, $4)',
+      [pedidoData.usuario_id, pedidoData.total, pedidoData.detalles, pedidoData.opcion_envio],
       (err) => {
         if (err) {
           console.error('Error al insertar pedido:', err);
@@ -85,8 +89,8 @@ Meteor.methods({
       });
     });
   },
+
   'pedidos.marcarDevolucion': async function (pedidoId) {
-    // Suponiendo que tienes una conexión con PostgreSQL configurada
     const query = 'UPDATE pedidos SET devolucion = true WHERE id_pedido = $1';
     const values = [pedidoId];
     
@@ -97,5 +101,4 @@ Meteor.methods({
       throw new Meteor.Error('update-failed', 'No se pudo actualizar el pedido.');
     }
   },
-  
 });

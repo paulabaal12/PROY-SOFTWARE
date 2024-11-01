@@ -10,11 +10,12 @@ const PaymentMethodPage = () => {
   const location = useLocation();
 
   // Desestructuramos el estado recibido desde ShoppingCartPage.
-  const { total, cartItems, userId, cartCount } = location.state || { 
+  const { total, cartItems, userId, cartCount, opcion_envio } = location.state || { 
     total: 0, 
     cartItems: [], 
     userId: null, 
-    cartCount: 0 
+    cartCount: 0,
+    opcion_envio: 'estándar' // Valor predeterminado en caso de que no se reciba
   };
 
   const finalUserId = userId || localStorage.getItem('userId');
@@ -33,7 +34,8 @@ const PaymentMethodPage = () => {
     console.log("User ID en PaymentMethodPage:", finalUserId);
     console.log("Cart Items en PaymentMethodPage:", cartItems);
     console.log("Total en PaymentMethodPage:", total);
-  }, [finalUserId, cartItems, total]);
+    console.log("Opción de Envío:", opcion_envio);
+  }, [finalUserId, cartItems, total, opcion_envio]);
 
   // Lógica de PayPal para la integración del botón.
   useEffect(() => {
@@ -121,10 +123,10 @@ const PaymentMethodPage = () => {
   // Envía los detalles del pedido al servidor.
   const handleSubmit = (event) => {
     event.preventDefault();
-
+  
     const parsedTotal = parseFloat(total) || 0;
     const parsedUserId = parseInt(finalUserId, 10);
-
+  
     const detalles = JSON.stringify(
       cartItems.map(item => ({
         producto_id: item.id,
@@ -132,15 +134,28 @@ const PaymentMethodPage = () => {
         precio_unitario: parseFloat(item.price) || 0,
       }))
     );
-
+  
+    // Convertir `opcion_envio` de numérico a texto
+    let envioTexto;
+    if (opcion_envio === 45) {
+      envioTexto = "estándar";
+    } else if (opcion_envio === 55) {
+      envioTexto = "urgente";
+    } else if (opcion_envio === 0) {
+      envioTexto = "pickup";
+    } else {
+      console.error("Error: opcion_envio es inválido", opcion_envio);
+      return; // Detener el envío si `opcion_envio` no es válido
+    }
+  
     const pedidoDetails = {
       usuario_id: parsedUserId,
       total: parsedTotal,
       detalles,
+      opcion_envio: envioTexto // Utilizar el valor en texto
     };
-
-    console.log("Enviando pedido:", pedidoDetails);
-
+  
+    // Llamar a Meteor para insertar el pedido en la base de datos
     Meteor.call('pedidos.insert', pedidoDetails, (error) => {
       if (error) {
         console.error('Error al insertar el pedido:', error);

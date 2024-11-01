@@ -20,6 +20,7 @@ const ShoppingCartPage = () => {
   const [descuento, setDescuento] = useState(0);
   const [mensajeCupon, setMensajeCupon] = useState('');
   const [productosConDescuento, setProductosConDescuento] = useState([]);
+  const [envio, setEnvio] = useState(45); // Estado para el costo de envío, por defecto "envío estándar"
 
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
@@ -38,7 +39,6 @@ const ShoppingCartPage = () => {
   };
 
   const convertPrice = (precio) => {
-    // Asegurarse de que `precio` sea un número válido
     const numericPrice = parseFloat(precio);
     if (isNaN(numericPrice)) {
       console.warn(`Precio inválido: ${precio}`);
@@ -94,7 +94,6 @@ const ShoppingCartPage = () => {
     });
   };
   
-  
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const discountTotal = cartItems.reduce((acc, item) => {
@@ -103,14 +102,11 @@ const ShoppingCartPage = () => {
     }
     return acc;
   }, 0);
-  
 
+  // Calcula el total final, restando el descuento total y sumando el costo de envío
+  const total = subtotal - discountTotal + envio;
 
-// Calcula el total final, restando el descuento total y sumando el costo de envío
-const envio = 45;
-const total = subtotal - discountTotal + envio;
-
-
+  // Al hacer checkout, incluir opcion_envio en los datos de navegación
   const handleCheckout = () => {
     const parsedTotal = parseFloat(total);
     navigate('/payment-method', {
@@ -121,6 +117,7 @@ const total = subtotal - discountTotal + envio;
         cartCount,
         descuento,
         productosConDescuento,
+        opcion_envio: envio // Asegúrate de que el tipo de envío se pase correctamente
       },
     });
   };
@@ -160,7 +157,48 @@ const total = subtotal - discountTotal + envio;
             <h2>Resumen de orden</h2>
             <p>Subtotal: {convertPrice(subtotal)}</p>
             <p>Descuento: {discountTotal > 0 ? `- ${convertPrice(discountTotal)} (${descuento}% aplicado)` : 'No hay descuento'}</p>
-            <p>Envío: {convertPrice(45)}</p>
+            
+            <div className="shipping-options">
+              <h3>Opciones de Envío</h3>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="envio"
+                    value="estandar"
+                    checked={envio === 45}
+                    onChange={() => setEnvio(45)}
+                  />
+                  Envío estándar (Q45)
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="envio"
+                    value="urgente"
+                    checked={envio === 55}
+                    onChange={() => setEnvio(55)}
+                  />
+                  Envío urgente (Q55)
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="envio"
+                    value="pickup"
+                    checked={envio === 0}
+                    onChange={() => setEnvio(0)}
+                  />
+                  Recoger en tienda (Q0)
+                </label>
+              </div>
+            </div>
+       
+            <p>Envío: {convertPrice(envio)}</p>
             <div className="coupon-section">
               <input 
                 type="text" 
