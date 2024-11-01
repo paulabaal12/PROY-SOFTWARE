@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Header from '../Header';
 import Footer from '../Footer';
-import StarRatingComponent from 'react-star-rating-component'; // Importamos la librería de estrellas
+import StarRatingComponent from 'react-star-rating-component';
 import '../../style.css';
 
 const ProductoDetalles = () => {
@@ -14,14 +14,14 @@ const ProductoDetalles = () => {
   const [notification, setNotification] = useState({ show: false, message: '' });
   const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const [cartCount, setCartCount] = useState(0);
-  const [favoriteProducts, setFavoriteProducts] = useState(
-    JSON.parse(localStorage.getItem('favoriteProducts')) || []
-  );
+  const [favoriteProducts, setFavoriteProducts] = useState(JSON.parse(localStorage.getItem('favoriteProducts')) || []);
   const [calificaciones, setCalificaciones] = useState([]);
   const [rating, setRating] = useState(0);
   const [comentario, setComentario] = useState('');
   const navigate = useNavigate();
   const [promedioCalificacion, setPromedioCalificacion] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -76,21 +76,34 @@ const ProductoDetalles = () => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
   };
 
+  const handleImageClick = () => {
+    setIsModalOpen(true); // Abrir el modal
+  };
+
+  const handleModalClick = () => {
+    setIsZoomed(!isZoomed); // Alternar zoom
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setIsZoomed(false);
+  };
+
   const handleCurrencyChange = (newCurrency) => {
     setCurrency(newCurrency); // Actualizamos la moneda cuando cambia
   };
 
   const convertPrice = (precio) => {
     let numericPrice = parseFloat(precio); // Asegúrate de convertir a número
-  
+
     if (isNaN(numericPrice)) {
       console.warn(`Precio inválido: ${precio}`);
       numericPrice = 0; // Asignar valor por defecto si no es válido
     }
-  
+
     const currency = localStorage.getItem('currency') || 'GT';
     let convertedPrice, symbol;
-  
+
     switch (currency) {
       case 'USD':
         convertedPrice = (numericPrice / 8).toFixed(2);
@@ -108,17 +121,16 @@ const ProductoDetalles = () => {
         convertedPrice = numericPrice.toFixed(2); // Quetzales por defecto
         symbol = 'Q';
     }
-  
+
     return `${symbol} ${convertedPrice}`;
   };
-  
 
   const handleFavoriteToggle = () => {
     const isFavorite = favoriteProducts.some(p => p.id === producto.id);
     const newFavorites = isFavorite
       ? favoriteProducts.filter(p => p.id !== producto.id)
       : [...favoriteProducts, producto];
-    
+
     setFavoriteProducts(newFavorites);
     localStorage.setItem('favoriteProducts', JSON.stringify(newFavorites));
     setNotification({ show: true, message: isFavorite ? 'Producto eliminado de favoritos' : 'Producto añadido a favoritos' });
@@ -165,8 +177,8 @@ const ProductoDetalles = () => {
 
   if (error) {
     return <div className="error-message">{error}</div>;
-  }  
-  
+  }
+
   const calcularPromedio = (calificaciones) => {
     if (calificaciones.length > 0) {
       const total = calificaciones.reduce((sum, cal) => sum + cal.calificacion, 0);
@@ -177,76 +189,160 @@ const ProductoDetalles = () => {
     }
   };
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="containerr">
-      <Header cartCount={cartCount}  onCurrencyChange={handleCurrencyChange} />
-      {notification.show && <div className="notification">{notification.message}</div>}
-      <button onClick={() => navigate(-1)} className="back-button">← Volver</button>
-
-      <div className="product-centered">
-        <div className="product-details-container">
-          <div className="image-container">
-            <img src={producto.imagen_principal} alt={producto.nombre} className="product-image" />
+      <Header cartCount={cartCount} onCurrencyChange={handleCurrencyChange} />
+      
+      <div className="product-page-container">
+        {notification.show && (
+          <div className="notification-toast">{notification.message}</div>
+        )}
+        
+        <button onClick={() => navigate(-1)} className="back-button-link">
+          ← Volver
+        </button>
+  
+        <div className="product-detail-layout">
+          <div className="product-image-container">
+            <img
+              src={producto?.imagen_principal}
+              alt={producto?.nombre}
+              className="product-main-image"
+              onClick={handleImageClick}
+            />
+            <span className="magnify-icon" onClick={handleImageClick}>
+              🔍
+            </span>
           </div>
-          <div className="details-container">
-            <h2 className="titulo-producto">{producto.nombre}</h2>
-            <center>
-            <h3>Promedio de Calificaciones: ⭐ {promedioCalificacion}/5</h3>
-            </center>
-            <p>Descripción: {producto.descripcion}</p>
-            <h3 className="titulo-precio">Precio: {convertPrice(producto.precio)}</h3>
-            <p>Categoría: {producto.categoria}</p>
-            <p>Estado: {producto.estado}</p>
-
-            <button className="button-agregar" onClick={handleAddToCart}>Agregar al carrito</button>
-            <button className="button-favorito" onClick={handleFavoriteToggle}>
-              {favoriteProducts.some(p => p.id === producto.id) ? 'Eliminar de favoritos' : 'Agregar a favoritos'}
-            </button>
+  
+          {/* Modal de imagen ampliada */}
+          {isModalOpen && (
+            <div className="modal" onClick={closeModal}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <span className="close" onClick={closeModal}>&times;</span>
+                <img
+                  src={producto?.imagen_principal}
+                  alt={producto?.nombre}
+                  className={`modal-image ${isZoomed ? 'zoomed' : ''}`}
+                  onClick={handleModalClick}
+                />
+              </div>
+            </div>
+          )}
+  
+          <div className="product-info-container">
+            <h2 className="product-title1">{producto.nombre}</h2>
+            <div className="product-rating">
+              <div className="rating-summary">
+                <h4>
+                Promedio de Calificaciones: ⭐ {promedioCalificacion}
+                  <span className="rating-total">/5</span>
+                </h4>
+              </div>
+            </div>
+  
+            <p className="product-description">{producto.descripcion}</p>
+            <h3 className="product-price1">{convertPrice(producto.precio)}</h3>
+            <span className="product-category">{producto.categoria}</span>
+            <p className="product-status">Estado: {producto.estado}</p>
+            <div className="product-actions">
+              <button className="add-to-cart-button" onClick={handleAddToCart}>
+                Añadir al carrito
+              </button>
+              <button
+                className="favorite-button"
+                onClick={handleFavoriteToggle}
+                aria-label={
+                  favoriteProducts.some(p => p.id === producto.id)
+                    ? 'Eliminar de favoritos'
+                    : 'Añadir a favoritos'
+                }
+              >
+                {favoriteProducts.some(p => p.id === producto.id) ? '❤️' : '🤍'}
+              </button>
+            </div>
           </div>
         </div>
+  
+        <div className="calificaciones-container">
+          <h3>⭐ Reseñas de Clientes</h3>
           
-        {/* Sección de Calificaciones y Comentarios */}
-        <div className="reviews-section">
+          {calificaciones.length === 0 ? (
+            <div className="no-reviews">
+              <p>No hay calificaciones aún. ¡Sé el primero en opinar!</p>
+            </div>
+          ) : (
+            <div className="reviews-grid">
+              {calificaciones.map((calificacion, index) => (
+                <div key={index} className="calificacion-item">
+                  <div className="user-meta">
+                    <span>👤 Usuario {calificacion.usuario_id}</span>
+                    <span>🕒 {formatDate(calificacion.fecha || new Date())}</span>
+                  </div>
+                  <div className="rating">
+                    <StarRatingComponent
+                      name={`rating-${index}`}
+                      starCount={5}
+                      value={calificacion.calificacion}
+                      editing={false}
+                      starColor="#FFD700"
+                      emptyStarColor="#e2e8f0"
+                      renderStarIcon={() => <span className="star-icon">★</span>}
+                    />
+                  </div>
+                  <p className="review-text">{calificacion.comentario}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        <div className="rating-section">
-            <h2>Deja tu calificación</h2>
+        <div className="submit-calificacion">
+          <h3>⭐ Deja tu calificación</h3>
+          
+          <div className="rating-input">
+            <label>Tu puntuación:</label>
             <StarRatingComponent
-              name="rating"
+              name="rate1" 
               starCount={5}
               value={rating}
               onStarClick={handleStarClick}
-            /><br></br>
+              starColor="#FFD700" 
+              emptyStarColor="#e2e8f0" 
+              editing={true}
+              renderStarIcon={() => <span className="star-icon">★</span>}
+            />
+          </div>
+          
+          <div className="review-input">
             <textarea
+              name="review-input"
+              placeholder="Comparte tu experiencia con este producto..."
               value={comentario}
               onChange={(e) => setComentario(e.target.value)}
-              placeholder="Deja un comentario..."
-            /><br></br>
-            <button onClick={handleSubmitCalificacion}>Enviar Comentario</button>
+            />
           </div>
-          <hr />
-
-
-          <h1>Calificaciones y Comentarios</h1>
-          {calificaciones.length > 0 ? (
-            calificaciones.map((cal, index) => (
-              <div key={index} className="calificacion">
-                <p><strong>Usuario: </strong> {cal.usuario_nombre}</p>
-                <p><strong>⭐ {cal.calificacion}/5</strong></p>
-                <p>{cal.comentario}</p>
-              </div>
-            ))
-          ) : (
-            <p>No hay calificaciones aún.</p>
-          )}
-
-
           
+          <button
+            onClick={handleSubmitCalificacion}
+            className="submit-review-button"
+          >
+            Enviar Reseña
+          </button>
         </div>
       </div>
-
+      
       <Footer />
     </div>
   );
-};
+}
 
 export default ProductoDetalles;
