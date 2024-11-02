@@ -1,58 +1,58 @@
 // src/screens/MapScreen.js
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, StatusBar } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
+
+const { width, height } = Dimensions.get('window');
 
 const MapScreen = () => {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+  // Función para abrir el Drawer Navigator
+  const openDrawer = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+  // Función para regresar a la pantalla anterior
+  const goBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
-      {location ? (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            title="You are here"
-            description="This is your current location"
-          />
-        </MapView>
-      ) : (
-        <Text style={styles.text}>{text}</Text>
-      )}
+      <StatusBar barStyle="dark-content" />
+      
+      {/* Header con Menú de Hamburguesa y Botón de Regreso */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={openDrawer} style={styles.menuButton}>
+          <MaterialIcons name="menu" size={28} color="#1e90ff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Map</Text>
+        <TouchableOpacity onPress={goBack} style={styles.backButton}>
+          <MaterialIcons name="arrow-back" size={28} color="#1e90ff" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Mapa */}
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.78825, // Coordenadas de ejemplo
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        {/* Ejemplo de un marcador */}
+        <Marker
+          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+          title={"Ubicación de Ejemplo"}
+          description={"Descripción de la ubicación"}
+        />
+      </MapView>
     </View>
   );
 };
@@ -60,15 +60,32 @@ const MapScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: StatusBar.currentHeight || 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    zIndex: 1,
+  },
+  menuButton: {
+    padding: 5,
+  },
+  backButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
   },
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-  text: {
-    fontSize: 18,
+    width: width,
+    height: height - (StatusBar.currentHeight || 20) - 60, // Ajusta según el height del header
   },
 });
 
