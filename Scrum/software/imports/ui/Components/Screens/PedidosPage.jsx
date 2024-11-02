@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
 import '../../style.css';
+import { Filter, Calendar, DollarSign, Search } from 'lucide-react';
 
 const PedidosPage = () => {
   const [cartCount, setCartCount] = useState(0);
@@ -12,6 +13,74 @@ const PedidosPage = () => {
 
   const userId = parseInt(localStorage.getItem('userId'), 10);
   console.log("User ID en PedidosPage:", userId);
+
+  const handleFiltroChange = (e) => {
+    const { name, value } = e.target;
+    setFiltros(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const aplicarFiltros = () => {
+    let resultados = [...pedidosUsuario];
+
+    if (filtros.fechaInicio) {
+      resultados = resultados.filter(pedido => 
+        new Date(pedido.fecha) >= new Date(filtros.fechaInicio)
+      );
+    }
+
+    if (filtros.fechaFin) {
+      resultados = resultados.filter(pedido => 
+        new Date(pedido.fecha) <= new Date(filtros.fechaFin)
+      );
+    }
+
+    if (filtros.precioMin) {
+      resultados = resultados.filter(pedido => 
+        Number(pedido.total) >= Number(filtros.precioMin)
+      );
+    }
+
+    if (filtros.precioMax) {
+      resultados = resultados.filter(pedido => 
+        Number(pedido.total) <= Number(filtros.precioMax)
+      );
+    }
+
+    if (filtros.estado) {
+      resultados = resultados.filter(pedido => 
+        pedido.estado.toLowerCase() === filtros.estado.toLowerCase()
+      );
+    }
+
+    setPedidosFiltrados(resultados);
+  };
+
+  const [filtros, setFiltros] = useState({
+    fechaInicio: '',
+    fechaFin: '',
+    precioMin: '',
+    precioMax: '',
+    estado: ''
+  });
+  const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
+
+  const limpiarFiltros = () => {
+    setFiltros({
+      fechaInicio: '',
+      fechaFin: '',
+      precioMin: '',
+      precioMax: '',
+      estado: ''
+    });
+    setPedidosFiltrados(pedidosUsuario);
+  };
+
+  useEffect(() => {
+    setPedidosFiltrados(pedidosUsuario);
+  }, [pedidosUsuario]);
 
   useEffect(() => {
     if (userId) {
@@ -75,76 +144,171 @@ const PedidosPage = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
   };
-
+ 
+  
   return (
-    <div className="container3">
+    <div className="pagina-pedidos">
       <Header cartCount={cartCount} />
-      <main className="pedidos-container">
+      <main className="contenedor-principal">
         <h1>Tus Pedidos</h1>
-        {devolucionMensaje && ( // Muestra el mensaje si existe
-          <div className="devolucion-mensaje">{devolucionMensaje}</div>
+        
+        {devolucionMensaje && (
+          <div className="mensaje-devolucion">{devolucionMensaje}</div>
         )}
-        {pedidosUsuario.length > 0 ? (
-          <ul className="pedido-list">
-            {pedidosUsuario.map((pedido) => (
-              <li key={pedido.id_pedido} className="pedido-card">
-                <div className="pedido-header">
-                  <h4>Pedido #{pedido.id_pedido}</h4>
-                  <p>Estado: {pedido.estado}</p>
-                  <p>Total: Q{Number(pedido.total).toFixed(2)}</p>
-                  <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
-                  <button
-                    className="ver-detalles-button"
-                    onClick={() => handleVerDetalles(pedido)}
-                  >
-                    Ver Detalles
-                  </button>
 
-                  <button
-                    className="ver-detalles-button"
-                    onClick={() => handleDevolucion(pedido.id_pedido)}
-                  >
-                    Devolución
-                  </button>
+        <div className="filtros-container">
+          <h2 className="filtros-titulo">
+            <Filter size={20} />
+            Filtrar Pedidos
+          </h2>
+          <div className="filtros-grid">
+            <div className="filtro-grupo">
+              <label className="filtro-label">
+                <Calendar size={16} />
+                Fecha Inicio
+              </label>
+              <input
+                type="date"
+                name="fechaInicio"
+                value={filtros.fechaInicio}
+                onChange={handleFiltroChange}
+                className="filtro-input"
+              />
+            </div>
+            <div className="filtro-grupo">
+              <label className="filtro-label">
+                <Calendar size={16} />
+                Fecha Fin
+              </label>
+              <input
+                type="date"
+                name="fechaFin"
+                value={filtros.fechaFin}
+                onChange={handleFiltroChange}
+                className="filtro-input"
+              />
+            </div>
+            <div className="filtro-grupo">
+              <label className="filtro-label">
+                <DollarSign size={16} />
+                Precio Mínimo
+              </label>
+              <input
+                type="number"
+                name="precioMin"
+                value={filtros.precioMin}
+                onChange={handleFiltroChange}
+                className="filtro-input"
+                placeholder="Q0.00"
+              />
+            </div>
+            <div className="filtro-grupo">
+              <label className="filtro-label">
+                <DollarSign size={16} />
+                Precio Máximo
+              </label>
+              <input
+                type="number"
+                name="precioMax"
+                value={filtros.precioMax}
+                onChange={handleFiltroChange}
+                className="filtro-input"
+                placeholder="Q999.99"
+              />
+            </div>
+            <div className="filtro-grupo">
+              <label className="filtro-label">Estado</label>
+              <select
+                name="estado"
+                value={filtros.estado}
+                onChange={handleFiltroChange}
+                className="filtro-select"
+              >
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="enviado">Enviado</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
+          <div className="botones-filtro">
+            <button className="boton-limpiar-filtro" onClick={limpiarFiltros}>
+              Limpiar Filtros
+            </button>
+            <button className="boton-aplicar-filtro" onClick={aplicarFiltros}>
+              Aplicar Filtros
+            </button>
+          </div>
+        </div>
+
+        {pedidosFiltrados.length > 0 ? (
+          <ul className="lista-pedidos">
+            {pedidosFiltrados.map((pedido) => (
+              <li key={pedido.id_pedido} className="tarjeta-pedido">
+                <div className="encabezado-pedido">
+                  <h4>
+                    <span className="numero-pedido">Pedido #{pedido.id_pedido}</span>
+                    <span className="fecha-pedido">
+                      {new Date(pedido.fecha).toLocaleString()}
+                    </span>
+                  </h4>
+                  <p className="estado-pedido">{pedido.estado}</p>
+                  <p>Total: Q{Number(pedido.total).toFixed(2)}</p>
+                  
+                  <div className="detalles-pedido">
+                    <button
+                      className="boton-ver-detalles"
+                      onClick={() => handleVerDetalles(pedido)}
+                    >
+                      Ver Detalles
+                    </button>
+                    <button
+                      className="boton-devolucion"
+                      onClick={() => handleDevolucion(pedido.id_pedido)}
+                    >
+                      Devolución
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No tienes pedidos aún.</p>
+          <p>No se encontraron pedidos con los filtros seleccionados.</p>
         )}
       </main>
-
+  
       {modalVisible && selectedPedido && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="fondo-modal" onClick={handleCloseModal}>
+          <div className="contenido-modal" onClick={(e) => e.stopPropagation()}>
             <h2>Detalles del Pedido #{selectedPedido.id_pedido}</h2>
-            <p>Estado: {selectedPedido.estado}</p>
+            <p className="estado-pedido">{selectedPedido.estado}</p>
             <p>Total: Q{Number(selectedPedido.total).toFixed(2)}</p>
             <p>Fecha: {new Date(selectedPedido.fecha).toLocaleString()}</p>
             <h3>Productos:</h3>
             <ul>
               {selectedPedido.detalles.map((producto, index) => (
-                <li key={index} className="cart-item">
-                  <img src={producto.imagen_principal} alt={producto.nombre} className="cart-item-image"/>
-                  <h4 className="cart-item-name">{producto.nombre}</h4>
+                <li key={index} className="producto-pedido">
+                  <img src={producto.imagen_principal} alt={producto.nombre} className="imagen-producto"/>
+                  <h4 className="nombre-producto">{producto.nombre}</h4>
                   <p>Cantidad: {producto.cantidad}</p>
-                  <p className="cart-item-price">Precio: Q{producto.precio_unitario}</p>
+                  <p className="precio-producto">Precio: Q{producto.precio_unitario}</p>
                 </li>
               ))}
             </ul>
             <center>
-              <button className="cerrar-modal-button" onClick={handleCloseModal}>
+              <button className="boton-cerrar-modal" onClick={handleCloseModal}>
                 Cerrar
               </button>
             </center>
           </div>
         </div>
       )}
-
+  
       <Footer />
     </div>
   );
-};
+}
 
 export default PedidosPage;

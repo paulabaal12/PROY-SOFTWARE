@@ -1,5 +1,5 @@
 -- Sección 1: Para crear nuevas tablas, no agregar ningun tipo de constraint
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE usuarios (
     id SERIAL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     two_factor_expires_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS productos (
+CREATE TABLE productos (
     id SERIAL,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -23,15 +23,16 @@ CREATE TABLE IF NOT EXISTS productos (
     imagen_principal VARCHAR(255),
     imagenes_adicionales TEXT[],
     peso DECIMAL(10,2),
-    dimensiones VARCHAR(50)
+    dimensiones VARCHAR(50),
+    usuario_id INT
 );
 
-CREATE TABLE IF NOT EXISTS vendedores (
+CREATE TABLE vendedores (
     vendedor_id SERIAL,
     nombre_vendedor VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS ventas (
+CREATE TABLE ventas (
     id_venta SERIAL,
     vendedor_id INT,
     monto DECIMAL(10, 2) NOT NULL,
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS ventas (
     estado VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS pedidos (
+CREATE TABLE pedidos (
     id_pedido SERIAL,
     usuario_id INT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -54,17 +55,16 @@ CREATE TABLE IF NOT EXISTS pedidos (
     estado_envio VARCHAR DEFAULT 'En proceso...',
     devolucion BOOLEAN DEFAULT false,
     opcion_envio VARCHAR(50)
-
 );
 
-CREATE TABLE IF NOT EXISTS direcciones (
+CREATE TABLE direcciones (
     id SERIAL,
     usuario_id INT,
     direccion_inicio TEXT,
     direccion_entrega TEXT
 );
 
-CREATE TABLE IF NOT EXISTS envios (
+CREATE TABLE envios (
     id_envio SERIAL,
     pedido_id INT NOT NULL,
     proveedor_envio VARCHAR(64) NOT NULL,
@@ -73,59 +73,63 @@ CREATE TABLE IF NOT EXISTS envios (
     estado_envio VARCHAR(50) DEFAULT 'En tránsito'
 );
 
-CREATE TABLE IF NOT EXISTS metodos_pago (
+CREATE TABLE metodos_pago (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     tipo_metodo VARCHAR(50) NOT NULL, -- Ej: PayPal, Transferencia, Pago contra entrega
     detalles JSONB -- Detalles del método (ej. datos bancarios, cuenta PayPal)
 );
 
-
-
-
-CREATE TABLE IF NOT EXISTS calificaciones (
+CREATE TABLE calificaciones (
     id SERIAL PRIMARY KEY,
     producto_id INT NOT NULL,
     usuario_id INT NOT NULL,
     calificacion INT CHECK (calificacion BETWEEN 1 AND 5),
     comentario TEXT,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (producto_id) REFERENCES productos (id) ON DELETE CASCADE,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 CREATE TABLE cupones (
     id SERIAL PRIMARY KEY,
-    codigo VARCHAR(50) NOT NULL UNIQUE,     
-    descuento DECIMAL(5, 2) NOT NULL,       
-    producto_id INT NOT NULL,               
-    fecha_expiracion DATE NOT NULL,         
-    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+    codigo VARCHAR(50) NOT NULL UNIQUE,
+    descuento DECIMAL(5, 2) NOT NULL,
+    producto_id INT NOT NULL,
+    fecha_expiracion DATE NOT NULL
 );
-
-
 
 -- Sección 2: Constraints, aquí pueden agregar toda la estructura y relación entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
-
-ALTER TABLE productos ADD COLUMN usuario_id INT;
 ALTER TABLE productos ADD PRIMARY KEY (id);
+ALTER TABLE vendedores ADD PRIMARY KEY (vendedor_id);
+ALTER TABLE ventas ADD PRIMARY KEY (id_venta);
+ALTER TABLE pedidos ADD PRIMARY KEY (id_pedido);
+ALTER TABLE direcciones ADD PRIMARY KEY (id);
+ALTER TABLE envios ADD PRIMARY KEY (id_envio);
+
 ALTER TABLE productos ADD CONSTRAINT fk_usuario
     FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
 
-ALTER TABLE vendedores ADD PRIMARY KEY (vendedor_id);
-ALTER TABLE envios ADD PRIMARY KEY (id_envio);
+ALTER TABLE ventas ADD CONSTRAINT fk_vendedor
+    FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id);
 
-ALTER TABLE ventas ADD PRIMARY KEY (id_venta);
-ALTER TABLE ventas ADD FOREIGN KEY (vendedor_id) REFERENCES vendedores (vendedor_id);
+ALTER TABLE pedidos ADD CONSTRAINT fk_usuario_pedido
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
 
-ALTER TABLE direcciones ADD PRIMARY KEY (id);
-ALTER TABLE pedidos ADD PRIMARY KEY (id_pedido);
-ALTER TABLE pedidos ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
-ALTER TABLE pedidos ADD FOREIGN KEY (direccion_id) REFERENCES direcciones (id);
+ALTER TABLE pedidos ADD CONSTRAINT fk_direccion_pedido
+    FOREIGN KEY (direccion_id) REFERENCES direcciones (id);
 
-ALTER TABLE direcciones ADD FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
-ALTER TABLE envios ADD FOREIGN KEY (pedido_id) REFERENCES pedidos (id_pedido);
+ALTER TABLE direcciones ADD CONSTRAINT fk_usuario_direccion
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id);
+
+ALTER TABLE envios ADD CONSTRAINT fk_pedido_envio
+    FOREIGN KEY (pedido_id) REFERENCES pedidos (id_pedido);
+
+ALTER TABLE calificaciones ADD CONSTRAINT fk_producto_calificacion
+    FOREIGN KEY (producto_id) REFERENCES productos (id) ON DELETE CASCADE;
+
+ALTER TABLE calificaciones ADD CONSTRAINT fk_usuario_calificacion
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+
+ALTER TABLE cupones ADD CONSTRAINT fk_producto_cupon
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE;
 
