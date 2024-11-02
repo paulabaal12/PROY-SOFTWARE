@@ -1,5 +1,5 @@
 -- Sección 1: Para crear nuevas tablas, no agregar ningun tipo de constraint
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE usuarios (
     id SERIAL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     two_factor_expires_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS productos (
+CREATE TABLE productos (
     id SERIAL,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -27,12 +27,12 @@ CREATE TABLE IF NOT EXISTS productos (
     usuario_id INT
 );
 
-CREATE TABLE IF NOT EXISTS vendedores (
+CREATE TABLE vendedores (
     vendedor_id SERIAL,
     nombre_vendedor VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS ventas (
+CREATE TABLE ventas (
     id_venta SERIAL,
     vendedor_id INT,
     monto DECIMAL(10, 2) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS ventas (
     estado VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS pedidos (
+CREATE TABLE pedidos (
     id_pedido SERIAL,
     usuario_id INT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -57,14 +57,14 @@ CREATE TABLE IF NOT EXISTS pedidos (
     opcion_envio VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS direcciones (
+CREATE TABLE direcciones (
     id SERIAL,
     usuario_id INT,
     direccion_inicio TEXT,
     direccion_entrega TEXT
 );
 
-CREATE TABLE IF NOT EXISTS envios (
+CREATE TABLE envios (
     id_envio SERIAL,
     pedido_id INT NOT NULL,
     proveedor_envio VARCHAR(64) NOT NULL,
@@ -73,14 +73,14 @@ CREATE TABLE IF NOT EXISTS envios (
     estado_envio VARCHAR(50) DEFAULT 'En tránsito'
 );
 
-CREATE TABLE IF NOT EXISTS metodos_pago (
+CREATE TABLE metodos_pago (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
     tipo_metodo VARCHAR(50) NOT NULL, -- Ej: PayPal, Transferencia, Pago contra entrega
     detalles JSONB -- Detalles del método (ej. datos bancarios, cuenta PayPal)
 );
 
-CREATE TABLE IF NOT EXISTS calificaciones (
+CREATE TABLE calificaciones (
     id SERIAL PRIMARY KEY,
     producto_id INT NOT NULL,
     usuario_id INT NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS calificaciones (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS cupones (
+CREATE TABLE cupones (
     id SERIAL PRIMARY KEY,
     codigo VARCHAR(50) NOT NULL UNIQUE,
     descuento DECIMAL(5, 2) NOT NULL,
