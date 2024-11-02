@@ -2483,7 +2483,8 @@ p {
 .product-catalog__button {
   background-color: #3498db;
   color: white;
-  padding: 8px 12px;
+  padding: -6px;
+  width: 90%;
   border-radius: 4px;
   text-decoration: none;
   transition: background-color 0.3s ease;
@@ -2491,7 +2492,8 @@ p {
 }
 
 .product-catalog__button:hover {
-  background-color: #2980b9;
+  background-color: #002c49;
+  color: white;
 }
 
 .product-catalog__loading {
