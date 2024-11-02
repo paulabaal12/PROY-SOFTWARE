@@ -16,10 +16,10 @@ const Header = ({ cartCount, onCurrencyChange }) => {
 
   // Cargar el nombre del usuario desde PostgreSQL
   useEffect(() => {
-    const userId = Meteor.userId(); // Obtener el ID del usuario autenticado
+    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario del localStorage
     if (userId) {
       // Llamar al método de Meteor para obtener el nombre desde PostgreSQL
-      Meteor.call('usuarios.getNombre', userId, (error, result) => {
+      Meteor.call('usuarios.getNombre', parseInt(userId), (error, result) => {
         if (error) {
           console.error('Error al obtener el nombre del usuario:', error);
         } else if (result) {
