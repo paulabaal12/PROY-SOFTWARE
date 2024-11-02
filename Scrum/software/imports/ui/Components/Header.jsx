@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Meteor } from 'meteor/meteor'; // Importamos Meteor
+import { Meteor } from 'meteor/meteor';
 import DropdownCart from './Screens/DropdownCart';
 import '../style.css';
 import '../variables.css';
 
 const Header = ({ cartCount, onCurrencyChange }) => {
-  const [userName, setUserName] = useState('Usuario'); // Estado para el nombre del usuario
+  const [userName, setUserName] = useState('Usuario'); // Nombre del usuario por defecto
   const [showDropdown, setShowDropdown] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,11 +14,12 @@ const Header = ({ cartCount, onCurrencyChange }) => {
   const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'GTQ');
   const navigate = useNavigate();
 
+  // Cargar el nombre del usuario desde PostgreSQL
   useEffect(() => {
-    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario del localStorage
+    const userId = Meteor.userId(); // Obtener el ID del usuario autenticado
     if (userId) {
-      // Realizar la llamada a la base de datos para obtener el nombre
-      Meteor.call('usuarios.getNombre', parseInt(userId), (error, result) => {
+      // Llamar al método de Meteor para obtener el nombre desde PostgreSQL
+      Meteor.call('usuarios.getNombre', userId, (error, result) => {
         if (error) {
           console.error('Error al obtener el nombre del usuario:', error);
         } else if (result) {
@@ -40,31 +41,14 @@ const Header = ({ cartCount, onCurrencyChange }) => {
     }
   }, [currency, onCurrencyChange]);
 
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
-  };
-
-  const closeDropdown = () => {
-    setShowDropdown(false);
-  };
-
-  const handleCurrencyChange = (e) => {
-    setCurrency(e.target.value);
-  };
-
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const closeDropdown = () => setShowDropdown(false);
+  const handleCurrencyChange = (e) => setCurrency(e.target.value);
+  const toggleMenu = () => setShowMenu(!showMenu);
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
+    if (searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
   };
 
   return (
@@ -125,3 +109,4 @@ const Header = ({ cartCount, onCurrencyChange }) => {
 };
 
 export default Header;
+
