@@ -202,8 +202,6 @@ const RegisterPage = () => {
           <button onClick={() => navigate('/login')} className="btn1 centered">Iniciar sesión</button>
         </div>
           <center>
-          <h1>--------- ó ---------</h1>
-          {/* Botón de registro con Google */}
           <button onClick={handleGoogleRegister} className="google-login-container">
             <div className="logo-google-login">
               <img src="images/google-logo.png" alt="Google Logo" />
