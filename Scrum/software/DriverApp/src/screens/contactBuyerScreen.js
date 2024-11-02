@@ -1,9 +1,37 @@
+// src/screens/ContactBuyerScreen.js
+
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 const ContactBuyerScreen = ({ route }) => {
   const { buyerName, buyerPhone, buyerEmail } = route.params;
+
+  const handleCall = () => {
+    const phoneNumber = `tel:${buyerPhone}`;
+    Linking.canOpenURL(phoneNumber)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(phoneNumber);
+        } else {
+          Alert.alert('Error', 'No se pudo iniciar la llamada.');
+        }
+      })
+      .catch((err) => console.error('Error al iniciar llamada:', err));
+  };
+
+  const handleEmail = () => {
+    const emailUrl = `mailto:${buyerEmail}`;
+    Linking.canOpenURL(emailUrl)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(emailUrl);
+        } else {
+          Alert.alert('Error', 'No se pudo enviar el correo electrónico.');
+        }
+      })
+      .catch((err) => console.error('Error al enviar correo:', err));
+  };
 
   return (
     <View style={styles.container}>
@@ -19,17 +47,11 @@ const ContactBuyerScreen = ({ route }) => {
         <Text style={styles.contactText}>Email: {buyerEmail}</Text>
       </View>
 
-      <TouchableOpacity 
-        style={styles.contactButton} 
-        onPress={() => console.log('Initiate Call')}
-      >
+      <TouchableOpacity style={styles.contactButton} onPress={handleCall}>
         <Text style={styles.buttonText}>Call Buyer</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.contactButton} 
-        onPress={() => console.log('Send Email')}
-      >
+      <TouchableOpacity style={styles.contactButton} onPress={handleEmail}>
         <Text style={styles.buttonText}>Email Buyer</Text>
       </TouchableOpacity>
     </View>
@@ -37,15 +59,17 @@ const ContactBuyerScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  // ... define tus estilos aquí
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
   contactInfo: {
     flexDirection: 'row',
@@ -53,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   contactText: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 10,
   },
   contactButton: {
