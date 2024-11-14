@@ -27,7 +27,7 @@ const OrderHistoryScreen = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1e90ff" />
+        <ActivityIndicator color="#1e90ff" />
         <Text>Loading Order History...</Text>
       </View>
     );

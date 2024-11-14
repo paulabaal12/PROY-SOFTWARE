@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { FontAwesome } from '@expo/vector-icons';  // Correct import
 
 const OrderDetailsScreen = ({ navigation, route }) => {
   const { orderId, customer, location, orderDetails } = route.params;
@@ -27,7 +26,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1e90ff" />
+        <ActivityIndicator color="#1e90ff" />
         <Text>Loading your location...</Text>
       </View>
     );

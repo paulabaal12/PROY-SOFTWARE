@@ -18,7 +18,7 @@ const DeliveryScreen = ({ pickupLocation, deliveryLocation }) => {
   if (loading || !pickupLocation || !deliveryLocation) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator color="#0000ff" />
       </View>
     );
   }

@@ -24,7 +24,7 @@ const LocationLoadingScreen = ({ navigation, route }) => {
       {errorMsg ? (
         <Text style={styles.text}>{errorMsg}</Text> // Mostrar mensaje de error si existe
       ) : (
-        <ActivityIndicator size="large" color="#0000ff" /> // Mostrar indicador de carga mientras se obtiene la ubicación
+        <ActivityIndicator color="#0000ff" /> // Mostrar indicador de carga mientras se obtiene la ubicación
       )}
     </View>
   );

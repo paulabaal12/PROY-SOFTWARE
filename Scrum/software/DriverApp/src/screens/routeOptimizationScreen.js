@@ -58,7 +58,7 @@ const RouteOptimizationScreen = ({ route }) => {
   if (loading || !currentLocation || !pickupLocation || !orderDetails) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator color="#0000ff" />
         <Text style={styles.loadingText}>Cargando detalles...</Text>
       </View>
     );

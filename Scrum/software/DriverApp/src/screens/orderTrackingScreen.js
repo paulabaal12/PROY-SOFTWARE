@@ -28,7 +28,7 @@ const OrderTrackingScreen = ({ navigation, route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1e90ff" />
+        <ActivityIndicator color="#1e90ff" />
         <Text>Loading your location...</Text>
       </View>
     );
