@@ -6,6 +6,8 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const { width, height } = Dimensions.get('window');
+const BOTTOM_BAR_HEIGHT = 75;
+const HEADER_HEIGHT = 100;
 
 const MapScreen = () => {
   const navigation = useNavigation();
@@ -50,7 +52,6 @@ const MapScreen = () => {
     }
   };
 
-  // Función para buscar lugares
   const searchPlaces = async (query) => {
     if (query.length < 2) {
       setSearchResults([]);
@@ -67,7 +68,6 @@ const MapScreen = () => {
     }
   };
 
-  // Función para seleccionar un lugar
   const selectPlace = (place) => {
     if (!origin) {
       setOrigin(place.location);
@@ -82,7 +82,6 @@ const MapScreen = () => {
 
   const calculateRoute = async (start, end) => {
     try {
-
       setDistance('5.2 km');
       setDuration('15 min');
       mapRef.current?.fitToCoordinates([start, end], {
@@ -152,7 +151,7 @@ const MapScreen = () => {
 
       <MapView
         ref={mapRef}
-        style={styles.map}
+        style={[styles.map, { height: height - HEADER_HEIGHT - BOTTOM_BAR_HEIGHT - (StatusBar.currentHeight || 0) }]}
         initialRegion={{
           latitude: 37.78825,
           longitude: -122.4324,
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 60, 
+    paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: '#4A90E2',
@@ -268,7 +267,7 @@ const styles = StyleSheet.create({
   },
   searchResults: {
     position: 'absolute',
-    top: 170, 
+    top: 170,
     left: 20,
     right: 20,
     backgroundColor: '#fff',
@@ -305,7 +304,32 @@ const styles = StyleSheet.create({
   },
   map: {
     width: width,
-    height: height - (StatusBar.currentHeight || 20) - 60, // Ajusta según el height del header
+  },
+  bottomNavBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    height: BOTTOM_BAR_HEIGHT,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navBarItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navText: {
+    fontSize: 12,
+    marginTop: 4,
+    color: '#666',
+  },
+  activeNavText: {
+    color: '#4A90E2',
   },
 });
 
