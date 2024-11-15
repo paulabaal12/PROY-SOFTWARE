@@ -1,104 +1,125 @@
-// src/screens/SupportScreen.js
-
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, ScrollView, StatusBar } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const SupportScreen = () => {
   const navigation = useNavigation();
-
-  // Estados para el formulario de contacto
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [expandedFaq, setExpandedFaq] = useState(null);
 
-  // Función para regresar a la pantalla anterior
-  const goBack = () => {
-    navigation.goBack();
-  };
+  const goBack = () => navigation.goBack();
 
-  // Función para manejar el envío del formulario
   const handleSubmit = () => {
     if (!subject || !message) {
-      Alert.alert('Error', 'Por favor, completa todos los campos.');
+      Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
-
-    // Aquí se llamaría a una función del backend para enviar el mensaje
-    // Por ahora, simplemente mostramos una alerta de éxito
-    Alert.alert('Éxito', 'Tu mensaje ha sido enviado al soporte.');
-
-    // Limpiar los campos
+    Alert.alert('Éxito', 'Tu mensaje ha sido enviado al soporte');
     setSubject('');
     setMessage('');
   };
 
-  // Preguntas Frecuentes de ejemplo
   const faqs = [
     {
       question: '¿Cómo puedo rastrear mi pedido?',
-      answer: 'Puedes rastrear tu pedido en la sección de "Track Orders" dentro de la aplicación.',
+      answer: 'Puedes rastrear tu pedido en la sección "Seguimiento de Pedidos" dentro de la aplicación. Las actualizaciones en tiempo real y la información detallada del estado están disponibles 24/7.',
     },
     {
       question: '¿Cómo cambio mi contraseña?',
-      answer: 'Ve a "Account Settings" y selecciona "Change Password" para actualizar tu contraseña.',
+      answer: 'Ve a "Configuración de Cuenta", selecciona "Cambiar Contraseña" y sigue el proceso seguro de actualización. Asegúrate de elegir una contraseña segura.',
     },
     {
-      question: '¿Qué hacer si mi pedido está retrasado?',
-      answer: 'Por favor, contacta al soporte a través de esta pantalla para asistencia inmediata.',
+      question: '¿Qué debo hacer si mi pedido está retrasado?',
+      answer: 'Si tu pedido está retrasado, puedes verificar el estado en la sección de seguimiento. Si hay algún problema, nuestro equipo de soporte está aquí para ayudarte.',
     },
-    // Agrega más preguntas según sea necesario
+    {
+      question: '¿Cómo solicito un reembolso?',
+      answer: 'Para solicitar un reembolso, ve a tu historial de pedidos, selecciona el pedido en cuestión y haz clic en "Solicitar Reembolso". Nuestro equipo lo procesará en 2-3 días hábiles.',
+    },
   ];
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" backgroundColor="#1e90ff" />
       
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={goBack} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={28} color="#1e90ff" />
+          <MaterialIcons name="arrow-back" size={28} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Support</Text>
-        <View style={{ width: 40 }} /> {/* Espaciador para centrar el título */}
+        <Text style={styles.headerTitle}>Centro de Ayuda</Text>
+        <View style={styles.headerSpacer} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Sección de Preguntas Frecuentes */}
+      <ScrollView 
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.faqContainer}>
-          <Text style={styles.sectionTitle}>FAQs</Text>
+          <View style={styles.sectionTitleContainer}>
+            <MaterialIcons name="question-answer" size={24} color="#1e90ff" />
+            <Text style={styles.sectionTitle}>Preguntas Frecuentes</Text>
+          </View>
+          
           {faqs.map((faq, index) => (
-            <View key={index} style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>{faq.question}</Text>
-              <Text style={styles.faqAnswer}>{faq.answer}</Text>
-            </View>
+            <TouchableOpacity
+              key={index}
+              style={styles.faqItem}
+              onPress={() => setExpandedFaq(expandedFaq === index ? null : index)}
+            >
+              <View style={styles.faqHeader}>
+                <Text style={styles.faqQuestion}>{faq.question}</Text>
+                <Ionicons
+                  name={expandedFaq === index ? 'chevron-up' : 'chevron-down'}
+                  size={24}
+                  color="#1e90ff"
+                />
+              </View>
+              {expandedFaq === index && (
+                <Text style={styles.faqAnswer}>{faq.answer}</Text>
+              )}
+            </TouchableOpacity>
           ))}
         </View>
 
-        {/* Sección de Contacto */}
         <View style={styles.contactContainer}>
-          <Text style={styles.sectionTitle}>Contact Support</Text>
+          <View style={styles.sectionTitleContainer}>
+            <MaterialIcons name="mail" size={24} color="#1e90ff" />
+            <Text style={styles.sectionTitle}>Contactar Soporte</Text>
+          </View>
 
-          <Text style={styles.label}>Subject</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter subject"
-            value={subject}
-            onChangeText={setSubject}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Asunto</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="¿En qué podemos ayudarte?"
+              placeholderTextColor="#999"
+              value={subject}
+              onChangeText={setSubject}
+            />
+          </View>
 
-          <Text style={styles.label}>Message</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Enter your message"
-            value={message}
-            onChangeText={setMessage}
-            multiline
-            numberOfLines={4}
-          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Mensaje</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Describe tu problema en detalle"
+              placeholderTextColor="#999"
+              value={message}
+              onChangeText={setMessage}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Send Message</Text>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={handleSubmit}
+            activeOpacity={0.8}
+          >
+            <MaterialIcons name="send" size={24} color="#fff" style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Enviar Mensaje</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -109,80 +130,120 @@ const SupportScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    backgroundColor: '#f8f9fa',
   },
   header: {
+    backgroundColor: '#4A90E2',
+    paddingTop: 60,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    elevation: 2,
     flexDirection: 'row',
-    marginTop:25,
-
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: StatusBar.currentHeight || 20,
-    paddingBottom: 10,
+    paddingHorizontal: 16,
   },
   backButton: {
-    padding: 5,
+    padding: 8,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  headerSpacer: {
+    width: 44,
   },
   content: {
-    paddingBottom: 20,
+    padding: 16,
   },
-  faqContainer: {
-    marginTop: 20,
+  sectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#333',
+    marginLeft: 8,
+  },
+  faqContainer: {
+    marginBottom: 24,
   },
   faqItem: {
-    marginBottom: 15,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  faqHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   faqQuestion: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1e90ff',
+    color: '#333',
+    flex: 1,
   },
   faqAnswer: {
     fontSize: 14,
     color: '#666',
-    marginTop: 5,
-    paddingLeft: 10,
+    marginTop: 12,
+    lineHeight: 20,
   },
   contactContainer: {
-    marginTop: 30,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  inputContainer: {
+    marginBottom: 16,
   },
   label: {
     fontSize: 16,
+    fontWeight: '500',
     color: '#333',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   input: {
-    height: 45,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
     color: '#333',
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
   textArea: {
-    height: 100,
-    textAlignVertical: 'top', // Para alinear el texto en la parte superior en Android
+    height: 120,
+    textAlignVertical: 'top',
   },
   button: {
     backgroundColor: '#1e90ff',
-    paddingVertical: 15,
-    borderRadius: 8,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  buttonIcon: {
+    marginRight: 8,
   },
   buttonText: {
     color: '#fff',
