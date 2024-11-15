@@ -1,20 +1,27 @@
 import React, { useState } from 'react';
 
-const Chat = ({ participants }) => {
+const Chat = ({ chatId }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  // Función para manejar el envío de mensajes
+  useEffect(() => {
+    const handler = Meteor.subscribe('messages', chatId);
+    const messages = Messages.find({ chatId }).fetch();
+    setMessages(messages);
+
+    return () => handler.stop();
+  }, [chatId]);
+
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (message.trim() !== '') {
-      const newMessage = {
-        sender: 'Tú',
-        content: message,
-        timestamp: new Date().toLocaleTimeString(),
-      };
-      setMessages([...messages, newMessage]);
-      setMessage(''); 
+      Meteor.call('messages.send', chatId, message, (error) => {
+        if (error) {
+          console.error('Error al enviar mensaje:', error);
+        } else {
+          setMessage('');
+        }
+      });
     }
   };
 
@@ -46,6 +53,4 @@ const Chat = ({ participants }) => {
     </div>
   );
 };
-
-export default Chat;
 

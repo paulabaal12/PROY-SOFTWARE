@@ -8,10 +8,12 @@ export const OrderTracking = new Mongo.Collection('orderTracking');
 
 // Se define el esquema de cada coleccion
 Chats.schema = new SimpleSchema({
-	participants: {type:Array},
-	'participants.$':{type:String},
-	createdAt:{type:Date,defaultValue: new Date()},
+  participants: { type: Array },
+  'participants.$': { type: String },
+  createdAt: { type: Date, defaultValue: new Date() },
+  productId: { type: String }, 
 });
+
 
 Messages.schema = new SimpleSchema({
 	chatId: {type:String},
