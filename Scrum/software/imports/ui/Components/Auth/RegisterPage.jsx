@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import Modal from 'react-modal';
 import '../../style.css';
@@ -26,6 +26,18 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [googleLoginInProgress, setGoogleLoginInProgress] = useState(false);
 
+
+
+  useEffect(() => {
+    const hasAgreedToTerms = localStorage.getItem('hasAgreedToTerms') === 'true';
+    if (hasAgreedToTerms) {
+      setFormData((prevData) => ({
+        ...prevData,
+        hasAgreedToPrivacyPolicy: true,
+      }));
+    }
+  }, []);
+
   // Actualizar campos del formulario
   const handleChange = (event) => {
     const { id, value, checked, type } = event.target;
@@ -37,7 +49,7 @@ const RegisterPage = () => {
   const handleGoogleRegister = () => {
     if (!formData.hasAgreedToPrivacyPolicy) {
       setShowPrivacyAlert(true);
-      setError('Debes aceptar la política de privacidad para registrarte.');
+      setError('Debes aceptar los términos y condiciones para registrarte.');
       return;
     }
     if (googleLoginInProgress) return; // Evita intentos múltiples.
@@ -92,7 +104,7 @@ const RegisterPage = () => {
 
     if (!formData.hasAgreedToPrivacyPolicy) {
       setShowPrivacyAlert(true);
-      setError('Debes aceptar la política de privacidad para registrarte.');
+      setError('Debes aceptar los términos y condiciones para registrarte.');
       return;
     }
 
@@ -179,7 +191,9 @@ const RegisterPage = () => {
               checked={formData.hasAgreedToPrivacyPolicy}
               onChange={handleChange}
             />
-            Acepto la política de privacidad
+            Acepto los <Link to="/terminos-y-condiciones" className="terms-link">
+            términos y condiciones
+            </Link>
           </div>
           <div className="privacy-policy-checkbox">
             <input
