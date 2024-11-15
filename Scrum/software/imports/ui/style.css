@@ -4514,3 +4514,7 @@ h3 {
   border-top: 1px solid #eee;
 }
 
+.terms-link {
+  color: #007bff; /* Cambia este color según tu diseño */
+  text-decoration: underline;
+}

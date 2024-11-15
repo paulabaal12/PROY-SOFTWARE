@@ -29,6 +29,7 @@ import ProductCatalog from './Components/Screens/ProductCatalog';
 import ProductDetails from './Components/Screens/ProductDetails';//ver producto detalle
 import ProductosPage from './Components/Screens/ProductosPage';
 import PedidosPage from './Components/Screens/PedidosPage';
+import TerminosCondiciones from './Components/Screens/TerminosCondiciones';
 
 
 
@@ -103,6 +104,7 @@ export const App = () => {
         <Route path="/productos" element={<ProductCatalog />} />
         <Route path="/producto2/:id" element={<ProductDetails />} />    
         <Route path="/pedidos" element={<PedidosPage />} />
+        <Route path="/Terminos-y-Condiciones" element={<TerminosCondiciones />} />
       </Routes>
     </Router>
   );

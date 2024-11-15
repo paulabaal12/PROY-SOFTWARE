@@ -54,6 +54,7 @@ const Header = ({ cartCount, onCurrencyChange }) => {
   return (
     <header className="header">
       <div className="header-content">
+      <img src='/images/Imagen2.png' alt="Lupa" width="75" height="75" />
         <div className="menu-toggle" onClick={toggleMenu}>
           <span></span>
           <span></span>
@@ -83,6 +84,7 @@ const Header = ({ cartCount, onCurrencyChange }) => {
             </button>
           </div>
         </form>
+        
         <div className="user-cart">
           <Link to="/user" className="user-name button2">{userName}</Link>
           <div className="cart-icon" onClick={toggleDropdown}>
