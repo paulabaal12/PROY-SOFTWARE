@@ -3,7 +3,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { Mongo } from 'meteor/mongo';
 import Header from '../Header';
 import Footer from '../Footer';
-import Chat from './Chat';  // Importa el componente Chat
+import Chat from './Chat'; 
 import '../../style.css'; 
 
 const Envios = new Mongo.Collection('envios'); // Colección de envíos
