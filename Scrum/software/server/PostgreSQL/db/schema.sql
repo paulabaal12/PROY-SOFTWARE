@@ -97,6 +97,22 @@ CREATE TABLE cupones (
     fecha_expiracion DATE NOT NULL
 );
 
+CREATE TABLE chats (
+    id SERIAL, 
+    venta_id INT NOT NULL,
+    vendedor_id INT NOT NULL,
+    comprador_id INT NOT NULL,
+    repartidor_id INT NOT NULL
+);
+
+CREATE TABLE mensajes (
+    id SERIAL,
+    chat_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    contenido TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
+
 -- Sección 2: Constraints, aquí pueden agregar toda la estructura y relación entre las tablas
 ALTER TABLE usuarios ADD PRIMARY KEY (id);
 ALTER TABLE productos ADD PRIMARY KEY (id);
@@ -133,3 +149,24 @@ ALTER TABLE calificaciones ADD CONSTRAINT fk_usuario_calificacion
 ALTER TABLE cupones ADD CONSTRAINT fk_producto_cupon
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE;
 
+ALTER TABLE chats ADD PRIMARY KEY (id);
+
+ALTER TABLE chats ADD CONSTRAINT fk_venta_chat
+    FOREIGN KEY (venta_id) REFERENCES ventas (id_venta) ON DELETE CASCADE;
+
+ALTER TABLE chats ADD CONSTRAINT fk_vendedor_chat
+    FOREIGN KEY (vendedor_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+
+ALTER TABLE chats ADD CONSTRAINT fk_comprador_chat
+    FOREIGN KEY (comprador_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+
+ALTER TABLE chats ADD CONSTRAINT fk_repartidor_chat
+    FOREIGN KEY (repartidor_id) REFERENCES usuarios (id) ON DELETE CASCADE;
+
+ALTER TABLE mensajes ADD PRIMARY KEY (id);
+
+ALTER TABLE mensajes ADD CONSTRAINT fk_chat_mensaje
+    FOREIGN KEY (chat_id) REFERENCES chats (id) ON DELETE CASCADE;
+
+ALTER TABLE mensajes ADD CONSTRAINT fk_usuario_mensaje
+    FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE;
