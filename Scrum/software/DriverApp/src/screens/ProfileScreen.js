@@ -1,12 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, StatusBar } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/100');
+
+  useEffect(() => {
+    loadSavedImage();
+  }, []);
+
+  const loadSavedImage = async () => {
+    try {
+      const savedImage = await AsyncStorage.getItem('profileImage');
+      if (savedImage) {
+        setProfileImage(savedImage);
+      }
+    } catch (error) {
+      console.error('Error loading saved image:', error);
+    }
+  };
+
+
+  const saveImage = async (imageUri) => {
+    try {
+      await AsyncStorage.setItem('profileImage', imageUri);
+      setProfileImage(imageUri);
+    } catch (error) {
+      console.error('Error saving image:', error);
+      Alert.alert('Error', 'Failed to save image');
+    }
+  };
 
   const pickImage = async () => {
     try {
@@ -25,11 +52,34 @@ const ProfileScreen = () => {
       });
 
       if (!result.canceled) {
-        setProfileImage(result.assets[0].uri);
+        await saveImage(result.assets[0].uri);
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to pick image');
     }
+  };
+
+  const removeProfileImage = async () => {
+    try {
+      await AsyncStorage.removeItem('profileImage');
+      setProfileImage('https://via.placeholder.com/100');
+      Alert.alert('Success', 'Profile image removed');
+    } catch (error) {
+      console.error('Error removing image:', error);
+      Alert.alert('Error', 'Failed to remove image');
+    }
+  };
+
+  const handleImageOptions = () => {
+    Alert.alert(
+      'Profile Picture',
+      'Choose an option',
+      [
+        { text: 'Choose from Gallery', onPress: pickImage },
+        { text: 'Remove Picture', onPress: removeProfileImage },
+        { text: 'Cancel', style: 'cancel' }
+      ]
+    );
   };
 
   const profileActions = [
@@ -47,11 +97,15 @@ const ProfileScreen = () => {
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
 
-      {/* Profile Section */}
       <View style={styles.profileContent}>
         <View style={styles.profileHeader}>
-          <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          <TouchableOpacity style={styles.imageContainer} onPress={handleImageOptions}>
+            <Image 
+              source={{ uri: profileImage }} 
+              style={styles.profileImage}
+
+              onError={() => setProfileImage('https://via.placeholder.com/100')}
+            />
             <View style={styles.editIconContainer}>
               <FontAwesome5 name="camera" size={16} color="#fff" />
             </View>
@@ -60,7 +114,6 @@ const ProfileScreen = () => {
           <Text style={styles.profileEmail}>johndoe@example.com</Text>
         </View>
 
-        {/* Profile Actions */}
         <View style={styles.profileActions}>
           {profileActions.map((action, index) => (
             <TouchableOpacity
@@ -75,14 +128,23 @@ const ProfileScreen = () => {
           ))}
         </View>
 
-        {/* Logout Button */}
         <View style={styles.logoutContainer}>
           <TouchableOpacity
             style={styles.logoutButton}
             onPress={() => {
               Alert.alert('Logout', 'Are you sure you want to logout?', [
                 { text: 'Cancel', style: 'cancel' },
-                { text: 'Logout', onPress: () => console.log('Logged Out') }
+                { 
+                  text: 'Logout', 
+                  onPress: async () => {
+                    try {
+
+                      console.log('Logged Out');
+                    } catch (error) {
+                      console.error('Error during logout:', error);
+                    }
+                  } 
+                }
               ]);
             }}
           >
@@ -91,7 +153,6 @@ const ProfileScreen = () => {
         </View>
       </View>
 
-      {/* Bottom Navigation Bar */}
       <View style={styles.bottomNavBar}>
         {[
           { icon: 'home', label: 'Home', screen: 'Home' },
@@ -120,6 +181,7 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#F8F9FA',
