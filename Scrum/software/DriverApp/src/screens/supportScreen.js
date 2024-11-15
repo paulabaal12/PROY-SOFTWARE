@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    marginTop:25,
+
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: StatusBar.currentHeight || 20,

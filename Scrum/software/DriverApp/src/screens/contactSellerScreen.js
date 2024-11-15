@@ -1,11 +1,22 @@
 // src/screens/ContactSellerScreen.js
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Linking } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-const ContactSellerScreen = ({ route }) => {
-  const { sellerName, sellerPhone, sellerEmail } = route.params;
+const ContactSellerScreen = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { sellerName, sellerPhone, sellerEmail } = route.params || {};
+
+  if (!sellerName || !sellerPhone || !sellerEmail) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Información del vendedor no disponible.</Text>
+      </View>
+    );
+  }
 
   const handleCall = () => {
     const phoneNumber = `tel:${sellerPhone}`;
@@ -33,6 +44,13 @@ const ContactSellerScreen = ({ route }) => {
       .catch((err) => console.error('Error al enviar correo:', err));
   };
 
+  const handleChat = () => {
+    navigation.navigate('Chat', { 
+      chatWithName: sellerName,
+      chatWithRole: 'Seller',
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Contact Seller: {sellerName}</Text>
@@ -54,12 +72,17 @@ const ContactSellerScreen = ({ route }) => {
       <TouchableOpacity style={styles.contactButton} onPress={handleEmail}>
         <Text style={styles.buttonText}>Email Seller</Text>
       </TouchableOpacity>
+
+      {/* Botón para Navegar a la Pantalla de Chat */}
+      <TouchableOpacity style={styles.chatButton} onPress={handleChat}>
+        <FontAwesome name="comments" size={24} color="#fff" />
+        <Text style={styles.chatButtonText}>Chat with Seller</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... define tus estilos aquí
   container: {
     flex: 1,
     padding: 20,
@@ -69,7 +92,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop:35,
     textAlign: 'center',
+    color: '#333',
   },
   contactInfo: {
     flexDirection: 'row',
@@ -79,17 +104,38 @@ const styles = StyleSheet.create({
   contactText: {
     fontSize: 18,
     marginLeft: 10,
+    color: '#333',
   },
   contactButton: {
     backgroundColor: '#1e90ff',
     padding: 15,
     borderRadius: 8,
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  chatButton: {
+    flexDirection: 'row',
+    backgroundColor: '#28a745',
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chatButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 50,
   },
 });
 

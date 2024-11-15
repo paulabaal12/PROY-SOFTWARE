@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
+    marginTop:25,
     marginBottom: 20,
   },
   profileImage: {

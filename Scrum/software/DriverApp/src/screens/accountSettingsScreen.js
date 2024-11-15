@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: StatusBar.currentHeight || 20,
@@ -109,7 +110,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    marginTop:50,
+    marginBottom: 20,
+    textAlign: 'center',
   },
   formContainer: {
     marginTop: 30,

@@ -24,7 +24,7 @@
     "metro-file-map": "^0.81.0",
     "react": "^18.3.1",
     "react-i18next": "^15.0.2",
-    "react-native": "0.74.5",
+    "react-native": "0.76.2",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-localize": "^3.2.1",
     "react-native-maps": "^1.14.0",

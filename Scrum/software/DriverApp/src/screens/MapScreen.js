@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: StatusBar.currentHeight || 20,
-    paddingHorizontal: 10,
+    paddingTop: StatusBar.currentHeight || 25,
+    marginTop:15,
+    paddingHorizontal: 15,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     zIndex: 1,
   },
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: width,
-    height: height - (StatusBar.currentHeight || 20) - 60, // Ajusta según el height del header
+    height: height - (StatusBar.currentHeight || 20) - 50, // Ajusta según el height del header
   },
 });
 
