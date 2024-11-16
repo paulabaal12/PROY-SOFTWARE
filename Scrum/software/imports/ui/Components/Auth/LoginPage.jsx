@@ -90,6 +90,9 @@ const LoginPage = ({ onLoginSuccess }) => {
   return (
     <div className="login-container body1">
       <div className="form-container">
+      <center>
+      <img src='/images/Imagen2.png' alt="Lupa" width="75" height="75" />
+      </center>
         <h1 className="centered">¡Bienvenido!</h1>
         <form id="login-form" onSubmit={handleSubmit}>
           <input 
