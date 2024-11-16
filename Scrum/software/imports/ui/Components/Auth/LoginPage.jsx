@@ -92,8 +92,8 @@ const LoginPage = ({ onLoginSuccess }) => {
       <div className="form-container">
       <center>
       <img src='/images/Imagen2.png' alt="Lupa" width="75" height="75" />
-      </center>
         <h1 className="centered">¡Bienvenido!</h1>
+        </center>
         <form id="login-form" onSubmit={handleSubmit}>
           <input 
             type="email" 
