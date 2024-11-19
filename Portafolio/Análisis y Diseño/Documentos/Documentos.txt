@@ -1,0 +1,2 @@
+Debe Poner en esta carpeta los documentos generados por el equipo de desarrollo en la etapa de design thinking y de análisis y diseño del sistema. Recuerde incluir el User Story Map
+En la carpeta de anexos, todos los documentos que tenga de la parte de design thinking

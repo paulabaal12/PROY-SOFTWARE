@@ -1,0 +1,2 @@
+Añada a esta carpeta los anexos de la etapa de design thinking, pueden ser entrevistas, videos, encuestas, audios, fotos de lluvia de ideas, etc. 
+Cree un .txt donde explique qué es cada anexo.

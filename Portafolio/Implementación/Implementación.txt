@@ -1,0 +1,9 @@
+Cree una carpeta por cada sprint y añada en cada una el documento de lo que desarrolló y el documento de la tarea de mejora al proceso que hizo para ese sprint y si aplica la tarea de selección de herramientas. Incluya un txt con la descripción de los anexos de las tareas de mejoras al proceso y sprint. Esta carpeta de anexos puede contener fotos, entrevistas, videos, encuestas, etc.
+
+
+Tareas de mejora al proceso:
+Sprint 5 - Revisión Técnica Formal (el documento que le hicieron a su sistema) (Tarea de Mejora al proceso 1)
+Sprint 7 - User Experience 1 (Tarea de Mejora al proceso 2)
+Sprint 8 - User Experience 2 (Tarea de Mejora al proceso 3)
+Sprint 9 - User Experience 3 (Tarea de Mejora al proceso 4)
+Sprint 10 - Exploratory Testing (Tarea de Mejora al proceso 5)

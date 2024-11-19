@@ -1,0 +1,1 @@
+Añada los documentos, correspondientes a las tareas en los que describe la tecnología disponible y la que el equipo de desarrollo seleccionó y las razones para hacerlo. No olvide incluir en esta carpeta los correspondientes a la selección del framework de desarrollo y la tecnología de persistencia de datos seleccionados
