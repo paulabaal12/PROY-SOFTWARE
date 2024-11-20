@@ -1,0 +1,23 @@
+Guía para ejecutar el proyecto PROY-SOFTWARE
+
+1. Clona el repositorio:
+   git clone https://github.com/paulabaal12/PROY-SOFTWARE.git
+
+2. Cambia al directorio del proyecto:
+   cd PROY-SOFTWARE/
+
+3. Dependiendo del gestor de contenedores que utilices:
+
+   **Si utilizas Docker:**
+   Ejecuta el siguiente comando para construir y levantar los servicios:
+   docker-compose up --build
+
+   **Si utilizas Podman:**
+   Asegúrate de que tengas instalado Podman en tu sistema. Luego, ejecuta el script `rebuild.sh`:
+   sh ./rebuild.sh
+
+
+Nota: 
+- Asegúrate de tener configurados Docker o Podman correctamente en tu sistema.
+- Si estás usando Windows, ejecuta el script `rebuild.sh` en un entorno compatible con bash (por ejemplo, WSL o Git Bash).
+
