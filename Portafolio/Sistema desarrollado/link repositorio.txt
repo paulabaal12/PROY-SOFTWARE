@@ -1,0 +1,5 @@
+Link repositorio GitHub a la carpeta del proyecto
+https://github.com/paulabaal12/PROY-SOFTWARE/tree/62f274dd3e2269f3deb61f29115511d482d093ba/Scrum/software
+
+Link del repositorio GitHub del todo el proyecto
+https://github.com/paulabaal12/PROY-SOFTWARE.git
