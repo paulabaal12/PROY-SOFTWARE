@@ -1,2 +1,14 @@
 Añada a esta carpeta los anexos de la etapa de design thinking, pueden ser entrevistas, videos, encuestas, audios, fotos de lluvia de ideas, etc. 
 Cree un .txt donde explique qué es cada anexo.
+
+
+Corte 1 
+https://docs.google.com/document/d/1Ot5nFVQQIHzi1SeX3z73e4iep1aSDnTsIwX0538XDxk/edit?usp=sharing
+ El trabajo se enfoca en desarrollar una plataforma de comercio electrónico adaptada a las necesidades de emprendedores y compradores casuales. Esta plataforma busca atender las demandas de seguridad en transacciones, gestión eficiente de inventarios y una experiencia de compra intuitiva y accesible. La necesidad de este proyecto surge de la creciente tendencia del comercio electrónico y la importancia de apoyar a pequeños emprendedores en este entorno digital. Los objetivos concretos incluyen el diseño de una interfaz de usuario amigable, implementación de sistemas seguros de transacciones y la integración de herramientas de gestión de inventario eficaces para facilitar el crecimiento de pequeños y medianos negocios en el mercado digital.
+
+
+Mapa de entrevistas:
+https://miro.com/welcomeonboard/ZUovbHZHUmp0VXo4Sy91WWlJNXhxTkJybTV0aTZTNFZyK2JJemhjU054Y1dxbUhhdjI0eVBGU0pvOEhKNW5XbjZBR0dpT0hOUnNkZ1FFbnREZjVrRmgrUUY5M2NlU1lWZDB3RmE0NFptblhUU25FMGtoNStrT1o3bHlxcHYvU3EhZQ==?share_link_id=132143077887   
+
+Mapa de empatia
+https://www.canva.com/design/DAGW-BTkbyo/_M1KrJdL4SXEZQ5BeXw2iA/edit?utm_content=DAGW-BTkbyo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
